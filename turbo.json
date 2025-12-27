@@ -19,7 +19,8 @@
 			"dependsOn": ["^prepare"]
 		},
 		"lint": {
-			"dependsOn": ["^format"]
+			"dependsOn": ["^format"],
+			"cache": false
 		},
 		"test": {
 			"dependsOn": ["^lint"]
