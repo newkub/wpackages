@@ -1,0 +1,15 @@
+{
+  "name": "@wts/thread",
+  "private": true,
+  "scripts": {
+    "postinstall": "cargo update",
+    "lint": "cargo check && cargo clippy --all-targets --all-features -- -D warnings",
+    "test": "cargo test --all-features && cargo nextest run --all-features",
+    "build": "cargo build",
+    "build:windows": "cargo build --release --target x86_64-pc-windows-msvc",
+    "build:node": "napi build --platform --release",
+    "release": "cargo build --release",
+    "verify": "cargo fmt --all -- --check && cargo clippy --all-targets --all-features -- -D warnings && cargo nextest run && cargo audit && cargo build",
+    "bench": "cargo bench"
+  }
+}
