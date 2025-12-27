@@ -6,8 +6,7 @@
     "dev": "node --max-old-space-size=8192 node_modules/nuxt/bin/nuxt.mjs dev --open",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "lint": "biome lint --write .",
-    "format": "biome format --write .",
+    "lint": "oxlint --type-aware --fix",
     "test": "vitest"
   },
   "devDependencies": {
@@ -23,7 +22,8 @@
     "oxlint": "^1.35.0",
     "typescript": "^5.9.3",
     "vite-plugin-checker": "^0.12.0",
-    "vue-tsc": "^3.2.1"
+    "vue-tsc": "^3.2.1",
+    "oxlint-tsgolint": "latest"
   },
   "dependencies": {
     "devserver": "workspace:*",

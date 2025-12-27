@@ -1,15 +1,19 @@
 {
-	"name": "my-cli",
+	"name": "file-download",
 	"version": "1.0.0",
 	"description": "A CLI tool for development tasks",
 	"type": "module",
 	"bin": "./dist/index.js",
 	"scripts": {
-		"dev": "bun --watch src/index.ts",
-		"build": "tsdown --exports --dts",
-		"lint": "tsc --noEmit && oxlint --fix",
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"check": "bun run lint"
+		"watch": "bun lint && bun watch && bun test",
+		"start": "bun --watch dev && vitest:ui",
+		"postinstall": "bunx taze -r -w -i",
+		"dev": "bun run src/index.ts",
+		"lint": "tsc --noEmit && biome lint --write",
+		"build": "tsdown",
+		"format": "biome format --write",
+		"test": "vitest --run",
+		"verify": "bun format && bun lint && bun test && bun audit && run build"
 	},
 	"dependencies": {
 		"commander": "14.0.2",
@@ -26,5 +30,6 @@
 	"repository": {
 		"type": "git",
 		"url": ""
-	}
+	},
+	"packageManager": "bun@1.3.5"
 }

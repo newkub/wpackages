@@ -7,11 +7,15 @@
   },
   "type": "module",
   "scripts": {
-    "build": "tsdown --exports --dts --minify",
-    "dev": "tsdown --watch",
-    "lint": "tsc --noEmit && oxlint --fix",
-    "test": "vitest run",
-    "review": "bun lint && bun test && bun build"
+    "watch": "bun lint && bun watch && bun test",
+    "start": "bun --watch dev && vitest:ui",
+    "postinstall": "bunx taze -r -w -i",
+    "dev": "bun run src/index.ts",
+    "lint": "tsc --noEmit && biome lint --write",
+    "build": "tsdown",
+    "format": "biome format --write",
+    "test": "vitest --run",
+    "verify": "bun format && bun lint && bun test && bun audit && run build"
   },
   "dependencies": {
     "effect": "^3.19.13",
@@ -31,5 +35,6 @@
   "exports": {
     ".": "./dist/index.js",
     "./package.json": "./package.json"
-  }
+  },
+  "packageManager": "bun@1.3.5"
 }
