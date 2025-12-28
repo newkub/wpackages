@@ -18,8 +18,8 @@ export function createIconPlugin<T extends object>(
 			collections: options.icon,
 		})
 		: typeof options.icon === "object"
-			? deepMerge(defaultIconConfig, options.icon)
-			: defaultIconConfig;
+		? deepMerge(defaultIconConfig, options.icon)
+		: defaultIconConfig;
 
 	return icons(iconOptions);
 }

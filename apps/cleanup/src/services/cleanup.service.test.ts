@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { glob } from "glob";
 import { rimraf } from "rimraf";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup } from "./cleanup.service";
 
 vi.mock("glob");

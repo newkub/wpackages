@@ -11,10 +11,10 @@ describe("wdev plugin", () => {
 		const plugins = wdev({ style: {} });
 		const unocssPlugin = plugins.find(
 			(p) =>
-				p &&
-				"name" in p &&
-				typeof p.name === "string" &&
-				p.name.startsWith("unocss"),
+				p
+				&& "name" in p
+				&& typeof p.name === "string"
+				&& p.name.startsWith("unocss"),
 		);
 		expect(unocssPlugin).toBeDefined();
 	});

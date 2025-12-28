@@ -4,10 +4,10 @@
  * Composes all services and components to provide the linting functionality
  */
 
-import type { LinterOptions, LintReport } from "./types";
 import { DEFAULT_CONFIG } from "./config";
 import { ALL_RULES } from "./rules";
 import { lintFiles } from "./services/linter.service";
+import type { LinterOptions, LintReport } from "./types";
 import { Result } from "./utils";
 
 /**

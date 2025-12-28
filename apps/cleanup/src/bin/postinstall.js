@@ -1,6 +1,6 @@
-import path from "node:path";
-import os from "node:os";
 import { access, writeFile } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 
 const configFileName = "computer-cleanup.config.json";
 const configPath = path.join(os.homedir(), configFileName);

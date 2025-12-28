@@ -1,7 +1,7 @@
 import { glob } from "glob";
-import { rimraf } from "rimraf";
-import { stat, readdir } from "node:fs/promises";
+import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
+import { rimraf } from "rimraf";
 
 export interface CleanableItem {
 	path: string;

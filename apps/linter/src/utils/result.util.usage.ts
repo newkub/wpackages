@@ -16,9 +16,7 @@ console.log("Result 2:", Result.unwrapOr(result2, 0)); // 0
 
 // Example 2: Chaining operations
 const calculate = (x: number): Result.Result<number, string> =>
-	Result.flatMap(divide(x, 2), (half) =>
-		half > 5 ? Result.ok(half * 2) : Result.err<number, string>("Too small"),
-	);
+	Result.flatMap(divide(x, 2), (half) => half > 5 ? Result.ok(half * 2) : Result.err<number, string>("Too small"));
 
 console.log("Calculate 20:", calculate(20)); // Ok(20)
 console.log("Calculate 8:", calculate(8)); // Err("Too small")

@@ -3,8 +3,8 @@
  * Disallow eval() and Function() constructor for security
  */
 
-import type { Rule, LintMessage } from "../types";
-import { createRule, createMessage } from "../components";
+import { createMessage, createRule } from "../components";
+import type { LintMessage, Rule } from "../types";
 
 export const noUnsafeEval: Rule = createRule(
 	{

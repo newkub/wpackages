@@ -1,11 +1,11 @@
-import { createSignal, createEffect } from "@w/signal";
+import { createEffect, createSignal } from "@w/signal";
 import { Effect, Layer, Runtime } from "effect";
 import { Box } from "./components/Box";
 import { Text } from "./components/Text";
 import { Renderer, RendererLive } from "./services/renderer.service";
 import { type Terminal, TerminalLive } from "./services/terminal.service";
 
-const main = Effect.gen(function* (_) {
+const main = Effect.gen(function*(_) {
 	// 1. Create reactive state
 	const [counter, setCounter] = createSignal(0);
 

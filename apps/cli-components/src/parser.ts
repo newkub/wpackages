@@ -83,14 +83,14 @@ export const parseArgs = <T = Record<string, OptionValue>>(
 			if (command) {
 				return { command, options: { help: true } as T, args: [] };
 			}
-			return { command: '', options: { help: true } as T, args: [] };
+			return { command: "", options: { help: true } as T, args: [] };
 		}
 
 		if (arg === "--version" || arg === "-V") {
 			if (command) {
 				return { command, options: { version: true } as T, args: [] };
 			}
-			return { command: '', options: { version: true } as T, args: [] };
+			return { command: "", options: { version: true } as T, args: [] };
 		}
 
 		if (arg.startsWith("-")) {
@@ -125,9 +125,9 @@ export const parseArgs = <T = Record<string, OptionValue>>(
 	}
 
 	if (command) {
-			return { command, options: options as T, args };
-		}
-		return { command: '', options: options as T, args };
+		return { command, options: options as T, args };
+	}
+	return { command: "", options: options as T, args };
 };
 
 /**

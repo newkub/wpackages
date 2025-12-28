@@ -89,8 +89,7 @@ export const NotificationServiceLive = Layer.effect(
 									id,
 									status: "scheduled" as const,
 								}),
-							),
-					),
+							)),
 
 				cancel: (notificationId) =>
 					logger

@@ -9,6 +9,6 @@ export { findFastest, findSlowest } from "./comparison.utils";
 export * from "./statistics.utils";
 
 // String utilities
+export { findMostSimilar } from "./string-similarity";
 export { camelCase } from "./string.utils";
 export { padEnd } from "./string.utils";
-export { findMostSimilar } from "./string-similarity";

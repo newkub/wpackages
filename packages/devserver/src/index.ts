@@ -7,8 +7,8 @@ export { createWebServerPlugin } from "webserver/vite-plugin-wserver";
 export type { WServerOptions } from "webserver/vite-plugin-wserver";
 
 // Type exports
-export type { DevServerConfig, DevServerInstance, ServerStats } from "./types";
 export type { HotReloadService, PerformanceMonitor, PerformanceStats } from "./services";
+export type { DevServerConfig, DevServerInstance, ServerStats } from "./types";
 
 // Component exports
 export { createErrorMessage, formatErrorMessage } from "./components";

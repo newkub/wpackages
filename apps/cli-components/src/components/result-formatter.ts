@@ -1,8 +1,8 @@
 import { patterns } from "@w/design-pattern";
 import * as pc from "picocolors";
 import { COLORS, SYMBOLS } from "../constant/cli.const";
-import type { BenchmarkResult, BenchResult, BenchComparison, BenchSuite, ComparisonResult } from "../types/index";
-import { formatTime, formatOps, formatPercentage } from "./stats-formatters";
+import type { BenchComparison, BenchmarkResult, BenchResult, BenchSuite, ComparisonResult } from "../types/index";
+import { formatOps, formatPercentage, formatTime } from "./stats-formatters";
 
 /**
  * Format benchmark result (CLI version)
@@ -128,7 +128,10 @@ export const formatChart = (comparison: ComparisonResult): string => {
 
 export type ComparisonFormat = "default" | "table" | "json" | "chart";
 
-const selectFormatter = patterns.behavioral.conditionalSelector.createSelector<ComparisonFormat, (comparison: ComparisonResult) => string>(
+const selectFormatter = patterns.behavioral.conditionalSelector.createSelector<
+	ComparisonFormat,
+	(comparison: ComparisonResult) => string
+>(
 	[
 		{ condition: (format: ComparisonFormat) => format === "table", result: formatTable },
 		{ condition: (format: ComparisonFormat) => format === "json", result: formatJson },

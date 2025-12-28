@@ -2,9 +2,9 @@
  * Error Creators Usage Examples
  */
 
-import { err, ok, isFailure, isSuccess, type Result } from '@wts/functional';
-import type { AnyError } from '../error';
-import * as E from './creators';
+import { err, isFailure, isSuccess, ok, type Result } from "@wts/functional";
+import type { AnyError } from "../error";
+import * as E from "./creators";
 
 // ============================================
 // Example 1: Validation Error
@@ -41,7 +41,7 @@ async function findUser(id: number): Promise<Result<AnyError, { id: number; name
 
 	const user = users.find(u => u.id === id);
 	if (!user) {
-		return err(E.notFoundError('User', { id }));
+		return err(E.notFoundError("User", { id }));
 	}
 
 	return ok(user);

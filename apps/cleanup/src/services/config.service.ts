@@ -1,6 +1,6 @@
-import path from "node:path";
-import os from "node:os";
 import { readFile, writeFile } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 
 export interface CleanupConfig {
 	patterns: string[];
@@ -77,10 +77,9 @@ export const loadConfig = async (): Promise<CleanupConfig> => {
 			...new Set([...defaultConfig.patterns, ...(userConfig.patterns || [])]),
 		];
 		// User-defined scanPaths will override the default
-		const scanPaths =
-			userConfig.scanPaths && userConfig.scanPaths.length > 0
-				? userConfig.scanPaths
-				: defaultConfig.scanPaths;
+		const scanPaths = userConfig.scanPaths && userConfig.scanPaths.length > 0
+			? userConfig.scanPaths
+			: defaultConfig.scanPaths;
 		const allExcludePatterns = [
 			...new Set([
 				...defaultConfig.excludePatterns,

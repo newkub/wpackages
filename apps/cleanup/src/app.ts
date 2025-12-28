@@ -1,11 +1,7 @@
 import * as p from "@clack/prompts";
 import pc from "picocolors";
-import {
-	cleanup,
-	findCleanableItems,
-	type CleanableItem,
-} from "./services/cleanup.service";
-import { loadConfig, createDefaultConfig } from "./services/config.service";
+import { type CleanableItem, cleanup, findCleanableItems } from "./services/cleanup.service";
+import { createDefaultConfig, loadConfig } from "./services/config.service";
 
 const formatBytes = (bytes: number, decimals = 2) => {
 	if (bytes === 0) return "0 Bytes";
@@ -73,9 +69,9 @@ export const runCleanupApp = async () => {
 	});
 
 	if (
-		p.isCancel(selectedItems) ||
-		!Array.isArray(selectedItems) ||
-		selectedItems.length === 0
+		p.isCancel(selectedItems)
+		|| !Array.isArray(selectedItems)
+		|| selectedItems.length === 0
 	) {
 		p.cancel("Operation cancelled. No files were cleaned.");
 		return;
@@ -86,7 +82,9 @@ export const runCleanupApp = async () => {
 		0,
 	);
 	const confirm = await p.confirm({
-		message: `You are about to delete ${selectedItems.length} items, totaling ${pc.yellow(formatBytes(totalSize))}. Are you sure?`,
+		message: `You are about to delete ${selectedItems.length} items, totaling ${
+			pc.yellow(formatBytes(totalSize))
+		}. Are you sure?`,
 	});
 
 	if (!confirm || p.isCancel(confirm)) {

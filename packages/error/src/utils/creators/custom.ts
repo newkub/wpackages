@@ -1,4 +1,4 @@
-import { CustomError, type CustomErrorOptions } from '../../error';
+import { CustomError, type CustomErrorOptions } from "../../error";
 
 /**
  * Creates a new error class that extends CustomError.
@@ -12,34 +12,33 @@ import { CustomError, type CustomErrorOptions } from '../../error';
  * console.log(err.customField); // 'value'
  */
 export function createErrorFactory<T extends Record<string, unknown>>(
-  errorName: string,
+	errorName: string,
 ) {
-  const reservedKeys = new Set<string>([
-    'name',
-    'message',
-    'cause',
-    'context',
-    'stack',
-  ]);
+	const reservedKeys = new Set<string>([
+		"name",
+		"message",
+		"cause",
+		"context",
+		"stack",
+	]);
 
-  const assignExtraFields = (target: Record<string, unknown>, source: Record<string, unknown>) => {
-    for (const [key, value] of Object.entries(source)) {
-      if (reservedKeys.has(key)) continue;
-      target[key] = value;
-    }
-  };
+	const assignExtraFields = (target: Record<string, unknown>, source: Record<string, unknown>) => {
+		for (const [key, value] of Object.entries(source)) {
+			if (reservedKeys.has(key)) continue;
+			target[key] = value;
+		}
+	};
 
-  const NewError = class extends CustomError {
+	const NewError = class extends CustomError {
+		constructor(options: CustomErrorOptions & T) {
+			super(options);
+			this.name = errorName;
+			assignExtraFields(this as Record<string, unknown>, options);
+		}
+	};
 
-    constructor(options: CustomErrorOptions & T) {
-      super(options);
-      this.name = errorName;
-      assignExtraFields(this as Record<string, unknown>, options);
-    }
-  };
+	// Set the display name of the class for better debugging
+	Object.defineProperty(NewError, "name", { value: errorName });
 
-  // Set the display name of the class for better debugging
-  Object.defineProperty(NewError, 'name', { value: errorName });
-
-  return NewError;
+	return NewError;
 }

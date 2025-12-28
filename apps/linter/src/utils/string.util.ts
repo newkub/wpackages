@@ -15,8 +15,7 @@ export const isNotEmpty = (str: string): boolean => str.trim().length > 0;
 /**
  * Capitalize first letter
  */
-export const capitalize = (str: string): string =>
-	str.charAt(0).toUpperCase() + str.slice(1);
+export const capitalize = (str: string): string => str.charAt(0).toUpperCase() + str.slice(1);
 
 /**
  * Convert to kebab-case
@@ -42,20 +41,17 @@ export const truncate = (
 	str: string,
 	length: number,
 	suffix = "...",
-): string =>
-	str.length > length ? str.slice(0, length - suffix.length) + suffix : str;
+): string => str.length > length ? str.slice(0, length - suffix.length) + suffix : str;
 
 /**
  * Escape regex special characters
  */
-export const escapeRegex = (str: string): string =>
-	str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+export const escapeRegex = (str: string): string => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /**
  * Remove line numbers from string (e.g., "1: " prefix)
  */
-export const removeLineNumbers = (str: string): string =>
-	str.replace(/^\d+:\s*/gm, "");
+export const removeLineNumbers = (str: string): string => str.replace(/^\d+:\s*/gm, "");
 
 /**
  * Extract file extension

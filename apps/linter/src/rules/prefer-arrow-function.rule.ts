@@ -4,8 +4,8 @@
  * Arrow functions are more concise and don't bind 'this'
  */
 
-import type { Rule, LintMessage } from "../types";
-import { createRule, createMessage } from "../components";
+import { createMessage, createRule } from "../components";
+import type { LintMessage, Rule } from "../types";
 
 export const preferArrowFunction: Rule = createRule(
 	{
@@ -30,8 +30,8 @@ export const preferArrowFunction: Rule = createRule(
 
 			// Skip function declarations (they're different from expressions)
 			if (
-				line.trim().startsWith("function ") ||
-				line.trim().startsWith("export function ")
+				line.trim().startsWith("function ")
+				|| line.trim().startsWith("export function ")
 			) {
 				continue;
 			}

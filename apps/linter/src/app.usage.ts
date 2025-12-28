@@ -216,18 +216,7 @@ async function example10() {
 }
 
 // Export examples
-export {
-	example1,
-	example2,
-	example3,
-	example4,
-	example5,
-	example6,
-	example7,
-	example8,
-	example9,
-	example10,
-};
+export { example1, example10, example2, example3, example4, example5, example6, example7, example8, example9 };
 
 // Run examples
 if (import.meta.main) {

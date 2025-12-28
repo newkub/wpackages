@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { runCleanupApp, handleInit } from "../app";
+import { handleInit, runCleanupApp } from "../app";
 
 const main = async () => {
 	const args = process.argv.slice(2);

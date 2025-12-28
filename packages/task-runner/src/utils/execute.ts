@@ -2,7 +2,7 @@ import { execSync, spawn } from "node:child_process";
 import type { Result, RunnerError, RunnerOptions, RunnerResult, StreamHandler } from "../types";
 import { err, ok } from "../types/result";
 import { createRunnerError } from "./error";
-import { normalizeOptions, parseEnv, stripFinalNewline, buildPath } from "./parse";
+import { buildPath, normalizeOptions, parseEnv, stripFinalNewline } from "./parse";
 
 /**
  * Execute a command
@@ -36,7 +36,7 @@ export const execute = async (
 
 		// Update PATH if preferLocal
 		if (normalized.preferLocal) {
-			env['PATH'] = buildPath({
+			env["PATH"] = buildPath({
 				preferLocal: true,
 				...(options.localDir !== undefined && { localDir: options.localDir }),
 				...(options.cwd !== undefined && { cwd: options.cwd }),
@@ -50,8 +50,8 @@ export const execute = async (
 			shell: options.shell ?? false,
 			signal: options.signal,
 			stdio: normalized.inheritStdio
-			? "inherit"
-			: [normalized.stdin as any, normalized.stdout as any, normalized.stderr as any],
+				? "inherit"
+				: [normalized.stdin as any, normalized.stdout as any, normalized.stderr as any],
 			killSignal: options.killSignal,
 		});
 
@@ -202,7 +202,7 @@ export const executeStream = async (
 		const env = parseEnv(options.env);
 
 		if (normalized.preferLocal) {
-			env['PATH'] = buildPath({
+			env["PATH"] = buildPath({
 				preferLocal: true,
 				...(options.localDir !== undefined && { localDir: options.localDir }),
 				...(options.cwd !== undefined && { cwd: options.cwd }),
@@ -357,7 +357,7 @@ export const executeSync = (
 		const env = parseEnv(options.env);
 
 		if (normalized.preferLocal) {
-			env['PATH'] = buildPath({
+			env["PATH"] = buildPath({
 				preferLocal: true,
 				...(options.localDir !== undefined && { localDir: options.localDir }),
 				...(options.cwd !== undefined && { cwd: options.cwd }),
@@ -411,8 +411,30 @@ export const executeSync = (
 			});
 			return err(runnerError);
 		} else if (error instanceof Error) {
-			return err(createRunnerError({ command: commandStr, message: error.message, exitCode: 1, stdout: '', stderr: '', signal: null, timedOut: false, killed: false }));
+			return err(
+				createRunnerError({
+					command: commandStr,
+					message: error.message,
+					exitCode: 1,
+					stdout: "",
+					stderr: "",
+					signal: null,
+					timedOut: false,
+					killed: false,
+				}),
+			);
 		}
-		return err(createRunnerError({ command: commandStr, message: "An unknown error occurred", exitCode: 1, stdout: '', stderr: '', signal: null, timedOut: false, killed: false }));
+		return err(
+			createRunnerError({
+				command: commandStr,
+				message: "An unknown error occurred",
+				exitCode: 1,
+				stdout: "",
+				stderr: "",
+				signal: null,
+				timedOut: false,
+				killed: false,
+			}),
+		);
 	}
 };

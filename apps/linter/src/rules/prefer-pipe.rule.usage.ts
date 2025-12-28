@@ -43,8 +43,7 @@ const result1 = JSON.stringify(
 const result2 = pipe(
 	{ a: 1, b: 2 },
 	(data: { readonly a: number; readonly b: number }) => Object.entries(data),
-	(entries: ReadonlyArray<readonly [string, number]>) =>
-		Object.fromEntries(entries),
+	(entries: ReadonlyArray<readonly [string, number]>) => Object.fromEntries(entries),
 	(obj: Record<string, number>) => Object.values(obj),
 	(values: ReadonlyArray<number>) => JSON.stringify(values),
 );
@@ -55,8 +54,7 @@ const trim = (s: string) => s.trim();
 const toUpperCase = (s: string) => s.toUpperCase();
 const parseJSON = (s: string) => JSON.parse(s);
 const mapToUsers = (data: { users: unknown[] }) => data.users;
-const filterActive = (users: { active: boolean }[]) =>
-	users.filter((u) => u.active);
+const filterActive = (users: { active: boolean }[]) => users.filter((u) => u.active);
 
 // ❌ Bad - Multiple nested calls
 const result3 = toUpperCase(trim(removeSpaces("input")));
@@ -77,15 +75,4 @@ const ok2 = toUpperCase(trim("input")); // ✅ Still readable
 const notOk = toUpperCase(trim(removeSpaces("input"))); // ❌ Use pipe!
 
 // Export for examples
-export {
-	result1,
-	result2,
-	result3,
-	result4,
-	ok1,
-	ok2,
-	notOk,
-	parseJSON,
-	mapToUsers,
-	filterActive,
-};
+export { filterActive, mapToUsers, notOk, ok1, ok2, parseJSON, result1, result2, result3, result4 };

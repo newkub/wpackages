@@ -11,5 +11,5 @@ export type { BenchmarkOptions, BenchmarkResult, ComparisonResult, Percentiles, 
 /**
  * CLI helpers
  */
-export { parseCliArgs } from "./utils/cli-parser";
 export { ConsoleService, ConsoleServiceLive } from "./services/console.service";
+export { parseCliArgs } from "./utils/cli-parser";

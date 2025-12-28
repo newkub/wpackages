@@ -1,6 +1,6 @@
 import { Effect } from "effect";
-import { type Notification, NotificationError } from "../types";
 import { sanitizeContent, validateEmail, validatePhoneNumber } from "../components";
+import { type Notification, NotificationError } from "../types";
 
 /**
  * Validate email address

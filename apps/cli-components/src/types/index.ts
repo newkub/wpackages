@@ -43,27 +43,16 @@ export type {
 } from "./command.types";
 
 // Config types
-export type {
-	CommandGroup,
-	ConfigFileDef,
-	EnvMapping,
-	ExtendedProgramOptions,
-} from "./config.types";
+export type { CommandGroup, ConfigFileDef, EnvMapping, ExtendedProgramOptions } from "./config.types";
 
 // Hooks types
 export type { HookContext, HookFunction, HooksDef } from "./hooks.types";
 
 // Middleware types
-export type {
-	MiddlewareContext,
-	MiddlewareDef,
-	MiddlewareFunction,
-	MiddlewareNext,
-} from "./middleware.types";
+export type { MiddlewareContext, MiddlewareDef, MiddlewareFunction, MiddlewareNext } from "./middleware.types";
 
 // Plugin types
 export type { PluginDef } from "./plugin.types";
 
 // Prompt types
 export type { SelectOption } from "./prompt.types";
-

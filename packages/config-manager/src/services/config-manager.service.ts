@@ -183,7 +183,6 @@ export class ConfigManager<T extends Record<string, unknown>> {
 		}
 	}
 
-
 	/**
 	 * Decrypt sensitive configuration values
 	 */
@@ -203,7 +202,6 @@ export class ConfigManager<T extends Record<string, unknown>> {
 		}
 		return decryptedConfig;
 	}
-
 
 	/**
 	 * Validate configuration against schema

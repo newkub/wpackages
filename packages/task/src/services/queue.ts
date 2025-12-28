@@ -1,7 +1,7 @@
 import type { Result } from "../types";
 import type { QueueConfig, QueueError, Task, TaskQueue, TaskResult } from "../types";
 import { queueError } from "../utils/creators";
-import { ok, err } from "../utils/result";
+import { err, ok } from "../utils/result";
 
 /**
  * Create a task queue
@@ -133,10 +133,10 @@ export async function processNext<T_OUT = unknown, E = Error>(
 	return ok({
 		...queueWithRunning,
 		running: queueWithRunning.running.filter((t) => t.id !== task.id),
-		completed:
-			result && result._tag === "Success" ? [...queueWithRunning.completed, taskResult] : queueWithRunning.completed,
-		failed:
-			result && result._tag === "Failure" ? [...queueWithRunning.failed, taskResult] : queueWithRunning.failed,
+		completed: result && result._tag === "Success"
+			? [...queueWithRunning.completed, taskResult]
+			: queueWithRunning.completed,
+		failed: result && result._tag === "Failure" ? [...queueWithRunning.failed, taskResult] : queueWithRunning.failed,
 	});
 }
 

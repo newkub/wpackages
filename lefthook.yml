@@ -6,7 +6,7 @@ pre-commit:
 pre-push:
   jobs:
     - name: build
-      run: bun build
+      run: bun run build
 
 pre-rebase:
   jobs:

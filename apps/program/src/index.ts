@@ -1,5 +1,5 @@
 import { Effect } from "@wts/functional";
-import { program, MainLive } from "./app";
+import { MainLive, program } from "./app";
 
 const runnable = Effect.provideLayer(program, MainLive);
 
