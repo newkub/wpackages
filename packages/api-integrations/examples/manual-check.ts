@@ -24,7 +24,7 @@ const authError = createAuthenticationError("Invalid API key", "AUTH_001", {
 });
 console.log("✅ Authentication Error:", authError);
 console.assert(authError.type === "authentication", "Auth error type mismatch");
-if (authError.type === 'authentication') {
+if (authError.type === "authentication") {
 	console.assert(authError.code === "AUTH_001", "Auth error code mismatch");
 }
 
@@ -44,7 +44,7 @@ console.assert(
 const networkError = createNetworkError("Connection failed", 503);
 console.log("✅ Network Error:", networkError);
 console.assert(networkError.type === "network", "Network error type mismatch");
-if (networkError.type === 'network') {
+if (networkError.type === "network") {
 	console.assert(networkError.statusCode === 503, "Status code mismatch");
 }
 
@@ -62,7 +62,7 @@ console.assert(
 const timeoutError = createTimeoutError("Request timeout", 5000, "fetchUser");
 console.log("✅ Timeout Error:", timeoutError);
 console.assert(timeoutError.type === "timeout", "Timeout error type mismatch");
-if (timeoutError.type === 'timeout') {
+if (timeoutError.type === "timeout") {
 	console.assert(timeoutError.timeout === 5000, "Timeout value mismatch");
 	console.assert(
 		timeoutError.operation === "fetchUser",

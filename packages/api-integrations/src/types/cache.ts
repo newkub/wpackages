@@ -1,4 +1,3 @@
-
 type ResultType<T, E> =
 	| { success: true; value: T }
 	| { success: false; error: E };

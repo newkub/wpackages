@@ -1,5 +1,5 @@
-import type { IntegrationConfig, IntegrationError } from "../types";
 import { createAuthenticationError } from "../components/error-factory";
+import type { IntegrationConfig, IntegrationError } from "../types";
 
 /**
  * Create integration config from environment variables

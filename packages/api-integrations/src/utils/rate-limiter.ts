@@ -4,14 +4,11 @@ import { patterns } from "@w/design-pattern";
  * Pure functional rate limiting with multiple strategies
  */
 
-import type {
-	RateLimitConfig,
-	RateLimitInfo,
-	RateLimitState,
-	RateLimitStrategy,
-} from "../types";
+import type { RateLimitConfig, RateLimitInfo, RateLimitState, RateLimitStrategy } from "../types";
 
 const { selectFunctionByCondition } = patterns.behavioral.conditionalSelector;
+
+type RateLimiter = FixedWindowRateLimiter | SlidingWindowRateLimiter | TokenBucketRateLimiter;
 
 /**
  * Default rate limit config
@@ -208,24 +205,29 @@ export class TokenBucketRateLimiter {
  */
 export const createRateLimiter = (
 	config: Partial<RateLimitConfig> = {},
-):
-	| FixedWindowRateLimiter
-	| SlidingWindowRateLimiter
-	| TokenBucketRateLimiter =>
-{
+): RateLimiter => {
 	const fullConfig: RateLimitConfig = {
 		...DEFAULT_RATE_LIMIT_CONFIG,
 		...config,
 	};
 
-	return selectFunctionByCondition(
+	return selectFunctionByCondition<RateLimitStrategy, RateLimiter>(
 		fullConfig.strategy,
 		[
-			{ condition: (s: RateLimitStrategy) => s === "fixed", fn: () => new FixedWindowRateLimiter(fullConfig) },
-			{ condition: (s: RateLimitStrategy) => s === "sliding", fn: () => new SlidingWindowRateLimiter(fullConfig) },
-			{ condition: (s: RateLimitStrategy) => s === "token_bucket", fn: () => new TokenBucketRateLimiter(fullConfig) },
+			{
+				condition: (s: RateLimitStrategy) => s === "fixed",
+				fn: (_s: RateLimitStrategy) => new FixedWindowRateLimiter(fullConfig),
+			},
+			{
+				condition: (s: RateLimitStrategy) => s === "sliding",
+				fn: (_s: RateLimitStrategy) => new SlidingWindowRateLimiter(fullConfig),
+			},
+			{
+				condition: (s: RateLimitStrategy) => s === "token_bucket",
+				fn: (_s: RateLimitStrategy) => new TokenBucketRateLimiter(fullConfig),
+			},
 		],
-		() => new SlidingWindowRateLimiter(fullConfig), // Default strategy
+		(_s: RateLimitStrategy) => new SlidingWindowRateLimiter(fullConfig), // Default strategy
 	);
 };
 

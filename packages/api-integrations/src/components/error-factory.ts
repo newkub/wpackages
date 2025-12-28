@@ -38,8 +38,7 @@ export const createRateLimitError = (
 		remaining?: number;
 		resetAt?: number;
 	},
-): IntegrationError =>
-	createError("rate_limit", message, options);
+): IntegrationError => createError("rate_limit", message, options);
 
 /**
  * Create network error
@@ -94,8 +93,7 @@ export const createConfigurationError = (
 /**
  * Create unknown error
  */
-export const createUnknownError = (message: string): IntegrationError =>
-	createError("unknown", message);
+export const createUnknownError = (message: string): IntegrationError => createError("unknown", message);
 
 /**
  * Convert any error to IntegrationError
@@ -116,9 +114,9 @@ export const isIntegrationError = (value: unknown): value is IntegrationError =>
 	}
 	const obj = value as Record<string, unknown>;
 	return (
-		typeof obj["type"] === "string" &&
-		typeof obj["message"] === "string" &&
-		[
+		typeof obj["type"] === "string"
+		&& typeof obj["message"] === "string"
+		&& [
 			"authentication",
 			"rate_limit",
 			"network",
