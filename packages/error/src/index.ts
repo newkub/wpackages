@@ -1,83 +1,34 @@
 /**
- * error - Type-safe Error Handling
+ * @wrikka/error - Type-safe, class-based error handling for TypeScript.
  *
- * Functional error handling with Result<T, E>
+ * Inspired by Rust's error handling, this library provides a robust and flexible
+ * way to manage errors in your applications.
  *
  * @example
  * ```ts
- * import { notFoundError, validationError } from 'error';
- * import { err, ok, type Result } from 'functional';
+ * import { notFoundError, match, type NotFoundError } from '@wts/error';
+ * import { err, ok, type Result } from '@wts/functional';
  *
- * function findUser(id: number): Result<User, NotFoundError> {
- *   const user = users.find(u => u.id === id);
- *   if (!user) return err(notFoundError('User', id));
- *   return ok(user);
+ * function findUser(id: number): Result<{ id: number; name: string }, NotFoundError> {
+ *   if (id !== 1) {
+ *     return err(notFoundError('User', { id }));
+ *   }
+ *   return ok({ id: 1, name: 'Alice' });
+ * }
+ *
+ * const userResult = findUser(2);
+ *
+ * if (userResult.isErr()) {
+ *   const message = match(userResult.error, {
+ *     NotFoundError: (e) => `Resource '${e.resource}' with ID '${e.id}' not found.`,
+ *     _: (e) => `An unexpected error occurred: ${e.message}`
+ *   });
+ *   console.log(message); // "Resource 'User' with ID '2' not found."
  * }
  * ```
  */
 
-// ============================================
-// Configuration
-// ============================================
+export * from './error';
+export * from './utils';
 
-export { ERROR_CONFIG } from "./config";
-export type { ErrorConfig } from "./config";
 
-// ============================================
-// Constants
-// ============================================
-
-export { ERROR_CODES } from "./constant";
-export type { ErrorCode } from "./constant";
-
-// ============================================
-// Types
-// ============================================
-
-export * from "./types";
-
-// ============================================
-// Error Creators (Pure Functions)
-// ============================================
-
-export {
-	appError,
-	conflictError,
-	databaseError,
-	forbiddenError,
-	fromError,
-	fromUnknown,
-	httpError,
-	networkError,
-	notFoundError,
-	timeoutError,
-	unauthorizedError,
-	validationError,
-} from "./services";
-
-// ============================================
-// Components (Pure Functions)
-// ============================================
-
-export {
-	createCombinedErrorMetadata,
-	createChainedErrorMetadata,
-	createContextMetadata,
-	filterErrorsByType,
-	filterErrorsByName,
-	transformError,
-	transformErrors,
-} from "./components";
-
-// ============================================
-// Error Composition Utilities
-// ============================================
-
-export {
-	addContext,
-	chainError,
-	combineErrors,
-	errorGroup,
-	filterErrors,
-	mapErrors,
-} from "./utils/composition";

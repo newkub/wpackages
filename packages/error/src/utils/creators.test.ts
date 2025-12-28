@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import * as creators from "../services/creators";
+import * as creators from "./creators";
 
 describe("appError", () => {
 	it("should create AppError", () => {
@@ -12,11 +12,11 @@ describe("appError", () => {
 		expect(error.message).toBe("Something went wrong");
 	});
 
-	it("should include metadata", () => {
+	it("should include context", () => {
 		const error = creators.appError("Error", {
-			metadata: { userId: 123 },
+			context: { userId: 123 },
 		});
-		expect(error.metadata).toEqual({ userId: 123 });
+		expect(error.context).toEqual({ userId: 123 });
 	});
 });
 
@@ -39,14 +39,14 @@ describe("validationError", () => {
 
 describe("httpError", () => {
 	it("should create HttpError", () => {
-		const error = creators.httpError("Not Found", 404);
+		const error = creators.httpError(404, "Not Found");
 		expect(error.name).toBe("HttpError");
 		expect(error.message).toBe("Not Found");
 		expect(error.status).toBe(404);
 	});
 
 	it("should include status text", () => {
-		const error = creators.httpError("Server Error", 500, {
+		const error = creators.httpError(500, "Server Error", {
 			statusText: "Internal Server Error",
 		});
 		expect(error.statusText).toBe("Internal Server Error");
@@ -54,19 +54,19 @@ describe("httpError", () => {
 });
 
 describe("notFoundError", () => {
-	it("should create NotFoundError", () => {
-		const error = creators.notFoundError("User", 123);
+		it("should create NotFoundError", () => {
+		const error = creators.notFoundError("User", { id: 123 });
 		expect(error.name).toBe("NotFoundError");
 		expect(error.resource).toBe("User");
 		expect(error.id).toBe(123);
-		expect(error.message).toContain("User");
-		expect(error.message).toContain("123");
+		expect(error.message).toBe("Resource 'User' with ID '123' not found.");
 	});
 
-	it("should work without id", () => {
+		it("should work without id", () => {
 		const error = creators.notFoundError("Settings");
 		expect(error.resource).toBe("Settings");
 		expect(error.id).toBeUndefined();
+		expect(error.message).toBe("Resource 'Settings' not found.");
 	});
 });
 

@@ -1,188 +1,141 @@
-# error
+# @wts/error
 
-> Type-safe error handling with Result<T, E>
+> A type-safe, class-based error handling library for TypeScript, inspired by Rust's robust error management.
 
-Functional error handling library using `Result<T, E>` pattern (like Rust).
+`@wts/error` provides a structured and flexible way to manage errors in your applications, ensuring type safety and compatibility with functional programming patterns like `Result<T, E>`.
 
-## Features
+## Design Principles
 
-- ✅ **Type-safe** - Full TypeScript support with discriminated unions
-- ✅ **Functional** - Pure functions, no classes or throwing
-- ✅ **Result<T, E>** - Rust-style error handling
-- ✅ **Rich Errors** - Structured error types with metadata
-- ✅ **Zero Dependencies** - Only depends on program
+-   **Type Safety:** Leverages TypeScript's type system to ensure that errors are handled explicitly and safely, preventing unexpected runtime exceptions.
+-   **Class-Based Structure:** Uses a clear class hierarchy with a `CustomError` base class, making it easy to create and extend specific error types.
+-   **Rich Context:** Errors are not just messages. They are structured objects that can carry valuable context (e.g., `field`, `resource`, `id`, `cause`) to aid in debugging and handling.
+-   **Functional Compatibility:** Designed to work seamlessly with functional utilities like `@wts/functional`, allowing you to use the `Result<T, E>` pattern for cleaner, more predictable code flow.
 
 ## Installation
 
 ```sh
-bun add error
+bun add @wts/error
 ```
 
-## Quick Start
+## Usage
 
-### Basic Usage
+The library is built around a central `CustomError` class and a set of pre-defined error classes for common scenarios.
+
+### Creating Errors
+
+You can use the provided creator functions for a more concise way to instantiate errors.
 
 ```typescript
-import { notFoundError, validationError } from 'error';
-import { ok, err } from 'program';
-import type { Result } from 'program';
+import { notFoundError, validationError } from '@wts/error';
 
-// Validation
+// Create a validation error
+const emailError = validationError({
+  message: 'Invalid email format',
+  field: 'email',
+  value: 'not-an-email'
+});
+
+// Create a "not found" error
+const userNotFoundError = notFoundError('User', { id: 123 });
+// message: "Resource 'User' with ID '123' not found."
+```
+
+### Functions Returning Results
+
+Structure your functions to return a `Result<T, E>` type, where `E` is a specific error type from this library.
+
+```typescript
+import { ok, err, type Result } from '@wts/functional';
+import { validationError, type ValidationError } from '@wts/error';
+
 function validateEmail(email: string): Result<string, ValidationError> {
   if (!email.includes('@')) {
-    return err(validationError('Invalid email format', { 
+    return err(validationError({
+      message: 'Invalid email format',
       field: 'email',
-      value: email 
+      value: email
     }));
   }
   return ok(email);
 }
+```
 
-// Usage
+### Handling Errors with `match`
+
+The `match` function provides a type-safe way to handle different error types, similar to pattern matching in other languages.
+
+```typescript
+import { match } from '@wts/error';
+
 const result = validateEmail('not-an-email');
-if (!result.ok) {
-  console.log('Error:', result.error.message);
-  console.log('Field:', result.error.field);
-}
-```
 
-### Finding Resources
-
-```typescript
-import { notFoundError } from 'error';
-import { ok, err } from 'program';
-
-async function findUser(id: number): Promise<Result<User, NotFoundError>> {
-  const user = await db.users.findById(id);
-  
-  if (!user) {
-    return err(notFoundError('User', id));
-  }
-  
-  return ok(user);
-}
-
-// Usage
-const result = await findUser(999);
-if (!result.ok) {
-  console.log(result.error.message); // "User with id "999" not found"
-}
-```
-
-### HTTP Errors
-
-```typescript
-import { httpError } from 'error';
-import { Try } from 'program';
-
-async function fetchData(url: string): Promise<Result<Data, HttpError>> {
-  const result = await Try(async () => {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-    return response.json();
+if (result.isErr()) {
+  const errorMessage = match(result.error, {
+    ValidationError: (e) => `Validation failed on field '${e.field}' with value '${e.value}'.`,
+    // Wildcard for any other error type
+    _: (e) => `An unexpected error occurred: ${e.message}`
   });
-
-  if (!result.ok) {
-    return err(httpError('Failed to fetch', 500, { 
-      url,
-      cause: result.error 
-    }));
-  }
-
-  return ok(result.value);
+  console.log(errorMessage);
+  // Output: "Validation failed on field 'email' with value 'not-an-email'."
 }
-```
-
-## API
-
-### Error Creators
-
-All error creators are **pure functions** that return error objects.
-
-```typescript
-// Basic errors
-appError(message, options?)
-validationError(message, options?)
-httpError(message, status, options?)
-notFoundError(resource, id?, options?)
-
-// Auth errors
-unauthorizedError(message, options?)
-forbiddenError(message, options?)
-
-// Other errors
-conflictError(message, options?)
-timeoutError(message, timeout, options?)
-networkError(message, options?)
-databaseError(message, options?)
-
-// Conversion
-fromError(error: Error)
-fromUnknown(error: unknown)
-```
-
-### Error Types
-
-```typescript
-interface ValidationError {
-  name: "ValidationError";
-  message: string;
-  field?: string;
-  value?: unknown;
-  code?: string;
-  metadata?: Record<string, unknown>;
-  cause?: Error;
-}
-
-interface NotFoundError {
-  name: "NotFoundError";
-  message: string;
-  resource: string;
-  id?: string | number;
-  code?: string;
-  metadata?: Record<string, unknown>;
-  cause?: Error;
-}
-
-// ... และอื่นๆ
 ```
 
 ## Examples
 
-### Chaining Results
+Here is a more complete example showing how to find a resource and handle potential errors.
 
 ```typescript
-import { findUser, validateEmail } from './services';
+import { ok, err, type Result } from '@wts/functional';
+import { notFoundError, match, fromUnknown, type NotFoundError, type AppError } from '@wts/error';
 
-async function processUser(id: number) {
-  const userResult = await findUser(id);
-  if (!userResult.ok) return userResult;
-
-  const user = userResult.value;
-  const emailResult = validateEmail(user.email);
-  if (!emailResult.ok) return emailResult;
-
-  return ok(emailResult.value);
+interface User {
+  id: number;
+  name: string;
 }
-```
 
-### Error Context
+// A mock database call
+async function findUserById(id: number): Promise<User | null> {
+  if (id === 1) {
+    return { id: 1, name: 'Alice' };
+  }
+  return null;
+}
 
-```typescript
-import { databaseError } from 'error';
-
-async function queryDB(sql: string) {
+async function getUser(id: number): Promise<Result<User, NotFoundError | AppError>> {
   try {
-    return ok(await db.query(sql));
-  } catch (error) {
-    return err(databaseError('Query failed', {
-      query: sql,
-      table: 'users',
-      cause: error as Error,
-      metadata: { timestamp: Date.now() },
-    }));
+    const user = await findUserById(id);
+    if (!user) {
+      // Return a specific, structured error
+      return err(notFoundError('User', { id }));
+    }
+    // Return the successful result
+    return ok(user);
+  } catch (e) {
+    // Wrap unknown exceptions into a standard AppError
+    return err(fromUnknown(e));
   }
 }
+
+// --- Usage ---
+async function main() {
+  const userResult = await getUser(2);
+
+  if (userResult.isErr()) {
+    const message = match(userResult.error, {
+      NotFoundError: (e) => `Could not find resource '${e.resource}' with ID '${e.id}'.`,
+      AppError: (e) => `An application error occurred: ${e.message}`,
+      _: () => 'An unknown error happened.'
+    });
+    console.error(message);
+    // Output: "Could not find resource 'User' with ID '2'."
+  } else {
+    console.log(`Found user: ${userResult.value.name}`);
+  }
+}
+
+main();
 ```
+
+## License
+
+This project is licensed under the MIT License.
