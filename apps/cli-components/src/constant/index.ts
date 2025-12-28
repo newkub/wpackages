@@ -1,6 +1,10 @@
 // Stats constants
 export { PERCENTAGE_DECIMALS, PRECISION_DECIMALS, Z_SCORE_95, Z_SCORE_99 } from "./stats.const";
 
+// UI constants
+export { colors } from "./color.const";
+export { SYMBOLS as UI_SYMBOLS } from "./symbol.const";
+
 // Bench constants
 export {
 	DEFAULT_ITERATIONS,

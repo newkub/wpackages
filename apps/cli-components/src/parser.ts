@@ -40,6 +40,42 @@ const parseOptionFlags = (flags: string): { short?: string; long?: string } => {
 	return { long, short };
 };
 
+const matchOptionArg = (
+	arg: string,
+	nextArg: string | undefined,
+	flags: { short?: string; long?: string },
+): { matched: boolean; rawValue: unknown } => {
+	const { short, long } = flags;
+
+	if (long && arg.startsWith(`--${long}`)) {
+		if (arg.includes("=")) {
+			return { matched: true, rawValue: arg.split("=")[1] };
+		}
+		if (nextArg && !nextArg.startsWith("-")) {
+			return { matched: true, rawValue: nextArg };
+		}
+		return { matched: true, rawValue: true };
+	}
+
+	if (short && arg === `-${short}`) {
+		if (nextArg && !nextArg.startsWith("-")) {
+			return { matched: true, rawValue: nextArg };
+		}
+		return { matched: true, rawValue: true };
+	}
+
+	return { matched: false, rawValue: true };
+};
+
+const autoCoerceValue = (value: unknown): unknown => {
+	if (value === true) return true;
+	if (typeof value !== "string") return value;
+	if (value.trim() === "") return value;
+	const asNumber = Number(value);
+	if (!Number.isNaN(asNumber)) return asNumber;
+	return value;
+};
+
 // ===== Standard Parser (throws on error) =====
 
 /**
@@ -140,39 +176,21 @@ const parseOption = (
 ): { key?: string; value: unknown } => {
 	for (const [key, optDef] of Object.entries(options)) {
 		const { short, long } = parseOptionFlags(optDef.flags);
+		const { matched, rawValue } = matchOptionArg(arg, nextArg, { long, short });
+		if (!matched) continue;
 
-		let matched = false;
-		let value: unknown = true;
-
-		// Match --long=value
-		if (long && arg.startsWith(`--${long}`)) {
-			matched = true;
-			if (arg.includes("=")) {
-				value = arg.split("=")[1];
-			} else if (nextArg && !nextArg.startsWith("-")) {
-				value = nextArg;
+		let value: unknown = rawValue;
+		if (optDef.parse && value !== true) {
+			const parseResult = optDef.parse(String(value));
+			if (parseResult._tag === "Failure") {
+				throw new Error(`Invalid value for option "${key}": ${parseResult.error}`);
 			}
-		} // Match -s
-		else if (short && arg === `-${short}`) {
-			matched = true;
-			if (nextArg && !nextArg.startsWith("-")) {
-				value = nextArg;
-			}
+			value = parseResult.value;
+		} else {
+			value = autoCoerceValue(value);
 		}
 
-		if (matched) {
-			if (optDef.parse && value !== true) {
-				const parseResult = optDef.parse(String(value));
-				if (parseResult._tag === "Failure") {
-					throw new Error(`Invalid value for option "${key}": ${parseResult.error}`);
-				}
-				value = parseResult.value;
-			} else if (value !== true && !Number.isNaN(Number(value))) {
-				value = Number(value);
-			}
-
-			return { key: camelCase(key), value };
-		}
+		return { key: camelCase(key), value };
 	}
 
 	return { value: undefined };
@@ -360,55 +378,34 @@ const parseOptionWithResult = (
 ): ParserResult<ParseError, { key?: string; value: unknown }> => {
 	for (const [key, optDef] of Object.entries(options)) {
 		const { short, long } = parseOptionFlags(optDef.flags);
+		const { matched, rawValue } = matchOptionArg(arg, nextArg, { long, short });
+		if (!matched) continue;
 
-		let matched = false;
-		let value: unknown = true;
-
-		// Match --long=value
-		if (long && arg.startsWith(`--${long}`)) {
-			matched = true;
-			if (arg.includes("=")) {
-				const parts = arg.split("=");
-				value = parts[1];
-			} else if (nextArg && !nextArg.startsWith("-")) {
-				value = nextArg;
-			}
-		} // Match -s
-		else if (short && arg === `-${short}`) {
-			matched = true;
-			if (nextArg && !nextArg.startsWith("-")) {
-				value = nextArg;
-			}
-		}
-
-		if (matched) {
-			// Parse with custom parser (if provided and returns Result)
-			if (optDef.parse && value !== true) {
-				const parseResult = optDef.parse(String(value));
-				if (!isSuccess(parseResult)) {
-					return err<ParseError, { key?: string; value: unknown }>({
-						option: key,
-						type: "INVALID_VALUE",
-						value: String(value),
-					});
-				}
-				value = parseResult.value;
-			} // Auto-convert to number
-			else if (value !== true && !Number.isNaN(Number(value))) {
-				value = Number(value);
-			}
-
-			// Validate choices
-			if (optDef.choices && !optDef.choices.includes(value as never)) {
-				return err({
+		let value: unknown = rawValue;
+		if (optDef.parse && value !== true) {
+			const parseResult = optDef.parse(String(value));
+			if (!isSuccess(parseResult)) {
+				return err<ParseError, { key?: string; value: unknown }>({
 					option: key,
 					type: "INVALID_VALUE",
 					value: String(value),
 				});
 			}
-
-			return ok({ key: camelCase(key), value });
+			value = parseResult.value;
+		} else {
+			value = autoCoerceValue(value);
 		}
+
+		// Validate choices
+		if (optDef.choices && !optDef.choices.includes(value as never)) {
+			return err({
+				option: key,
+				type: "INVALID_VALUE",
+				value: String(value),
+			});
+		}
+
+		return ok({ key: camelCase(key), value });
 	}
 
 	// Unknown option

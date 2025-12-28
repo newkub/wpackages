@@ -4,8 +4,8 @@
  */
 
 import { createInterface } from "node:readline";
-import { colors } from "./constants/color.const";
-import { SYMBOLS } from "./constants/symbol.const";
+import { colors } from "./constant/color.const";
+import { SYMBOLS } from "./constant/symbol.const";
 import type { TextPromptOptions } from "./types/prompt.types";
 
 /**

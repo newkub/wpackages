@@ -1,4 +1,5 @@
 import { cli } from "@/components";
+import { runBenchServices } from "@/commands/bench-services";
 import {
 	commitAndPushFiles,
 	generateCommitMessage,
@@ -8,6 +9,18 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 async function main() {
+	const args = process.argv.slice(2);
+	if (args[0] === "bench-services") {
+		try {
+			await runBenchServices();
+		} catch (error: unknown) {
+			const message = error instanceof Error ? error.message : String(error);
+			console.error(message);
+			process.exitCode = 1;
+		}
+		return;
+	}
+
 	cli.intro();
 
 	const { owner, repo } = await cli.promptForRepoInfo();

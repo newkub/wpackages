@@ -1,6 +1,14 @@
 import { formatNumber, formatPercentage } from "../components/stats-formatters";
 import type { BenchResult, ComparisonItem } from "../types/index";
 
+const getAverageTime = (value: BenchResult | number): number => {
+	return typeof value === "number" ? value : value.averageTime;
+};
+
+const getName = (value: BenchResult | number): string | undefined => {
+	return typeof value === "number" ? undefined : value.name;
+};
+
 /**
  * Find fastest benchmark
  */
@@ -24,21 +32,29 @@ export const findSlowest = (
 /**
  * Calculate relative performance
  */
-export const calculateRelativePerformance = (
-	result: BenchResult,
-	baseline: BenchResult,
-): ComparisonItem => {
-	const relativeTo = result.averageTime / baseline.averageTime;
-	const percentage = ((result.averageTime - baseline.averageTime) / baseline.averageTime) * 100;
+export function calculateRelativePerformance(result: number, baseline: number): number;
+export function calculateRelativePerformance(result: BenchResult, baseline: BenchResult): ComparisonItem;
+export function calculateRelativePerformance(
+	result: BenchResult | number,
+	baseline: BenchResult | number,
+): ComparisonItem | number {
+	if (typeof result === "number" && typeof baseline === "number") {
+		return baseline === 0 ? 0 : result / baseline;
+	}
+
+	const resultTime = getAverageTime(result);
+	const baselineTime = getAverageTime(baseline);
+	const relativeTo = baselineTime === 0 ? 0 : resultTime / baselineTime;
+	const percentage = baselineTime === 0 ? 0 : ((resultTime - baselineTime) / baselineTime) * 100;
 	const ratio = `${formatNumber(relativeTo, 2)}x`;
 
 	return {
-		name: result.name,
+		name: getName(result) ?? "",
 		relativeTo,
 		percentage,
 		ratio,
 	};
-};
+}
 
 /**
  * Sort results by performance (fastest first)
@@ -80,10 +96,12 @@ export const groupByPerformanceTier = (
  * Calculate speedup factor between two benchmark results
  */
 export const calculateSpeedup = (
-	faster: BenchResult,
-	slower: BenchResult,
+	faster: BenchResult | number,
+	slower: BenchResult | number,
 ): number => {
-	return slower.averageTime / faster.averageTime;
+	const fasterTime = getAverageTime(faster);
+	const slowerTime = getAverageTime(slower);
+	return fasterTime === 0 ? 0 : slowerTime / fasterTime;
 };
 
 /**

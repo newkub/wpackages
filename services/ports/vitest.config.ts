@@ -3,5 +3,7 @@ import { defineProject } from "vitest/config";
 export default defineProject({
 	test: {
 		name: "ports",
+		pool: "forks",
+		maxWorkers: 1,
 	},
 });

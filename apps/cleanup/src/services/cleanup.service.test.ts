@@ -3,8 +3,12 @@ import { rimraf } from "rimraf";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup } from "./cleanup.service";
 
-vi.mock("glob");
-vi.mock("rimraf");
+vi.mock("glob", () => ({
+	glob: vi.fn(),
+}));
+vi.mock("rimraf", () => ({
+	rimraf: vi.fn(),
+}));
 
 describe("cleanup service", () => {
 	beforeEach(() => {

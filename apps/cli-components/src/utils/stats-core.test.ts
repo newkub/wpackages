@@ -138,7 +138,7 @@ describe("stats-core", () => {
 
 		it("should decrease with larger sample size", () => {
 			const smallSample = standardError([1, 2, 3]);
-			const largeSample = standardError([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+			const largeSample = standardError([1, 2, 3, 1, 2, 3, 1, 2, 3]);
 			expect(smallSample).toBeGreaterThan(largeSample);
 		});
 	});

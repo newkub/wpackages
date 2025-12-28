@@ -31,10 +31,16 @@
 		"noUnusedParameters": true,
 		"paths": {
 			"@w/design-pattern": [
-				"packages/design-pattern/src"
+				"utils/design-pattern/src"
+			],
+			"bench": [
+				"packages/bench/src"
 			],
 			"@wts/functional": [
 				"packages/functional/src"
+			],
+			"@wrikka/prompt": [
+				"apps/prompt/src"
 			],
 			"ports": [
 				"services/ports/src"

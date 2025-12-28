@@ -4,8 +4,8 @@
  */
 
 import { emitKeypressEvents } from "node:readline";
-import { colors } from "./constants/color.const";
-import { SYMBOLS as symbols } from "./constants/symbol.const";
+import { colors } from "./constant/color.const";
+import { SYMBOLS as symbols } from "./constant/symbol.const";
 import { fuzzyMatch as fuzzyMatchFn } from "./utils/fuzzy.utils";
 
 /**

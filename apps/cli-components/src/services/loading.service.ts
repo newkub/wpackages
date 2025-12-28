@@ -1,5 +1,5 @@
 import pc from "picocolors";
-import { SPINNER_INTERVAL, SYMBOLS } from "../constants";
+import { SPINNER_INTERVAL, SYMBOLS } from "../constant/symbol.const";
 import * as Output from "./output.service";
 
 /**

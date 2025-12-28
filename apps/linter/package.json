@@ -18,6 +18,7 @@
 		"verify": "bun format && bun lint && bun test && bun audit && run build"
 	},
 	"dependencies": {
+		"bench": "workspace:*",
 		"effect": "^3.19.13",
 		"parser": "workspace:*",
 		"picocolors": "^1.1.1"

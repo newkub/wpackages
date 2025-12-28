@@ -2,5 +2,5 @@
  * Constants - Immutable values
  */
 
-export * from "./color.const";
-export * from "./symbol.const";
+export * from "../constant/color.const";
+export * from "../constant/symbol.const";

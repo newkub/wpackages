@@ -1,28 +1,29 @@
 {
-	"name": "github-sync",
+	"name": "github-cli",
 	"version": "0.0.1",
 	"private": true,
 	"type": "module",
 	"main": "./dist/index.mjs",
 	"types": "./dist/index.d.mts",
 	"bin": {
-		"github-sync": "./dist/index.js"
+		"github-sync": "./dist/index.mjs"
 	},
 	"scripts": {
-		"watch": "bun lint && bun watch && bun test",
-		"start": "bun --watch dev && vitest:ui",
+		"start": "bun run dev",
 		"dev": "bun run src/index.ts",
-		"lint": "tsc --noEmit && biome lint --write",
+		"lint": "tsc --noEmit && biome lint",
 		"build": "tsdown",
 		"format": "biome format --write",
 		"test": "vitest --run",
-		"verify": "bun format && bun lint && bun test && bun audit && run build"
+		"verify": "bun run format && bun run lint && bun run test && bun audit && bun run build"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "MIT",
 	"dependencies": {
 		"@clack/prompts": "^0.11.0",
+		"@wrikka/prompt": "workspace:*",
+		"bench": "workspace:*",
 		"dotenv": "^17.2.3",
 		"octokit": "^5.0.5",
 		"openai": "^6.15.0",

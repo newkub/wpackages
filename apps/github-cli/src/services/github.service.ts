@@ -1,16 +1,28 @@
 import { Octokit } from "octokit";
 import { envConfig } from "@/config/env.config";
 
-if (!envConfig.githubToken) {
-	throw new Error(
-		"GitHub token is not configured. Please add it to your .env file.",
-	);
+let octokit: Octokit | null = null;
+
+function getOctokitClient(): Octokit {
+	if (!envConfig.githubToken) {
+		throw new Error(
+			"GitHub token is not configured. Please add it to your .env file.",
+		);
+	}
+
+	octokit ??= new Octokit({ auth: envConfig.githubToken });
+	return octokit;
 }
 
-const octokit = new Octokit({ auth: envConfig.githubToken });
+async function getDefaultBranch(owner: string, repo: string): Promise<string> {
+	const client = getOctokitClient();
+	const { data } = await client.rest.repos.get({ owner, repo });
+	return data.default_branch || "main";
+}
 
 async function getAuthenticatedUser() {
-	const { data } = await octokit.rest.users.getAuthenticated();
+	const client = getOctokitClient();
+	const { data } = await client.rest.users.getAuthenticated();
 	return data;
 }
 
@@ -19,10 +31,12 @@ export async function getRepoFiles(
 	repo: string,
 ): Promise<string[]> {
 	try {
-		const { data } = await octokit.rest.git.getTree({
+		const client = getOctokitClient();
+		const branch = await getDefaultBranch(owner, repo);
+		const { data } = await client.rest.git.getTree({
 			owner,
 			repo,
-			tree_sha: "main", // or the default branch
+			tree_sha: branch,
 			recursive: "1",
 		});
 		return data.tree
@@ -44,10 +58,11 @@ export async function commitAndPushFiles(
 	commitMessage: string,
 ) {
 	try {
+		const client = getOctokitClient();
 		const user = await getAuthenticatedUser();
-		const branch = "main"; // Or get default branch dynamically
+		const branch = await getDefaultBranch(owner, repo);
 
-		const { data: refData } = await octokit.rest.git.getRef({
+		const { data: refData } = await client.rest.git.getRef({
 			owner,
 			repo,
 			ref: `heads/${branch}`,
@@ -55,7 +70,7 @@ export async function commitAndPushFiles(
 
 		const parentSha = refData.object.sha;
 
-		const { data: parentCommit } = await octokit.rest.git.getCommit({
+		const { data: parentCommit } = await client.rest.git.getCommit({
 			owner,
 			repo,
 			commit_sha: parentSha,
@@ -63,7 +78,7 @@ export async function commitAndPushFiles(
 
 		const tree = await Promise.all(
 			files.map(async (file) => {
-				const { data } = await octokit.rest.git.createBlob({
+				const { data } = await client.rest.git.createBlob({
 					owner,
 					repo,
 					content: file.content,
@@ -78,14 +93,14 @@ export async function commitAndPushFiles(
 			}),
 		);
 
-		const { data: newTree } = await octokit.rest.git.createTree({
+		const { data: newTree } = await client.rest.git.createTree({
 			owner,
 			repo,
 			tree,
 			base_tree: parentCommit.tree.sha,
 		});
 
-		const { data: newCommit } = await octokit.rest.git.createCommit({
+		const { data: newCommit } = await client.rest.git.createCommit({
 			owner,
 			repo,
 			message: commitMessage,
@@ -97,7 +112,7 @@ export async function commitAndPushFiles(
 			},
 		});
 
-		await octokit.rest.git.updateRef({
+		await client.rest.git.updateRef({
 			owner,
 			repo,
 			ref: `heads/${branch}`,

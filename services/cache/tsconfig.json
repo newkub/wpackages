@@ -11,10 +11,10 @@
 		"outDir": "./dist",
 		"paths": {
 			"@w/design-pattern": [
-				"../../packages/design-pattern/src/index.ts"
+				"../../utils/design-pattern/src/index.ts"
 			],
 			"@w/design-pattern/*": [
-				"../../packages/design-pattern/src/*"
+				"../../utils/design-pattern/src/*"
 			]
 		},
 		"declaration": true,
