@@ -85,7 +85,8 @@ const AGE_CATEGORIES = [
 	{ max: Number.POSITIVE_INFINITY, label: "senior" },
 ] as const;
 
-const categorizeAgeBest = (age: number): string => AGE_CATEGORIES.find((cat) => age < cat.max)?.label ?? "unknown";
+const categorizeAgeBest = (age: number): string =>
+	AGE_CATEGORIES.find((cat) => age < cat.max)?.label ?? "unknown";
 
 // ✅ Good - Simple ternary for binary choice
 const isEven = (n: number) => (n % 2 === 0 ? "even" : "odd");
@@ -101,4 +102,11 @@ function handleResult<T>(result: Result<T, Error>) {
 }
 
 // Export for examples
-export { categorizeAgeBest, categorizeAgeGood, getStatusGood, handleResult, isEven, processResultGood };
+export {
+	categorizeAgeBest,
+	categorizeAgeGood,
+	getStatusGood,
+	handleResult,
+	isEven,
+	processResultGood,
+};

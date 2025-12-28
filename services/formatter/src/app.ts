@@ -56,9 +56,7 @@ export const runFormatterApp = async () => {
 	p.intro(pc.cyan("✨ formatter"));
 
 	const s = p.spinner();
-	s.start(
-		`${check ? "Checking" : "Formatting"} ${pathsToFormat.join(" ")}...`,
-	);
+	s.start(`${check ? "Checking" : "Formatting"} ${pathsToFormat.join(" ")}...`);
 
 	try {
 		await format(pathsToFormat, { engine, check, cwd, configPath });

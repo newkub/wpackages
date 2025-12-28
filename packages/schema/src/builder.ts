@@ -26,7 +26,8 @@ const createStringBuilder = (state: StringOptions): StringBuilder => {
 	};
 };
 
-const StringSchemaBuilder = (): ReturnType<StringBuilder["map"]> => createStringBuilder({}).map(createStringSchema);
+const StringSchemaBuilder = (): ReturnType<StringBuilder["map"]> =>
+	createStringBuilder({}).map(createStringSchema);
 
 export const s = {
 	string: StringSchemaBuilder,

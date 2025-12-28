@@ -46,8 +46,9 @@ export const transform = <I, O, T>(
 			} catch (error) {
 				addIssue(ctx, {
 					code: "transformation_error",
-					message: options.message
-						|| `Transformation failed: ${error instanceof Error ? error.message : String(error)}`,
+					message:
+						options.message ||
+						`Transformation failed: ${error instanceof Error ? error.message : String(error)}`,
 				});
 			}
 			return;
@@ -80,9 +81,10 @@ export const withDefault = <I, O>(
 ): Schema<I | undefined, O> => {
 	return createSchema<I | undefined, O>((input, ctx): undefined => {
 		if (input === undefined) {
-			const value = typeof defaultValue === "function"
-				? (defaultValue as () => O)()
-				: defaultValue;
+			const value =
+				typeof defaultValue === "function"
+					? (defaultValue as () => O)()
+					: defaultValue;
 			ctx.data = value;
 			return;
 		}
@@ -119,9 +121,10 @@ export const optional = <I, O>(
 	return createSchema<I | undefined, O | undefined>((input, ctx): undefined => {
 		if (input === undefined) {
 			if (options?.default !== undefined) {
-				const value = typeof options.default === "function"
-					? (options.default as () => O)()
-					: options.default;
+				const value =
+					typeof options.default === "function"
+						? (options.default as () => O)()
+						: options.default;
 				ctx.data = value;
 				return;
 			}
@@ -161,9 +164,10 @@ export const nullable = <I, O>(
 	return createSchema<I | null, O | null>((input, ctx): undefined => {
 		if (input === null) {
 			if (options?.default !== undefined) {
-				const value = typeof options.default === "function"
-					? (options.default as () => O)()
-					: options.default;
+				const value =
+					typeof options.default === "function"
+						? (options.default as () => O)()
+						: options.default;
 				ctx.data = value;
 				return;
 			}

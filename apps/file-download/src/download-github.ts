@@ -44,8 +44,8 @@ Examples:
 			options.outDir = args[i + 1] ?? undefined;
 			i++;
 		} else if (
-			(args[i] === "-p" || args[i] === "--path")
-			&& i + 1 < args.length
+			(args[i] === "-p" || args[i] === "--path") &&
+			i + 1 < args.length
 		) {
 			options.path = args[i + 1] ?? undefined;
 			i++;
@@ -62,7 +62,8 @@ Examples:
 
 async function downloadRepository(repoUrl: string, options: Options) {
 	// Parse the GitHub URL
-	const githubRegex = /^https:\/\/github\.com\/([^/]+)\/([^/]+)(?:\/tree\/[^/]+\/(.+))?$/;
+	const githubRegex =
+		/^https:\/\/github\.com\/([^/]+)\/([^/]+)(?:\/tree\/[^/]+\/(.+))?$/;
 	const match = repoUrl.match(githubRegex);
 
 	if (!match) {

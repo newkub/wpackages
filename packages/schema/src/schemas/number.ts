@@ -21,8 +21,9 @@ export function number(options: NumberOptions = {}): NumberSchema {
 						success: false,
 						issues: [
 							{
-								message: next.message
-									|| `Expected a number, but received ${typeof input}`,
+								message:
+									next.message ||
+									`Expected a number, but received ${typeof input}`,
 								path: [],
 							},
 						],

@@ -106,7 +106,8 @@ export const array = <S extends Schema<unknown, unknown>>(
 
 			// Additional validations
 			if (options.unique || options.distinctBy) {
-				const distinctFn = options.distinctBy || ((a: unknown, b: unknown) => a === b);
+				const distinctFn =
+					options.distinctBy || ((a: unknown, b: unknown) => a === b);
 
 				for (let i = 0; i < validatedElements.length; i++) {
 					const current = validatedElements[i];

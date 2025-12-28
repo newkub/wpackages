@@ -19,8 +19,9 @@ export function object<TShape extends Record<string, Schema<unknown, unknown>>>(
 					success: false,
 					issues: [
 						{
-							message: options.message
-								|| `Expected an object, but received ${typeof input}`,
+							message:
+								options.message ||
+								`Expected an object, but received ${typeof input}`,
 							path: [],
 						},
 					],

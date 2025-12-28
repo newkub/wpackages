@@ -22,7 +22,8 @@ export const coerceBoolean = (
 				return Result.ok(input);
 			}
 
-			const lowercaseInput = typeof input === "string" ? input.toLowerCase() : input;
+			const lowercaseInput =
+				typeof input === "string" ? input.toLowerCase() : input;
 
 			if (trueSet.has(lowercaseInput as string | number)) {
 				return Result.ok(true);

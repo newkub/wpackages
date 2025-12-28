@@ -1,5 +1,9 @@
 import { cli } from "@/components";
-import { commitAndPushFiles, generateCommitMessage, getRepoFiles } from "@/services";
+import {
+	commitAndPushFiles,
+	generateCommitMessage,
+	getRepoFiles,
+} from "@/services";
 import fs from "node:fs/promises";
 import path from "node:path";
 

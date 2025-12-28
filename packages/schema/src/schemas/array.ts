@@ -14,8 +14,9 @@ export function array<TItem extends Schema<unknown, unknown>>(
 					success: false,
 					issues: [
 						{
-							message: options.message
-								|| `Expected an array, but received ${typeof input}`,
+							message:
+								options.message ||
+								`Expected an array, but received ${typeof input}`,
 							path: [],
 						},
 					],

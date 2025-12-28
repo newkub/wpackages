@@ -73,18 +73,13 @@ const detectEngine = (cwd: string): Exclude<FormatterEngine, "auto"> => {
 const createEngineCommand = (
 	engine: Exclude<FormatterEngine, "auto">,
 	paths: string[],
-	options:
-		& Required<Pick<FormatOptions, "check" | "cwd">>
-		& Pick<FormatOptions, "configPath">,
+	options: Required<Pick<FormatOptions, "check" | "cwd">> &
+		Pick<FormatOptions, "configPath">,
 ): { command: string; args: string[] } => {
 	const resolvedPaths = paths.length === 0 ? ["."] : paths;
 
 	if (engine === "biome") {
-		const args = [
-			"biome",
-			"format",
-			options.check ? "--check" : "--write",
-		];
+		const args = ["biome", "format", options.check ? "--check" : "--write"];
 
 		if (options.configPath) {
 			args.push("--config-path", options.configPath);
@@ -106,9 +101,10 @@ export const format = async (
 	options: FormatOptions = {},
 ): Promise<{ stdout: string; stderr: string }> => {
 	const cwd = options.cwd ? resolve(options.cwd) : process.cwd();
-	const engine: Exclude<FormatterEngine, "auto"> = options.engine && options.engine !== "auto"
-		? options.engine
-		: detectEngine(cwd);
+	const engine: Exclude<FormatterEngine, "auto"> =
+		options.engine && options.engine !== "auto"
+			? options.engine
+			: detectEngine(cwd);
 
 	const { command, args } = createEngineCommand(engine, paths, {
 		check: options.check ?? false,

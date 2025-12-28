@@ -75,7 +75,13 @@ describe("formatter service", () => {
 
 		expect(spawn).toHaveBeenCalledWith(
 			"bunx",
-			["dprint", "fmt", "--config", expect.stringContaining("dprint.json"), "src"],
+			[
+				"dprint",
+				"fmt",
+				"--config",
+				expect.stringContaining("dprint.json"),
+				"src",
+			],
 			expect.any(Object),
 		);
 	});

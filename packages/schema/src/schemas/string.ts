@@ -21,8 +21,9 @@ export function string(options: StringOptions = {}): StringSchema {
 						success: false,
 						issues: [
 							{
-								message: next.message
-									|| `Expected a string, but received ${typeof input}`,
+								message:
+									next.message ||
+									`Expected a string, but received ${typeof input}`,
 								path: [],
 							},
 						],
