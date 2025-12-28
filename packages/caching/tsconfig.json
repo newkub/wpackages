@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		"baseUrl": ".",
 		"target": "ES2022",
 		"module": "ESNext",
 		"moduleResolution": "bundler",
@@ -9,6 +10,14 @@
 		"forceConsistentCasingInFileNames": true,
 		"outDir": "./dist",
 		"rootDir": "./src",
+		"paths": {
+			"@w/design-pattern": [
+				"../design-pattern/src/index.ts"
+			],
+			"@w/design-pattern/*": [
+				"../design-pattern/src/*"
+			]
+		},
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": true,

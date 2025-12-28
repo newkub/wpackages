@@ -1,4 +1,4 @@
-import { err, ok } from "functional";
+import { err, ok } from "@wts/functional";
 import { existsSync, readFileSync, unwatchFile, watchFile } from "node:fs";
 import { join } from "node:path";
 import { DEFAULT_ENV_CONFIG, ENV_PATHS } from "../constant/defaults.const";

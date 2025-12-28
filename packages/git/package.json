@@ -17,9 +17,7 @@
 		"review": "bun format && bun lint && bun test",
 		"test": "vitest"
 	},
-	"dependencies": {
-		"@wts/functional": "workspace:*"
-	},
+	"dependencies": {},
 	"devDependencies": {
 		"@types/bun": "latest",
 		"@types/node": "^24.10.4",

@@ -28,8 +28,9 @@
 		"verify": "bun format && bun lint && bun test && bun build"
 	},
 	"dependencies": {
-		"@w/signal": "workspace:*", 
 		"@effect/schema": "^0.63.1",
+		"@w/design-pattern": "workspace:*",
+		"@w/signal": "workspace:*",
 		"effect": "^2.4.19",
 		"ink": "^6.6.0",
 		"picocolors": "^1.1.1",

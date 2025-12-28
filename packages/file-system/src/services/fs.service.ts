@@ -1,126 +1,84 @@
+import { Effect } from "effect";
 import { promises as fs, watch as fsWatch } from "node:fs";
 import type { FileSystemConfig } from "../fs.config";
-import type { DirectoryEntry, FileStats, FileSystem, Result } from "../types/fs";
-
-const tryCatchAsync = async <T, E>(
-	fn: () => Promise<T>,
-	errorHandler: (error: unknown) => E,
-): Promise<Result<T, E>> => {
-	try {
-		const value = await fn();
-		return { ok: true, value };
-	} catch (error) {
-		return { ok: false, error: errorHandler(error) };
-	}
-};
+import type { FileSystem } from "../types/fs";
 
 // Create file system service
 export const createFileSystem = (config: FileSystemConfig): FileSystem => {
+	const tryPromise = <T>(fn: () => Promise<T>, errorMessage: string) =>
+		Effect.tryPromise({
+			try: fn,
+			catch: (error: unknown) => new Error(`${errorMessage}: ${String(error)}`),
+		});
+
 	return {
-		appendFile: async (path, content) => {
-			return tryCatchAsync(
-				async () => {
-					await fs.appendFile(path, content, config.encoding);
-					return undefined;
-				},
-				(error) => new Error(`Failed to append file ${path}: ${String(error)}`),
-			);
-		},
+		appendFile: (path, content) =>
+			tryPromise(
+				() => fs.appendFile(path, content, config.encoding).then(() => undefined),
+				`Failed to append file ${path}`,
+			),
 
-		copy: async (src, dest) => {
-			return tryCatchAsync(
-				async () => {
-					await fs.copyFile(src, dest);
-					return undefined;
-				},
-				(error) => new Error(`Failed to copy ${src} to ${dest}: ${String(error)}`),
-			);
-		},
+		copy: (src, dest) =>
+			tryPromise(
+				() => fs.copyFile(src, dest).then(() => undefined),
+				`Failed to copy ${src} to ${dest}`,
+			),
 
-		exists: async (path) => {
-			return tryCatchAsync(
-				async () => {
-					try {
-						await fs.access(path);
-						return true;
-					} catch {
-						return false;
-					}
-				},
-				(error) => new Error(`Failed to check existence ${path}: ${String(error)}`),
-			);
-		},
+		exists: (path) =>
+			tryPromise(
+				() => fs.access(path).then(() => true).catch(() => false),
+				`Failed to check existence ${path}`,
+			),
 
-		mkdir: async (path, recursive = true) => {
-			return tryCatchAsync(
-				async () => {
-					await fs.mkdir(path, { recursive });
-					return undefined;
-				},
-				(error) => new Error(`Failed to create directory ${path}: ${String(error)}`),
-			);
-		},
+		mkdir: (path, recursive = true) =>
+			tryPromise(
+				() => fs.mkdir(path, { recursive }).then(() => undefined),
+				`Failed to create directory ${path}`,
+			),
 
-		move: async (src, dest) => {
-			return tryCatchAsync(
-				async () => {
-					await fs.rename(src, dest);
-					return undefined;
-				},
-				(error) => new Error(`Failed to move ${src} to ${dest}: ${String(error)}`),
-			);
-		},
+		move: (src, dest) =>
+			tryPromise(
+				() => fs.rename(src, dest).then(() => undefined),
+				`Failed to move ${src} to ${dest}`,
+			),
 
-		readDir: async (path) => {
-			return tryCatchAsync(
+		readDir: (path) =>
+			tryPromise(
 				async () => {
 					const entries = await fs.readdir(path, { withFileTypes: true });
-					const dirEntries: DirectoryEntry[] = entries.map((entry) => ({
+					return entries.map((entry) => ({
 						isDirectory: entry.isDirectory(),
 						isFile: entry.isFile(),
 						name: entry.name,
 						path: `${path}/${entry.name}`,
 					}));
-					return dirEntries;
 				},
-				(error) => new Error(`Failed to read directory ${path}: ${String(error)}`),
-			);
-		},
-		readFile: async (path, encoding = config.encoding) => {
-			return tryCatchAsync(
-				async () => {
-					const content = await fs.readFile(path, encoding);
-					return content;
-				},
-				(error) => new Error(`Failed to read file ${path}: ${String(error)}`),
-			);
-		},
+				`Failed to read directory ${path}`,
+			),
 
-		readFileBuffer: async (path) => {
-			return tryCatchAsync(
-				async () => {
-					const buffer = await fs.readFile(path);
-					return buffer;
-				},
-				(error) => new Error(`Failed to read file buffer ${path}: ${String(error)}`),
-			);
-		},
+		readFile: (path, encoding = config.encoding) =>
+			tryPromise(
+				() => fs.readFile(path, encoding),
+				`Failed to read file ${path}`,
+			),
 
-		remove: async (path) => {
-			return tryCatchAsync(
-				async () => {
-					await fs.rm(path, { force: true, recursive: true });
-					return undefined;
-				},
-				(error) => new Error(`Failed to remove ${path}: ${String(error)}`),
-			);
-		},
+		readFileBuffer: (path) =>
+			tryPromise(
+				() => fs.readFile(path),
+				`Failed to read file buffer ${path}`,
+			),
 
-		stat: async (path) => {
-			return tryCatchAsync(
+		remove: (path) =>
+			tryPromise(
+				() => fs.rm(path, { force: true, recursive: true }).then(() => undefined),
+				`Failed to remove ${path}`,
+			),
+
+		stat: (path) =>
+			tryPromise(
 				async () => {
 					const stats = await fs.stat(path);
-					const fileStats: FileStats = {
+					return {
 						createdAt: stats.birthtime,
 						isDirectory: stats.isDirectory(),
 						isFile: stats.isFile(),
@@ -128,15 +86,13 @@ export const createFileSystem = (config: FileSystemConfig): FileSystem => {
 						permissions: stats.mode,
 						size: stats.size,
 					};
-					return fileStats;
 				},
-				(error) => new Error(`Failed to stat ${path}: ${String(error)}`),
-			);
-		},
+				`Failed to stat ${path}`,
+			),
 
-		watch: async (path, callback) => {
-			return tryCatchAsync(
-				async () => {
+		watch: (path, callback) =>
+			tryPromise(
+				() => {
 					const watcher = fsWatch(path, (eventType, filename) => {
 						callback({
 							path: filename ? `${path}/${filename}` : path,
@@ -144,21 +100,15 @@ export const createFileSystem = (config: FileSystemConfig): FileSystem => {
 							type: eventType === "rename" ? "rename" : "change",
 						});
 					});
-
-					return () => watcher.close();
+					return Promise.resolve(() => watcher.close());
 				},
-				(error) => new Error(`Failed to watch ${path}: ${String(error)}`),
-			);
-		},
+				`Failed to watch ${path}`,
+			),
 
-		writeFile: async (path, content, encoding = config.encoding) => {
-			return tryCatchAsync(
-				async () => {
-					await fs.writeFile(path, content, encoding);
-					return undefined;
-				},
-				(error) => new Error(`Failed to write file ${path}: ${String(error)}`),
-			);
-		},
+		writeFile: (path, content, encoding = config.encoding) =>
+			tryPromise(
+				() => fs.writeFile(path, content, encoding).then(() => undefined),
+				`Failed to write file ${path}`,
+			),
 	};
 };

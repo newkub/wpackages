@@ -2,6 +2,7 @@
  * Retry service implementation
  */
 
+import { patterns } from "@w/design-pattern";
 import { Effect } from "effect";
 import type { RetryConfig, RetryOptions, RetryResult } from "../types";
 
@@ -15,15 +16,21 @@ const calculateDelay = (
 	baseDelay: number,
 	maxDelay: number,
 ): number => {
-	switch (strategy) {
-		case "fixed":
-			return baseDelay;
-		case "linear":
-			return Math.min(baseDelay * (attempt + 1), maxDelay);
-		case "exponential":
-		default:
-			return Math.min(baseDelay * 2 ** attempt, maxDelay);
-	}
+	const delayCalculator = patterns.behavioral.conditionalSelector.selectFunctionByCondition(
+		strategy,
+		[
+			{
+				condition: (s: typeof strategy) => s === "fixed",
+				fn: () => baseDelay,
+			},
+			{
+				condition: (s: typeof strategy) => s === "linear",
+				fn: () => Math.min(baseDelay * (attempt + 1), maxDelay),
+			},
+		],
+		() => Math.min(baseDelay * 2 ** attempt, maxDelay), // default exponential
+	);
+	return delayCalculator(strategy);
 };
 
 // Effect-based retry

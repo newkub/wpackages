@@ -24,6 +24,7 @@
 		"review": "bun run format && bun run lint && bun run test && bun run build"
 	},
 	"dependencies": {
+		"@wts/config-manager": "workspace:*",
 		"effect": "^3.19.13"
 	},
 	"devDependencies": {

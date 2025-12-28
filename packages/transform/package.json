@@ -32,15 +32,16 @@
 	},
 	"dependencies": {
 		"@iarna/toml": "^2.2.5",
+		"@w/design-pattern": "workspace:*",
 		"effect": "^3.19.13",
 		"markdown-it": "^14.1.0",
-		"oxc-parser": "^0.40.1"
+		"oxc-parser": "^0.105.0"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
 		"@types/markdown-it": "^14.1.2",
-		"@types/node": "^24.10.4",
-		"tsdown": "^0.15.12",
+		"@types/node": "^^24.10.4",
+		"tsdown": "^0.18.3",
 		"typescript": "^5.9.3",
 		"vitest": "^4.0.16"
 	}

@@ -1,4 +1,4 @@
-import { err, ok } from "functional";
+import { err, ok } from "@wts/functional";
 import { SCHEDULE_CONSTANTS } from "../constant/index";
 import { Interval } from "../types/index";
 

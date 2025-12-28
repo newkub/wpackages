@@ -3,8 +3,8 @@
  * Provides YAML parsing and serialization capabilities
  */
 
-import { err, ok } from "functional";
-import type { ResultType as Result } from "functional";
+import { err, ok } from "@wts/functional";
+import type { ResultType as Result } from "@wts/functional";
 import { readFileSync, writeFileSync } from "node:fs";
 import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import type { ConfigError } from "../types/config";

@@ -33,8 +33,7 @@
 	},
 	"dependencies": {
 		"@wts/functional": "workspace:*",
-		"@wts/resilience": "workspace:*",
-		"@wts/utils": "workspace:*"
+		"@wts/resilience": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/node": "24.10.1",

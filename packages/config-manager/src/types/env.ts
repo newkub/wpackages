@@ -1,4 +1,4 @@
-import type { ResultType } from "functional";
+import type { ResultType } from "@wts/functional";
 
 export type Result<V, E> = ResultType<V, E>;
 

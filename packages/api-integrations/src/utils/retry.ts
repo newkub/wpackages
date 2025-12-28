@@ -1,5 +1,8 @@
+import { patterns } from "@w/design-pattern";
 import { DEFAULT_RETRY_CONFIG, RETRYABLE_STATUS_CODES } from "../constant";
 import type { RetryConfig } from "../types";
+
+const { createSelector } = patterns.behavioral.conditionalSelector;
 
 /**
  * Retry utilities - Pure functions
@@ -27,12 +30,21 @@ export const calculateRetryDelay = (
 /**
  * Check if status code is retryable
  */
+const createRetryableStatusSelector = (retryableStatuses: readonly number[]) =>
+	createSelector<number, boolean>(
+		retryableStatuses.map(status => ({
+			condition: (statusCode: number) => statusCode === status,
+			result: true,
+		})),
+		false,
+	);
+
 export const isRetryableStatus = (
 	statusCode: number,
-	retryableStatuses?: readonly number[],
+	retryableStatuses: readonly number[] = RETRYABLE_STATUS_CODES,
 ): boolean => {
-	const statuses = retryableStatuses || RETRYABLE_STATUS_CODES;
-	return statuses.includes(statusCode);
+	const selector = createRetryableStatusSelector(retryableStatuses);
+	return selector(statusCode);
 };
 
 /**

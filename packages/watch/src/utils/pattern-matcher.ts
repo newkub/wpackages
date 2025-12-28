@@ -1,3 +1,4 @@
+import { patterns } from "@w/design-pattern";
 import { globToRegex } from "./glob-to-regex";
 
 type GlobPattern = string;
@@ -19,8 +20,17 @@ export const matchPattern = (path: string, pattern: GlobPattern): boolean => {
 
 export const matchAnyPattern = (
 	path: string,
-	patterns: readonly GlobPattern[],
+	globPatterns: readonly GlobPattern[],
 ): boolean => {
 	const normalizedPath = path.replace(/\\/g, "/");
-	return patterns.some((pattern) => matchPattern(normalizedPath, pattern));
+
+	const matcher = patterns.behavioral.conditionalSelector.createSelector<string, boolean>(
+		globPatterns.map(pattern => ({
+			condition: (p: string) => matchPattern(p, pattern),
+			result: true
+		})),
+		false
+	);
+
+	return matcher(normalizedPath);
 };

@@ -1,3 +1,4 @@
+import { patterns } from "@w/design-pattern";
 /**
  * Language detection utility - Detect language from filename
  */
@@ -174,15 +175,23 @@ const getExtension = (filename: string): string => {
 	return lastDot === -1 ? "" : filename.slice(lastDot).toLowerCase();
 };
 
+const languageSelector = patterns.behavioral.conditionalSelector.createSelector<string, Language>(
+	LANGUAGE_DB.flatMap(langInfo =>
+		langInfo.extensions.map(ext => ({
+			condition: (fileExt: string) => fileExt === ext,
+			result: langInfo.language,
+		}))
+	),
+	"unknown", // default result
+);
+
 /**
  * Detect language from filename
  */
 export const detectLanguage = (filename: string): Language => {
 	const ext = getExtension(filename);
 	if (!ext) return "unknown";
-
-	const info = LANGUAGE_DB.find((lang) => lang.extensions.includes(ext));
-	return info?.language || "unknown";
+	return languageSelector(ext);
 };
 
 /**

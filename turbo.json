@@ -1,7 +1,7 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"ui": "stream",
-	"globalDependencies": ["**/.env.*", "tsconfig.json", "package.json", "turbo.json"],
+  "globalDependencies": ["**/.env.*", "tsconfig.json", "package.json", "turbo.json", "bun.lockb"],
 	"concurrency": "32",
 	"tasks": {
 		"start": {
@@ -16,10 +16,11 @@
 			"cache": false
 		},
 		"format": {
-			"dependsOn": ["^prepare"]
+			"dependsOn": ["^prepare"],
+			"cache": false
 		},
 		"lint": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["^format"],
 			"cache": false
 		},
 		"test": {

@@ -1,5 +1,4 @@
-// Result type for error handling
-export type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
+import type { Effect } from "effect";
 
 // File stats
 export type FileStats = {
@@ -29,37 +28,37 @@ export type FileSystem = {
 	readonly readFile: (
 		path: string,
 		encoding?: FileEncoding,
-	) => Promise<Result<string, Error>>;
-	readonly readFileBuffer: (path: string) => Promise<Result<Buffer, Error>>;
+	) => Effect.Effect<string, Error>;
+	readonly readFileBuffer: (path: string) => Effect.Effect<Buffer, Error>;
 	readonly readDir: (
 		path: string,
-	) => Promise<Result<readonly DirectoryEntry[], Error>>;
-	readonly exists: (path: string) => Promise<Result<boolean, Error>>;
-	readonly stat: (path: string) => Promise<Result<FileStats, Error>>;
+	) => Effect.Effect<readonly DirectoryEntry[], Error>;
+	readonly exists: (path: string) => Effect.Effect<boolean, Error>;
+	readonly stat: (path: string) => Effect.Effect<FileStats, Error>;
 
 	// Write operations
 	readonly writeFile: (
 		path: string,
 		content: string,
 		encoding?: FileEncoding,
-	) => Promise<Result<void, Error>>;
+	) => Effect.Effect<void, Error>;
 	readonly appendFile: (
 		path: string,
 		content: string,
-	) => Promise<Result<void, Error>>;
+	) => Effect.Effect<void, Error>;
 	readonly mkdir: (
 		path: string,
 		recursive?: boolean,
-	) => Promise<Result<void, Error>>;
-	readonly remove: (path: string) => Promise<Result<void, Error>>;
-	readonly copy: (src: string, dest: string) => Promise<Result<void, Error>>;
-	readonly move: (src: string, dest: string) => Promise<Result<void, Error>>;
+	) => Effect.Effect<void, Error>;
+	readonly remove: (path: string) => Effect.Effect<void, Error>;
+	readonly copy: (src: string, dest: string) => Effect.Effect<void, Error>;
+	readonly move: (src: string, dest: string) => Effect.Effect<void, Error>;
 
 	// Watch operations
 	readonly watch: (
 		path: string,
 		callback: (event: FileSystemEvent) => void,
-	) => Promise<Result<() => void, Error>>;
+	) => Effect.Effect<() => void, Error>;
 };
 
 // File system event

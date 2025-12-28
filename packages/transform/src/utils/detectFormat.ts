@@ -1,4 +1,36 @@
+import { patterns } from "@w/design-pattern";
 import type { DocumentFormat } from "../types";
+
+/**
+ * Detect document format from content or filename
+ */
+const selectByFilename = patterns.behavioral.conditionalSelector.createSelector<string, DocumentFormat | null>(
+    [
+        { condition: (f: string) => f.endsWith(".md") || f.endsWith(".markdown"), result: "markdown" },
+        { condition: (f: string) => f.endsWith(".ts") || f.endsWith(".tsx") || f.endsWith(".js") || f.endsWith(".jsx"), result: "typescript" },
+        { condition: (f: string) => f.endsWith(".toml"), result: "toml" },
+        { condition: (f: string) => f.endsWith(".json"), result: "json" },
+    ],
+    null
+);
+
+const selectByContent = patterns.behavioral.conditionalSelector.createSelector<string, DocumentFormat>(
+    [
+        {
+            condition: (c: string) => (c.startsWith("{") && c.endsWith("}")) || (c.startsWith("[") && c.endsWith("]")),
+            result: "json"
+        },
+        {
+            condition: (c: string) => (c.includes("[") && c.includes("]")) || /^\w+\s*=/.test(c),
+            result: "toml"
+        },
+        {
+            condition: (c: string) => /\b(function|const|let|var|class|interface|type|import|export)\b/.test(c),
+            result: "typescript"
+        },
+    ],
+    "markdown" // Default format
+);
 
 /**
  * Detect document format from content or filename
@@ -7,60 +39,13 @@ export const detectFormat = (
 	input: string,
 	filename?: string,
 ): DocumentFormat => {
-	// Detect from filename extension
 	if (filename) {
-		if (filename.endsWith(".md") || filename.endsWith(".markdown")) {
-			return "markdown";
-		}
-		if (
-			filename.endsWith(".ts")
-			|| filename.endsWith(".tsx")
-			|| filename.endsWith(".js")
-			|| filename.endsWith(".jsx")
-		) {
-			return "typescript";
-		}
-		if (filename.endsWith(".toml")) {
-			return "toml";
-		}
-		if (filename.endsWith(".json")) {
-			return "json";
+		const fromFilename = selectByFilename(filename);
+		if (fromFilename) {
+			return fromFilename;
 		}
 	}
 
-	// Detect from content
 	const trimmed = input.trim();
-
-	// JSON detection
-	if (
-		(trimmed.startsWith("{") && trimmed.endsWith("}"))
-		|| (trimmed.startsWith("[") && trimmed.endsWith("]"))
-	) {
-		try {
-			JSON.parse(trimmed);
-			return "json";
-		} catch {
-			// Not valid JSON
-		}
-	}
-
-	// TOML detection (has [section] or key = value)
-	if (
-		(trimmed.includes("[") && trimmed.includes("]"))
-		|| /^\w+\s*=/.test(trimmed)
-	) {
-		return "toml";
-	}
-
-	// TypeScript detection (has typical TS/JS keywords)
-	if (
-		/\b(function|const|let|var|class|interface|type|import|export)\b/.test(
-			trimmed,
-		)
-	) {
-		return "typescript";
-	}
-
-	// Default to markdown
-	return "markdown";
+	return selectByContent(trimmed);
 };

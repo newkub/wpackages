@@ -17,18 +17,20 @@ const loadJsFile = async <T>(filePath: string): Promise<T> => {
 	return (imported.default ?? imported) as T;
 };
 
-const loadFile = async <T>(filePath: string): Promise<Partial<T>> => {
+const loadFile = <T>(filePath: string): Promise<Partial<T>> => {
 	const ext = filePath.slice(filePath.lastIndexOf("."));
 
-	if (ext === ".json") {
-		return loadJsonFile<Partial<T>>(filePath);
+	switch (ext) {
+		case ".json":
+			return Promise.resolve(loadJsonFile<Partial<T>>(filePath));
+		case ".js":
+		case ".ts":
+		case ".mjs":
+		case ".cjs":
+			return loadJsFile<Partial<T>>(filePath);
+		default:
+			return Promise.reject(new Error(`Unsupported file extension: ${ext}`));
 	}
-
-	if ([".js", ".ts", ".mjs", ".cjs"].includes(ext)) {
-		return loadJsFile<Partial<T>>(filePath);
-	}
-
-	throw new Error(`Unsupported file extension: ${ext}`);
 };
 
 const loadEnvConfig = <T>(envPrefix: string): Partial<T> => {

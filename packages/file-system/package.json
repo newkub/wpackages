@@ -18,7 +18,10 @@
 		"review": "bun format && bun lint && bun test",
 		"test": "vitest"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"@w/design-pattern": "workspace:*",
+		"effect": "^3.19.13"
+	},
 	"devDependencies": {
 		"@types/bun": "latest",
 		"@types/node": "^24.10.4",

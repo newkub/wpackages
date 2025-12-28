@@ -17,9 +17,11 @@
 		"lint": "tsc --noEmit && oxlint --fix",
 		"review": "bun run format && bun run lint && bun run build && bun run test"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"@w/design-pattern": "workspace:*"
+	},
 	"devDependencies": {
-		"tsdown": "^0.15.12",
+		"tsdown": "^0.18.3",
 		"typescript": "^5.9.3",
 		"vitest": "^4.0.16"
 	},

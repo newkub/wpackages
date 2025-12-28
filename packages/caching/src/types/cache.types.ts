@@ -40,4 +40,4 @@ export interface CacheStorage {
 	clear(): Promise<void>;
 }
 
-export type { Result } from "functional";
+export type { Result } from "@wts/functional";

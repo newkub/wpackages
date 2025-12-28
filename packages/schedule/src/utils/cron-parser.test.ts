@@ -1,4 +1,4 @@
-import { isFailure, isSuccess } from "functional";
+import { isFailure, isSuccess } from "@wts/functional";
 import { describe, expect, it } from "vitest";
 import { parseCronExpression, validateCronExpression } from "./cron-parser";
 

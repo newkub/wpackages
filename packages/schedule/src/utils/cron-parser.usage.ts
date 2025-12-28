@@ -1,4 +1,4 @@
-import { isFailure, isSuccess } from "functional";
+import { isFailure, isSuccess } from "@wts/functional";
 import { parseCronExpression, validateCronExpression } from "./cron-parser";
 
 // Example usage of the cron parser utility

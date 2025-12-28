@@ -2,78 +2,31 @@
  * Memoization utilities with functional programming principles
  */
 
-import { createKey } from "../components/cache-utils";
-import { createCache } from "../core/cache";
-import type { Cache, CacheConfig } from "../types/cache.types";
+import { patterns } from "@w/design-pattern";
 
-// Memoization with cache
-export const memoize = <T extends (...args: unknown[]) => unknown>(
-	fn: T,
-	config: CacheConfig = {},
-): T => {
-	const cache: Cache<string, ReturnType<T>> = createCache(config);
+// Re-exporting createMemoizedFn for local project use
+export const memoize = patterns.creational.cacheFactory.createMemoizedFn;
 
-	return ((...args: Parameters<T>): ReturnType<T> => {
-		const key = createKey(args);
-		const cached = cache.get(key);
-
-		if (cached !== undefined) {
-			return cached;
-		}
-
-		const result = fn(...args) as ReturnType<T>;
-		if (result !== null && result !== undefined) {
-			cache.set(key, result);
-		}
-		return result;
-	}) as unknown as T;
-};
-
-// Async memoization with cache
-export const memoizeAsync = <T extends (...args: unknown[]) => Promise<unknown>>(
-	fn: T,
-	config: CacheConfig = {},
-): T => {
-	const cache: Cache<string, Promise<ReturnType<T>>> = createCache(config);
-
-	return ((...args: Parameters<T>): Promise<ReturnType<T>> => {
-		const key = JSON.stringify(args);
-		const cached = cache.get(key);
-
-		if (cached !== undefined) {
-			return cached;
-		}
-
-		const result = fn(...args) as Promise<ReturnType<T>>;
-		if (result !== null && result !== undefined) {
-			cache.set(key, result);
-		}
-		return result;
-	}) as unknown as T;
-};
+// Async memoization with cache - createMemoizedFn handles promises correctly.
+export const memoizeAsync = patterns.creational.cacheFactory.createMemoizedFn;
 
 // Memoization with custom key function
-export const memoizeWith = <T extends (...args: unknown[]) => unknown>(
+export const memoizeWith = <T extends (...args: any[]) => unknown>(
 	fn: T,
 	keyFn: (...args: Parameters<T>) => string,
-	config: CacheConfig = {},
 ): T => {
-	const cache: Cache<string, ReturnType<T>> = createCache(config);
+	// The `as T` is a safe cast because the enhanced createMemoizedFn returns a function with the same signature.
+	return patterns.creational.cacheFactory.createMemoizedFn(fn, { keyFn }) as T;
+};
 
-	return ((...args: Parameters<T>): ReturnType<T> => {
-		const key = keyFn(...args);
-		const cached = cache.get(key);
-
-		if (cached !== undefined) {
-			return cached;
-		}
-
-		const result = fn(...args) as ReturnType<T>;
-		if (result !== null && result !== undefined) {
-			cache.set(key, result);
-		}
-		return result;
-	}) as unknown as T;
+// Local implementation for createKey for memoizeWeak
+const createKey = (...args: any[]): string => {
+	try {
+		return JSON.stringify(args);
+	} catch {
+		// Fallback for non-serializable arguments
+		return args.map(arg => String(arg)).join("|");
+	}
 };
 
 // WeakMap-based memoization for object arguments

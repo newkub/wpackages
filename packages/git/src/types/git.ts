@@ -1,7 +1,6 @@
-import type { Result } from "functional";
-
-// Re-export Result type for convenience
-export type { Result };
+export type Result<T, E = Error> =
+	| { success: true; value: T }
+	| { success: false; error: E };
 
 // Git commit
 export type GitCommit = {

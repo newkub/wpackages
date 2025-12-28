@@ -4,8 +4,8 @@
  */
 
 import { parse as tomlParse, stringify as tomlStringify } from "@iarna/toml";
-import { err, ok } from "functional";
-import type { ResultType as Result } from "functional";
+import { err, ok } from "@wts/functional";
+import type { ResultType as Result } from "@wts/functional";
 import { readFileSync, writeFileSync } from "node:fs";
 import type { ConfigError } from "../types/config";
 import { createConfigError, createParseErrorMessage, createSerializeErrorMessage, createFileErrorMessage } from "../utils/error-handler";

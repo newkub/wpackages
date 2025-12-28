@@ -1,3 +1,4 @@
+import { patterns } from "@w/design-pattern";
 import * as pc from "picocolors";
 import { COLORS, SYMBOLS } from "../constant/cli.const";
 import type { BenchmarkResult, BenchResult, BenchComparison, BenchSuite, ComparisonResult } from "../types/index";
@@ -123,6 +124,31 @@ export const formatChart = (comparison: ComparisonResult): string => {
 	}
 
 	return output;
+};
+
+export type ComparisonFormat = "default" | "table" | "json" | "chart";
+
+const selectFormatter = patterns.behavioral.conditionalSelector.createSelector<ComparisonFormat, (comparison: ComparisonResult) => string>(
+	[
+		{ condition: (format) => format === "table", result: formatTable },
+		{ condition: (format) => format === "json", result: formatJson },
+		{ condition: (format) => format === "chart", result: formatChart },
+	],
+	formatComparison, // Default formatter
+);
+
+/**
+ * Master formatter for benchmark comparisons
+ * @param comparison - The comparison result object
+ * @param format - The desired output format
+ * @returns The formatted string
+ */
+export const formatComparisonResult = (
+	comparison: ComparisonResult,
+	format: ComparisonFormat = "default",
+): string => {
+	const formatter = selectFormatter(format);
+	return formatter(comparison);
 };
 
 /**

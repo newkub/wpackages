@@ -1,7 +1,11 @@
+import { patterns } from "@w/design-pattern";
+
 /**
  * Circuit Breaker Implementation
  * Prevents cascading failures by stopping requests when service is unhealthy
  */
+
+const { selectByCondition } = patterns.behavioral.conditionalSelector;
 
 /**
  * Circuit breaker states
@@ -283,17 +287,14 @@ export const calculateHealthScore = (stats: CircuitBreakerStats): number => {
 
 	const successRate = (stats.successes / total) * 100;
 
-	// Penalize based on state
-	switch (stats.state) {
-		case "closed":
-			return successRate;
-		case "half_open":
-			return successRate * 0.7; // 70% of success rate
-		case "open":
-			return 0;
-		default:
-			return successRate;
-	}
+	return selectByCondition(
+		stats.state,
+		[
+			{ condition: (state: CircuitState) => state === "open", result: 0 },
+			{ condition: (state: CircuitState) => state === "half_open", result: successRate * 0.7 },
+		],
+		successRate, // Default for "closed"
+	);
 };
 
 /**
