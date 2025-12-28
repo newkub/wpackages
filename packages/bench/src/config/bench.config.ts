@@ -4,7 +4,17 @@ import * as CONST from "../constant/bench.const";
 /**
  * Benchmark configuration schema
  */
-export const BenchmarkConfig = Schema.Struct({
+
+export type BenchmarkConfig = {
+	readonly iterations: number;
+	readonly warmup: number;
+	readonly timeout: number;
+	readonly minSamples: number;
+	readonly maxSamples: number;
+	readonly confidenceLevel: 0.95 | 0.99;
+};
+
+export const BenchmarkConfig: Schema.Schema<BenchmarkConfig> = Schema.Struct({
 	iterations: Schema.Number.pipe(Schema.positive()),
 	warmup: Schema.Number.pipe(Schema.nonNegative()),
 	timeout: Schema.Number.pipe(Schema.positive()),
@@ -14,8 +24,6 @@ export const BenchmarkConfig = Schema.Struct({
 		Schema.annotations({ default: 0.95 }),
 	),
 });
-
-export type BenchmarkConfig = Schema.Schema.Type<typeof BenchmarkConfig>;
 
 /**
  * Default configuration
@@ -32,13 +40,18 @@ export const DEFAULT_CONFIG: BenchmarkConfig = {
 /**
  * Reporter configuration schema
  */
-export const ReporterConfig = Schema.Struct({
+
+export type ReporterConfig = {
+	readonly format: "console" | "json" | "markdown" | "html" | "csv";
+	readonly colors: boolean;
+	readonly verbose: boolean;
+};
+
+export const ReporterConfig: Schema.Schema<ReporterConfig> = Schema.Struct({
 	format: Schema.Literal("console", "json", "markdown", "html", "csv"),
 	colors: Schema.Boolean,
 	verbose: Schema.Boolean,
 });
-
-export type ReporterConfig = Schema.Schema.Type<typeof ReporterConfig>;
 
 /**
  * Default reporter configuration

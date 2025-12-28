@@ -32,4 +32,4 @@ export const ConsoleService = {
 /**
  * Legacy alias for backward compatibility
  */
-export const ConsoleServiceLive = ConsoleService;
+export const ConsoleServiceLive: typeof ConsoleService = ConsoleService;

@@ -2,6 +2,7 @@ import { DEFAULT_RUNS, DEFAULT_SHELL, DEFAULT_WARMUP } from "../constant/cli.con
 import type { BenchmarkOptions } from "../types/cli.types";
 
 export const defaultBenchmarkOptions: BenchmarkOptions = {
+	concurrency: 1,
 	output: "text",
 	runs: DEFAULT_RUNS,
 	shell: DEFAULT_SHELL,

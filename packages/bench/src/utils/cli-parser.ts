@@ -48,6 +48,16 @@ export const parseCliArgs = (
 				}
 				break;
 
+			case "--concurrency":
+			case "-j":
+				if (args[i + 1]) {
+					const nextArg = args[++i];
+					if (nextArg) {
+						options.concurrency = Number.parseInt(nextArg, 10);
+					}
+				}
+				break;
+
 			case "--prepare":
 			case "-p":
 				if (args[i + 1]) {
@@ -82,7 +92,9 @@ export const parseCliArgs = (
 			case "-o":
 				if (args[i + 1]) {
 					const outputFormat = args[++i];
-					if (outputFormat === "json" || outputFormat === "text" || outputFormat === "table" || outputFormat === "chart") {
+					if (
+						outputFormat === "json" || outputFormat === "text" || outputFormat === "table" || outputFormat === "chart"
+					) {
 						options.output = outputFormat;
 					}
 				}

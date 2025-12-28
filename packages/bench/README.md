@@ -8,6 +8,7 @@ A powerful, type-safe, and functional benchmarking utility for performance testi
 - **Functional Approach**: Designed with pure functions and clear separation of concerns.
 - **Type-Safe**: Written in TypeScript to catch errors at compile time.
 - **Detailed Statistics**: Get min, max, mean, median, variance, standard deviation, and percentiles.
+- **Scalability Testing**: Use `--concurrency/-j` to run parallel command invocations per iteration.
 - **Flexible Output**: Display results as a summary, table, chart, or JSON.
 - **Zero Dependencies**: Core logic has zero production dependencies.
 
@@ -26,16 +27,16 @@ bun add bench
 Here's how you can run a benchmark on a single command:
 
 ```typescript
-import { runBenchmark } from 'bench';
-import type { BenchmarkOptions } from 'bench';
+import { runBenchmark } from "bench";
+import type { BenchmarkOptions } from "bench";
 
 const options: Partial<BenchmarkOptions> = {
-  runs: 50,
-  warmup: 5,
-  // shell: 'bash', // Optional: specify the shell to use
+	runs: 50,
+	warmup: 5,
+	// shell: 'bash', // Optional: specify the shell to use
 };
 
-const result = await runBenchmark(['echo "hello"'], options);
+const result = await runBenchmark(["echo \"hello\""], options);
 
 console.log(`Mean execution time: ${result.mean.toFixed(2)} ms`);
 ```
@@ -43,11 +44,11 @@ console.log(`Mean execution time: ${result.mean.toFixed(2)} ms`);
 To compare multiple commands:
 
 ```typescript
-import { runBenchmark } from 'bench';
+import { runBenchmark } from "bench";
 
 const commands = [
-  'sleep 0.1',
-  'sleep 0.2',
+	"sleep 0.1",
+	"sleep 0.2",
 ];
 
 const comparison = await runBenchmark(commands, { runs: 10 });
@@ -67,8 +68,15 @@ bunx bench "bun --version"
 # Compare two commands
 bunx bench "bun --version" "node --version"
 
+# Benchmark different runtimes by passing the command you want to measure
+# (e.g. node/bun/rust binaries or scripts)
+bunx bench "node ./script.js" "bun ./script.ts" "./target/release/my-rust-bin"
+
 # Customize runs and warmup
 bunx bench --runs 100 --warmup 10 "my-script"
+
+# Scalability / concurrency (parallel invocations per iteration)
+bunx bench --runs 50 --concurrency 8 "my-script"
 
 # Export results to a JSON file
 bunx bench --export results.json "script1" "script2"
@@ -85,17 +93,17 @@ Returns a `Promise<BenchmarkResult>` if one command is provided, or a `Promise<C
 
 ### `BenchmarkOptions`
 
-| Option    | Type      | Default | Description                                      |
-| --------- | --------- | ------- | ------------------------------------------------ |
-| `runs`      | `number`  | `10`    | Number of benchmark iterations.                  |
-| `warmup`    | `number`  | `0`     | Number of warmup iterations (not measured).      |
-| `prepare`   | `string`  | `''`    | Command to run before each iteration.            |
-| `cleanup`   | `string`  | `''`    | Command to run after each iteration.             |
-| `shell`     | `string`  | `'bash'`| The shell to use for running commands.           |
-| `output`    | `'summary' \| 'table' \| 'chart' \| 'json'` | `'summary'` | The output format for comparisons. |
-| `export`    | `string`  | `''`    | File path to export results as JSON.             |
-| `silent`    | `boolean` | `false` | Suppress console output.                         |
-| `verbose`   | `boolean` | `false` | Log the time of each individual run.             |
+| Option    | Type                                        | Default     | Description                                 |
+| --------- | ------------------------------------------- | ----------- | ------------------------------------------- |
+| `runs`    | `number`                                    | `10`        | Number of benchmark iterations.             |
+| `warmup`  | `number`                                    | `0`         | Number of warmup iterations (not measured). |
+| `prepare` | `string`                                    | `''`        | Command to run before each iteration.       |
+| `cleanup` | `string`                                    | `''`        | Command to run after each iteration.        |
+| `shell`   | `string`                                    | `'bash'`    | The shell to use for running commands.      |
+| `output`  | `'summary' \| 'table' \| 'chart' \| 'json'` | `'summary'` | The output format for comparisons.          |
+| `export`  | `string`                                    | `''`        | File path to export results as JSON.        |
+| `silent`  | `boolean`                                   | `false`     | Suppress console output.                    |
+| `verbose` | `boolean`                                   | `false`     | Log the time of each individual run.        |
 
 ## Development
 

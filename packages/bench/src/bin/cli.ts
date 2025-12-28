@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { runBenchmark } from "../app";
-import { parseCliArgs } from "../utils/cli-parser";
+import { ConsoleService } from "../services";
+import { parseCliArgs } from "../utils";
 
 // Parse CLI arguments
 const args = process.argv.slice(2);
@@ -14,7 +15,7 @@ if (args.includes("--help") || args.includes("-h")) {
 const { options, commands } = parseCliArgs(args);
 
 if (commands.length === 0) {
-	console.error("Error: No commands specified");
+	await ConsoleService.error("Error: No commands specified");
 	printHelp();
 	process.exit(1);
 }
@@ -26,7 +27,7 @@ runBenchmark(commands, options)
 	})
 	.catch((error) => {
 		if (!options.silent && error instanceof Error) {
-			console.error(`Error: ${error.message}`);
+			void ConsoleService.error(`Error: ${error.message}`);
 		}
 		process.exit(1);
 	});
@@ -41,6 +42,7 @@ Usage:
 Options:
   -w, --warmup <n>      Number of warmup runs (default: 3)
   -r, --runs <n>        Number of benchmark runs (default: 10)
+  -j, --concurrency <n> Parallel processes per iteration (default: 1)
   -p, --prepare <cmd>   Command to run before each benchmark
   -c, --cleanup <cmd>   Command to run after each benchmark
   -s, --shell <shell>   Shell to use (default: bash/pwsh)

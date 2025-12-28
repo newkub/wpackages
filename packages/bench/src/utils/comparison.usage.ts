@@ -23,8 +23,26 @@ interface BenchResult {
 
 console.log("=== Example 1: Calculate Speedup ===");
 
-const oldResult: BenchResult = { name: 'old', averageTime: 100, ops: 10, stats: {} as any, iterations: 1, samples: 1, totalTime: 100, timestamps: [] };
-const newResult: BenchResult = { name: 'new', averageTime: 50, ops: 20, stats: {} as any, iterations: 1, samples: 1, totalTime: 50, timestamps: [] };
+const oldResult: BenchResult = {
+	name: "old",
+	averageTime: 100,
+	ops: 10,
+	stats: {} as any,
+	iterations: 1,
+	samples: 1,
+	totalTime: 100,
+	timestamps: [],
+};
+const newResult: BenchResult = {
+	name: "new",
+	averageTime: 50,
+	ops: 20,
+	stats: {} as any,
+	iterations: 1,
+	samples: 1,
+	totalTime: 50,
+	timestamps: [],
+};
 
 const speedup = calculateSpeedup(newResult, oldResult);
 console.log(`Old implementation: ${oldResult.averageTime} ms`);
@@ -42,8 +60,26 @@ console.log(`New is ${speedup}x faster than old`);
 
 console.log("\n=== Example 2: Relative Performance ===");
 
-const baselineResult: BenchResult = { name: 'baseline', averageTime: 10, ops: 100, stats: {} as any, iterations: 1, samples: 1, totalTime: 10, timestamps: [] };
-const currentResult: BenchResult = { name: 'current', averageTime: 15, ops: 66, stats: {} as any, iterations: 1, samples: 1, totalTime: 15, timestamps: [] };
+const baselineResult: BenchResult = {
+	name: "baseline",
+	averageTime: 10,
+	ops: 100,
+	stats: {} as any,
+	iterations: 1,
+	samples: 1,
+	totalTime: 10,
+	timestamps: [],
+};
+const currentResult: BenchResult = {
+	name: "current",
+	averageTime: 15,
+	ops: 66,
+	stats: {} as any,
+	iterations: 1,
+	samples: 1,
+	totalTime: 15,
+	timestamps: [],
+};
 
 const relative = calculateRelativePerformance(currentResult, baselineResult);
 console.log(`Baseline: ${baselineResult.averageTime} ms`);
@@ -133,7 +169,7 @@ console.log(`Fastest: ${fastestName} (${fastestTime} ms)\n`);
 console.log("Comparison:");
 
 for (const [name, time] of Object.entries(implementations)) {
-		const ratio = formatRatio(time / fastestTime);
+	const ratio = formatRatio(time / fastestTime);
 	const percentage = percentageDifference(time, fastestTime);
 
 	console.log(`${name}:`);
@@ -164,8 +200,26 @@ const previousBuild = 45.2; // ms
 const currentBuild = 52.8; // ms
 const threshold = 0.1; // 10% regression threshold
 
-const currentBuildResult: BenchResult = { name: 'current', averageTime: currentBuild, ops: 1, stats: {} as any, iterations: 1, samples: 1, totalTime: 1, timestamps: [] };
-const previousBuildResult: BenchResult = { name: 'previous', averageTime: previousBuild, ops: 1, stats: {} as any, iterations: 1, samples: 1, totalTime: 1, timestamps: [] };
+const currentBuildResult: BenchResult = {
+	name: "current",
+	averageTime: currentBuild,
+	ops: 1,
+	stats: {} as any,
+	iterations: 1,
+	samples: 1,
+	totalTime: 1,
+	timestamps: [],
+};
+const previousBuildResult: BenchResult = {
+	name: "previous",
+	averageTime: previousBuild,
+	ops: 1,
+	stats: {} as any,
+	iterations: 1,
+	samples: 1,
+	totalTime: 1,
+	timestamps: [],
+};
 const regression = calculateRelativePerformance(currentBuildResult, previousBuildResult);
 const percentChange = percentageDifference(currentBuild, previousBuild);
 
@@ -194,8 +248,26 @@ console.log("\n=== Example 7: A/B Test ===");
 const variantA = 125.5; // ms
 const variantB = 98.2; // ms
 
-const variantAResult: BenchResult = { name: 'A', averageTime: variantA, ops: 1, stats: {} as any, iterations: 1, samples: 1, totalTime: 1, timestamps: [] };
-const variantBResult: BenchResult = { name: 'B', averageTime: variantB, ops: 1, stats: {} as any, iterations: 1, samples: 1, totalTime: 1, timestamps: [] };
+const variantAResult: BenchResult = {
+	name: "A",
+	averageTime: variantA,
+	ops: 1,
+	stats: {} as any,
+	iterations: 1,
+	samples: 1,
+	totalTime: 1,
+	timestamps: [],
+};
+const variantBResult: BenchResult = {
+	name: "B",
+	averageTime: variantB,
+	ops: 1,
+	stats: {} as any,
+	iterations: 1,
+	samples: 1,
+	totalTime: 1,
+	timestamps: [],
+};
 const speedupB = calculateSpeedup(variantBResult, variantAResult);
 const ratioB = formatRatio(variantB / variantA);
 const improvementB = percentageDifference(variantB, variantA);
@@ -295,8 +367,28 @@ const optimizationBaseline = optimizationStages[0];
 if (optimizationBaseline) {
 	for (const [index, stage] of optimizationStages.entries()) {
 		const speedupVsBaseline = calculateSpeedup(
-			{ name: stage.stage, ...stage, averageTime: stage.time, ops: 1, stats: {} as any, iterations: 1, samples: 1, totalTime: 1, timestamps: [] },
-			{ name: optimizationBaseline.stage, ...optimizationBaseline, averageTime: optimizationBaseline.time, ops: 1, stats: {} as any, iterations: 1, samples: 1, totalTime: 1, timestamps: [] },
+			{
+				name: stage.stage,
+				...stage,
+				averageTime: stage.time,
+				ops: 1,
+				stats: {} as any,
+				iterations: 1,
+				samples: 1,
+				totalTime: 1,
+				timestamps: [],
+			},
+			{
+				name: optimizationBaseline.stage,
+				...optimizationBaseline,
+				averageTime: optimizationBaseline.time,
+				ops: 1,
+				stats: {} as any,
+				iterations: 1,
+				samples: 1,
+				totalTime: 1,
+				timestamps: [],
+			},
 		);
 		const ratioVsBaseline = formatRatio(stage.time / optimizationBaseline.time);
 		const improvement = percentageDifference(
@@ -326,8 +418,28 @@ const firstStage = optimizationStages[0];
 
 if (lastStage && firstStage) {
 	const totalSpeedup = calculateSpeedup(
-		{ name: lastStage.stage, ...lastStage, averageTime: lastStage.time, ops: 1, stats: {} as any, iterations: 1, samples: 1, totalTime: 1, timestamps: [] },
-		{ name: firstStage.stage, ...firstStage, averageTime: firstStage.time, ops: 1, stats: {} as any, iterations: 1, samples: 1, totalTime: 1, timestamps: [] }
+		{
+			name: lastStage.stage,
+			...lastStage,
+			averageTime: lastStage.time,
+			ops: 1,
+			stats: {} as any,
+			iterations: 1,
+			samples: 1,
+			totalTime: 1,
+			timestamps: [],
+		},
+		{
+			name: firstStage.stage,
+			...firstStage,
+			averageTime: firstStage.time,
+			ops: 1,
+			stats: {} as any,
+			iterations: 1,
+			samples: 1,
+			totalTime: 1,
+			timestamps: [],
+		},
 	);
 	console.log(`🚀 Total optimization: ${totalSpeedup.toFixed(2)}x faster!`);
 }

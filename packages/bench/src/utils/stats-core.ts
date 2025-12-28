@@ -36,14 +36,16 @@ export const median = (values: readonly number[]): number => {
 	const mid = Math.floor(sorted.length / 2);
 
 	if (sorted.length % 2 === 0) {
-		const lower = sorted[mid - 1];
-		const upper = sorted[mid];
-		if (lower === undefined || upper === undefined) return 0;
-		return (lower + upper) / 2;
+		const val1 = sorted[mid - 1];
+		const val2 = sorted[mid];
+		if (val1 !== undefined && val2 !== undefined) {
+			return (val1 + val2) / 2;
+		}
+		return 0;
 	}
 
-	const value = sorted[mid];
-	return value ?? 0;
+	const result = sorted[mid];
+	return result ?? 0;
 };
 
 /**
@@ -110,15 +112,18 @@ export const percentile = (values: readonly number[], p: number): number => {
 	const weight = index - lower;
 
 	if (lower === upper) {
-		const value = sorted[lower];
-		return value ?? 0;
+		const result = sorted[lower];
+		return result ?? 0;
 	}
 
-	const lowerValue = sorted[lower];
-	const upperValue = sorted[upper];
-	if (lowerValue === undefined || upperValue === undefined) return 0;
+	const lowerVal = sorted[lower];
+	const upperVal = sorted[upper];
 
-	return lowerValue * (1 - weight) + upperValue * weight;
+	if (lowerVal !== undefined && upperVal !== undefined) {
+		return lowerVal * (1 - weight) + upperVal * weight;
+	}
+
+	return 0;
 };
 
 /**

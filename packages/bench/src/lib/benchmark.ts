@@ -18,7 +18,27 @@ import { calculatePercentiles, max, mean, median, min, standardDeviation, varian
 export const calculateStats = (
 	command: string,
 	times: number[],
+	errorCount = 0,
+	totalRequestedRuns = times.length,
+	resource: {
+		readonly cpuUserMicros: number;
+		readonly cpuSystemMicros: number;
+		readonly maxRssBytes: number;
+		readonly fsReadBytes: number;
+		readonly fsWriteBytes: number;
+	} = {
+		cpuUserMicros: 0,
+		cpuSystemMicros: 0,
+		maxRssBytes: 0,
+		fsReadBytes: 0,
+		fsWriteBytes: 0,
+	},
 ): BenchmarkResult => {
+	const totalTimeMs = times.reduce((acc, t) => acc + t, 0);
+	const throughputOpsPerSec = totalTimeMs > 0 ? times.length / (totalTimeMs / 1000) : 0;
+	const totalRuns = totalRequestedRuns;
+	const errorRate = totalRuns > 0 ? errorCount / totalRuns : 0;
+
 	return {
 		command,
 		max: max(times),
@@ -26,10 +46,19 @@ export const calculateStats = (
 		median: median(times),
 		min: min(times),
 		percentiles: calculatePercentiles(times),
-		runs: times.length,
+		runs: totalRuns,
 		stddev: standardDeviation(times),
 		times,
+		totalTimeMs,
 		variance: variance(times),
+		throughputOpsPerSec,
+		errorCount,
+		errorRate,
+		cpuUserMs: resource.cpuUserMicros / 1000,
+		cpuSystemMs: resource.cpuSystemMicros / 1000,
+		maxRssBytes: resource.maxRssBytes,
+		fsReadBytes: resource.fsReadBytes,
+		fsWriteBytes: resource.fsWriteBytes,
 	};
 };
 
@@ -56,7 +85,7 @@ export const compareResults = (
 	const slowest = sortedByMean[sortedByMean.length - 1];
 
 	if (!fastest || !slowest) {
-		throw new Error("No results to compare");
+		throw new Error("Cannot compare results: at least one benchmark result is required.");
 	}
 
 	const speedups: Record<string, number> = {};

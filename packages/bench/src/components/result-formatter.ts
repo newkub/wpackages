@@ -1,16 +1,37 @@
-import { patterns } from "@w/design-pattern";
 import * as pc from "picocolors";
 import { COLORS, SYMBOLS } from "../constant/cli.const";
-import type { BenchmarkResult, BenchResult, BenchComparison, BenchSuite, ComparisonResult } from "../types/index";
-import { formatTime, formatOps, formatPercentage } from "./stats-formatters";
+import type { BenchComparison, BenchmarkResult, BenchResult, BenchSuite, ComparisonResult } from "../types/index";
+import { formatBytes, formatOps, formatPercentage, formatTime } from "./stats-formatters";
+
+const SEPARATOR_WIDTH = 60;
+const CHART_BAR_WIDTH = 50;
+const TABLE_COL_WIDTHS = [30, 12, 12, 12, 12, 10] as const;
+
+const sortByMean = (comparison: ComparisonResult): BenchmarkResult[] => {
+	return [...comparison.results].sort((a, b) => a.mean - b.mean);
+};
+
+const formatTableRow = (
+	row: readonly string[],
+	widths: readonly number[],
+	isHeader = false,
+): string => {
+	const formatted = row.map((cell, i) => cell.padEnd(widths[i] ?? 0)).join(" ");
+	return isHeader ? `${COLORS.bold(formatted)}\n` : `${formatted}\n`;
+};
 
 /**
  * Format benchmark result (CLI version)
  */
 export const formatBenchmarkResult = (result: BenchmarkResult): string => {
 	let output = `\n${pc.bold(result.command)}\n`;
-	output += `${pc.dim("─".repeat(60))}\n`;
+	output += `${pc.dim("─".repeat(SEPARATOR_WIDTH))}\n`;
 	output += `  Runs: ${result.runs}\n`;
+	output += `  Throughput: ${pc.cyan(formatOps(result.throughputOpsPerSec))}\n`;
+	output += `  Error rate: ${formatPercentage(result.errorRate)} (${result.errorCount}/${result.runs})\n`;
+	output += `  CPU: ${formatTime(result.cpuUserMs)} user / ${formatTime(result.cpuSystemMs)} system\n`;
+	output += `  Memory (max RSS): ${formatBytes(result.maxRssBytes)}\n`;
+	output += `  FS I/O: ${formatBytes(result.fsReadBytes)} read / ${formatBytes(result.fsWriteBytes)} write\n`;
 	output += `  Mean: ${pc.cyan(formatTime(result.mean))} ± ${formatTime(result.stddev)}\n`;
 	output += `  Median: ${formatTime(result.median)}\n`;
 	output += `  Range: ${formatTime(result.min)} ... ${formatTime(result.max)}\n`;
@@ -26,10 +47,9 @@ export const formatBenchmarkResult = (result: BenchmarkResult): string => {
 
 export const formatComparison = (comparison: ComparisonResult): string => {
 	let output = `\n${COLORS.bold("Benchmark Comparison")}\n`;
-	output += `${COLORS.dim("─".repeat(60))}\n\n`;
+	output += `${COLORS.dim("─".repeat(SEPARATOR_WIDTH))}\n\n`;
 
-	// Sort by mean time
-	const sorted = [...comparison.results].sort((a, b) => a.mean - b.mean);
+	const sorted = sortByMean(comparison);
 
 	for (const result of sorted) {
 		const speedup = comparison.speedups[result.command];
@@ -64,13 +84,13 @@ export const formatComparison = (comparison: ComparisonResult): string => {
 
 export const formatTable = (comparison: ComparisonResult): string => {
 	const headers = ["Command", "Mean", "StdDev", "Min", "Max", "Speedup"];
-	const colWidths = [30, 12, 12, 12, 12, 10];
+	const colWidths = TABLE_COL_WIDTHS;
 
 	let output = "\n";
 	output += formatTableRow(headers, colWidths, true);
 	output += `${COLORS.dim("─".repeat(colWidths.reduce((a, b) => a + b, 0) + headers.length + 1))}\n`;
 
-	const sorted = [...comparison.results].sort((a, b) => a.mean - b.mean);
+	const sorted = sortByMean(comparison);
 
 	for (const result of sorted) {
 		const speedup = comparison.speedups[result.command];
@@ -91,27 +111,18 @@ export const formatTable = (comparison: ComparisonResult): string => {
 	return output;
 };
 
-const formatTableRow = (
-	row: string[],
-	widths: number[],
-	isHeader = false,
-): string => {
-	const formatted = row.map((cell, i) => cell.padEnd(widths[i] || 0)).join(" ");
-	return isHeader ? `${COLORS.bold(formatted)}\n` : `${formatted}\n`;
-};
-
 export const formatJson = (comparison: ComparisonResult): string => {
 	return JSON.stringify(comparison, null, 2);
 };
 
 export const formatChart = (comparison: ComparisonResult): string => {
 	const maxMean = Math.max(...comparison.results.map((r) => r.mean));
-	const barWidth = 50;
+	const barWidth = CHART_BAR_WIDTH;
 
 	let output = `\n${pc.bold("Performance Chart")}\n`;
-	output += `${pc.dim("─".repeat(60))}\n\n`;
+	output += `${pc.dim("─".repeat(SEPARATOR_WIDTH))}\n\n`;
 
-	const sorted = [...comparison.results].sort((a, b) => a.mean - b.mean);
+	const sorted = sortByMean(comparison);
 
 	for (const result of sorted) {
 		const barLength = Math.round((result.mean / maxMean) * barWidth);
@@ -128,14 +139,16 @@ export const formatChart = (comparison: ComparisonResult): string => {
 
 export type ComparisonFormat = "default" | "table" | "json" | "chart";
 
-const selectFormatter = patterns.behavioral.conditionalSelector.createSelector<ComparisonFormat, (comparison: ComparisonResult) => string>(
-	[
-		{ condition: (format) => format === "table", result: formatTable },
-		{ condition: (format) => format === "json", result: formatJson },
-		{ condition: (format) => format === "chart", result: formatChart },
-	],
-	formatComparison, // Default formatter
-);
+const formatterMap: Record<Exclude<ComparisonFormat, "default">, (comparison: ComparisonResult) => string> = {
+	table: formatTable,
+	json: formatJson,
+	chart: formatChart,
+} as const;
+
+const selectFormatter = (format: ComparisonFormat): (comparison: ComparisonResult) => string => {
+	if (format === "default") return formatComparison;
+	return formatterMap[format];
+};
 
 /**
  * Master formatter for benchmark comparisons

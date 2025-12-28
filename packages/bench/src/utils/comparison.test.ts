@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { calculateRelativePerformance, calculateSpeedup, formatRatio, percentageDifference } from "./comparison.utils";
 import type { BenchResult } from "../types/index";
+import { calculateRelativePerformance, calculateSpeedup, formatRatio, percentageDifference } from "./comparison.utils";
 
 const createBenchResult = (name: string, averageTime: number): BenchResult => ({
 	name,

@@ -2,12 +2,21 @@ export type BenchmarkResult = {
 	command: string;
 	runs: number;
 	times: number[]; // milliseconds
+	totalTimeMs: number;
 	mean: number;
 	median: number;
 	min: number;
 	max: number;
 	stddev: number;
 	variance: number;
+	throughputOpsPerSec: number;
+	errorCount: number;
+	errorRate: number;
+	cpuUserMs: number;
+	cpuSystemMs: number;
+	maxRssBytes: number;
+	fsReadBytes: number;
+	fsWriteBytes: number;
 	percentiles: {
 		p25: number;
 		p50: number;
@@ -21,6 +30,7 @@ export type BenchmarkResult = {
 export type BenchmarkOptions = {
 	warmup?: number; // warmup runs
 	runs?: number; // number of benchmark runs
+	concurrency?: number; // parallel processes per iteration
 	prepare?: string; // command to run before each benchmark
 	cleanup?: string; // command to run after each benchmark
 	shell?: string; // shell to use
