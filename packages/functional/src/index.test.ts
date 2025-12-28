@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { Effect, Layer } from ".";
+import { describe, it, expect, vi } from "vitest";
+import { Effect, Layer, left, right } from ".";
 
 describe("Effect System", () => {
   it("succeed should resolve with the value", async () => {
@@ -64,5 +64,43 @@ describe("Effect System", () => {
       return a + b;
     });
     await expect(Effect.runPromiseEither(effect)).resolves.toEqual({ _tag: "Right", right: 3 });
+  });
+
+  it("mapError should transform the error channel", async () => {
+    const effect = Effect.fail("error");
+    const mapped = Effect.mapError(effect, (e) => `mapped ${e}`);
+    await expect(Effect.runPromiseEither(mapped)).resolves.toEqual(left("mapped error"));
+  });
+
+  it("tap should perform a side effect without changing the value", async () => {
+    const spy = vi.fn();
+    const effect = Effect.succeed(42);
+    const tapped = Effect.tap(effect, spy);
+    await expect(Effect.runPromiseEither(tapped)).resolves.toEqual(right(42));
+    expect(spy).toHaveBeenCalledWith(42);
+  });
+
+  it("tapError should perform a side effect on failure", async () => {
+    const spy = vi.fn();
+    const effect = Effect.fail("error");
+    const tapped = Effect.tapError(effect, spy);
+    await expect(Effect.runPromiseEither(tapped)).resolves.toEqual(left("error"));
+    expect(spy).toHaveBeenCalledWith("error");
+  });
+
+  it("match should handle both success and failure cases", async () => {
+    const successEffect = Effect.succeed(10);
+    const failureEffect = Effect.fail("failure");
+
+    const matcher = {
+      onSuccess: (n: number) => `Success: ${n}`,
+      onFailure: (e: string) => `Failure: ${e}`,
+    };
+
+    const matchedSuccess = Effect.match(successEffect, matcher);
+    const matchedFailure = Effect.match(failureEffect, matcher);
+
+    await expect(Effect.runPromiseEither(matchedSuccess)).resolves.toEqual(right("Success: 10"));
+    await expect(Effect.runPromiseEither(matchedFailure)).resolves.toEqual(right("Failure: failure"));
   });
 });

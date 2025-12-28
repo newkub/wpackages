@@ -1,5 +1,7 @@
-import { Either, left, right, isLeft } from "./Either";
-export * from "./Either";
+import { left, right, isLeft, isRight } from "./types/Either";
+import type { Either } from "./types/Either";
+export * from "./types/Either";
+export * from "./utils";
 
 export function pipe<A>(a: A): A;
 export function pipe<A, B>(a: A, ab: (a: A) => B): B;
@@ -84,7 +86,7 @@ const flatMap = <A, B, E, R, E2, R2>(self: Effect<A, E, R>, f: (a: A) => Effect<
 
 export type Layer<R, E = any> = Effect<R, E, never>;
 
-const merge = <R1, E1, R2, E2>(layer1: Layer<R1, E1>, layer2: Layer<R2, E2>): Layer<R1 & R2, E1 | E2> =>
+const merge = <R1 extends object, E1, R2 extends object, E2>(layer1: Layer<R1, E1>, layer2: Layer<R2, E2>): Layer<R1 & R2, E1 | E2> =>
     flatMap(layer1, (r1) => flatMap(layer2, (r2) => succeed({ ...r1, ...r2 })));
 
 const succeedLayer = <T>(tag: Tag<T>, service: T): Layer<{[K in symbol]: T}, never> =>
@@ -113,16 +115,47 @@ const fail = <E>(error: E): Effect<never, E, never> => () => Promise.resolve(lef
 const map = <A, B, E, R>(self: Effect<A, E, R>, f: (a: A) => B): Effect<B, E, R> =>
     async (ctx) => {
         const eitherA = await runPromiseEither(self, ctx);
-        if (isLeft(eitherA)) {
-            return eitherA;
-        }
-        return right(f(eitherA.right));
+        return isLeft(eitherA) ? eitherA : right(f(eitherA.right));
     };
+
+const mapError = <A, E, E2, R>(self: Effect<A, E, R>, f: (e: E) => E2): Effect<A, E2, R> =>
+    async (ctx) => {
+        const eitherA = await runPromiseEither(self, ctx);
+        return isRight(eitherA) ? eitherA : left(f(eitherA.left));
+    };
+
+const tap = <A, E, R>(self: Effect<A, E, R>, f: (a: A) => void): Effect<A, E, R> =>
+    map(self, (a) => {
+        f(a);
+        return a;
+    });
+
+const tapError = <A, E, R>(self: Effect<A, E, R>, f: (e: E) => void): Effect<A, E, R> =>
+    mapError(self, (e) => {
+        f(e);
+        return e;
+    });
+
+const match = <A, E, R, B>(self: Effect<A, E, R>, options: { readonly onSuccess: (a: A) => B; readonly onFailure: (e: E) => B }): Effect<B, never, R> =>
+    async (ctx) => {
+        const eitherA = await runPromiseEither(self, ctx);
+        if (isLeft(eitherA)) {
+            return right(options.onFailure(eitherA.left));
+        }
+        return right(options.onSuccess(eitherA.right));
+    };
+
+const fold = match;
 
 export const Effect = {
     provideLayer,
     flatMap,
     map,
+    mapError,
+    tap,
+    tapError,
+    match,
+    fold,
     fail,
     succeed,
     fromPromise,
