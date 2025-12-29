@@ -20,9 +20,7 @@ export const signal = <T>(initial: T): Signal<T> => {
 
 	const set: Signal<T>["set"] = (next) => {
 		const nextValue =
-			typeof next === "function"
-				? (next as (prev: T) => T)(value)
-				: next;
+			typeof next === "function" ? (next as (prev: T) => T)(value) : next;
 
 		if (Object.is(nextValue, value)) return;
 		value = nextValue;

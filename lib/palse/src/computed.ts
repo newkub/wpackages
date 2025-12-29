@@ -8,7 +8,9 @@ type WritableComputedOptions<T> = {
 };
 
 export function computed<T>(getter: () => T): ComputedRef<T>;
-export function computed<T>(options: WritableComputedOptions<T>): WritableComputedRef<T>;
+export function computed<T>(
+	options: WritableComputedOptions<T>,
+): WritableComputedRef<T>;
 export function computed<T>(
 	getterOrOptions: (() => T) | WritableComputedOptions<T>,
 ): ComputedRef<T> | WritableComputedRef<T> {

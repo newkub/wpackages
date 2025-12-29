@@ -1,7 +1,11 @@
-
 import { effect } from "./effect";
 import { signal } from "./signal";
-import type { OnCleanup, WatchEffectOptions, WatchHandle, WatchOptions } from "./types";
+import type {
+	OnCleanup,
+	WatchEffectOptions,
+	WatchHandle,
+	WatchOptions,
+} from "./types";
 
 const traverse = (value: unknown, depth: number, seen: Set<unknown>): void => {
 	if (depth <= 0) return;
@@ -65,7 +69,8 @@ export const watch = <T>(
 	options?: WatchOptions,
 ): WatchHandle => {
 	const sourceIsFn = typeof source === "function";
-	const sourceIsObject = !sourceIsFn && typeof source === "object" && source !== null;
+	const sourceIsObject =
+		!sourceIsFn && typeof source === "object" && source !== null;
 	const getter: () => T = sourceIsFn ? (source as () => T) : () => source;
 
 	const tick = signal(0);
@@ -78,7 +83,11 @@ export const watch = <T>(
 
 	const deep = options?.deep ?? sourceIsObject;
 	const traverseDepth =
-		deep === true ? Number.POSITIVE_INFINITY : typeof deep === "number" ? deep : 0;
+		deep === true
+			? Number.POSITIVE_INFINITY
+			: typeof deep === "number"
+				? deep
+				: 0;
 
 	const stopEffect = effect(() => {
 		tick.get();
@@ -152,4 +161,3 @@ export const watch = <T>(
 
 	return handle;
 };
-

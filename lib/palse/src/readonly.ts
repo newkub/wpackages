@@ -1,4 +1,3 @@
-
 import { __internal } from "./effect";
 
 type Subscriber = () => void;
@@ -52,4 +51,3 @@ export const readonly = <T extends object>(target: T): T => {
 	readonlyCache.set(target, proxy);
 	return proxy;
 };
-

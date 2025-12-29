@@ -1,4 +1,3 @@
-
 import { __internal } from "./effect";
 
 type Subscriber = () => void;
@@ -69,4 +68,3 @@ export const reactive = <T extends object>(target: T): T => {
 	reactiveCache.set(target, proxy);
 	return proxy;
 };
-
