@@ -1,12 +1,12 @@
 import { intro, note, outro, spinner } from "@clack/prompts";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import pc from "picocolors";
 import { ensureDirectoryExists } from "../lib/clack-prompt";
 import { ConfigService } from "../lib/config";
-import { TemplateService } from "../services";
+import { ScriptRunnerService, SystemInfoService, TemplateService } from "../services";
 
-export const syncToLocal = async () => {
+export const syncToLocal = async (options: { dryRun?: boolean }) => {
 	intro(pc.bgCyan(pc.black(" 📥 Sync to Local ")));
 
 	const config = await ConfigService.load();
@@ -14,6 +14,10 @@ export const syncToLocal = async () => {
 	if (config.files.length === 0) {
 		outro(pc.yellow("⚠️  No files to sync"));
 		process.exit(0);
+	}
+
+	if (config.scripts?.before) {
+		await ScriptRunnerService.run(config.scripts.before);
 	}
 
 	const s = spinner();
@@ -31,17 +35,32 @@ export const syncToLocal = async () => {
 		const sourceDir = join(file.source, "..");
 		ensureDirectoryExists(sourceDir);
 
-		const templateContent = readFileSync(file.target, "utf-8");
-		const renderedContent = TemplateService.render(
-			templateContent,
-			config.templateData ?? {},
-		);
-		writeFileSync(file.source, renderedContent);
+		if (options.dryRun) {
+			// Skip file operations in dry run mode
+		} else if (config.mode === "symlink") {
+			if (existsSync(file.source)) {
+				unlinkSync(file.source);
+			}
+			symlinkSync(file.target, file.source);
+		} else {
+			const templateContent = readFileSync(file.target, "utf-8");
+			const systemInfo = SystemInfoService.getSystemInfo();
+			const templateData = { ...systemInfo, ...config.templateData };
+			const renderedContent = TemplateService.render(
+				templateContent,
+				templateData,
+			);
+			writeFileSync(file.source, renderedContent);
+		}
 
 		syncedFiles.push(file.source);
 	}
 
-	s.stop(`✅ Sync to local completed`);
+	s.stop(options.dryRun ? "✅ Dry run completed" : "✅ Sync to local completed");
+
+	if (config.scripts?.after) {
+		await ScriptRunnerService.run(config.scripts.after);
+	}
 
 	if (syncedFiles.length > 0) {
 		note(syncedFiles.map(f => `  ${pc.green("✔")} ${f}`).join("\n"), "Synced files");

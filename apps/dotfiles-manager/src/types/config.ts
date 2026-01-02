@@ -22,6 +22,11 @@ export const configSchema = z.object({
 	editor: z.string().optional().describe("Editor to use for opening files"),
 	initialized: z.boolean().default(false).describe("Whether initialized"),
 	templateData: z.record(z.string(), z.any()).optional().describe("Data for template rendering"),
+	mode: z.enum(["copy", "symlink"]).default("copy").describe("Sync mode: copy or symlink"),
+	scripts: z.object({
+		before: z.array(z.string()).optional().describe("Commands to run before sync"),
+		after: z.array(z.string()).optional().describe("Commands to run after sync"),
+	}).optional().describe("Custom scripts"),
 });
 
 export type Config = z.infer<typeof configSchema>;

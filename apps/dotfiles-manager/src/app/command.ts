@@ -31,6 +31,7 @@ export const runCommander = () => {
 	program
 		.command("sync-local")
 		.description("Sync dotfiles to local system")
+		.option("--dry-run", "Simulate sync without making changes")
 		.action(syncLocal);
 
 	program

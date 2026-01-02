@@ -62,7 +62,7 @@ export const runDotfilesManager = async () => {
 			await open();
 			break;
 		case "sync-local":
-			await syncToLocal();
+			await syncToLocal({});
 			break;
 		case "sync-remote":
 			await syncToRemote();

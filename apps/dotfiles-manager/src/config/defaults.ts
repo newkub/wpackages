@@ -10,6 +10,7 @@ export const DEFAULT_CONFIG: Config = {
 	files: [],
 	initialized: false,
 	templateData: {},
+	mode: "copy",
 } as const;
 
 /**

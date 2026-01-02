@@ -40,6 +40,7 @@ export const init = async () => {
 		files: [],
 		initialized: true,
 		remote: remoteUrl ? { url: remoteUrl as string, branch: "main" } : undefined,
+		mode: "copy",
 	};
 
 	ensureDirectoryExists(config.dotfilesDir);
