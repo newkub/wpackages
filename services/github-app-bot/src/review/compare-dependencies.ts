@@ -17,7 +17,7 @@ const getFileContent = async (args: {
 		if (!response.content) return null;
 		return Buffer.from(response.content, "base64").toString("utf8");
 	} catch {
-			// biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
+		// biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
 		// File might not exist in this ref, which is fine
 		return null;
 	}

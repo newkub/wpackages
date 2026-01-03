@@ -3,6 +3,8 @@
  * Disallow console.log statements in production code
  */
 
+import { findNodesByType } from "@wpackages/parser";
+import type { CallExpression, MemberExpression, Identifier } from "oxc-parser";
 import { createMessage, createRule } from "../components";
 import type { LintMessage, Rule } from "../types";
 
@@ -15,31 +17,39 @@ export const noConsole: Rule = createRule(
 		fixable: false,
 	},
 	(context) => {
-		const { sourceCode } = context;
 		const messages: LintMessage[] = [];
+		const { ast } = context;
 
-		// Simple regex-based detection (can be enhanced with AST traversal)
-		const consoleRegex = /console\.(log|warn|error|info|debug|trace)\s*\(/g;
-		const lines = sourceCode.split("\n");
+		if (!ast) {
+			return messages;
+		}
 
-		for (let i = 0; i < lines.length; i++) {
-			const line = lines[i];
-			if (!line) continue;
+		const consoleCalls = findNodesByType(ast, "CallExpression") as CallExpression[];
 
-			let match: RegExpExecArray | null;
-			while (true) {
-				match = consoleRegex.exec(line);
-				if (match === null) break;
-				messages.push(
-					createMessage(
-						"no-console",
-						`Unexpected console.${match[1]}() statement`,
-						"warning",
-						i + 1,
-						match.index,
-					),
-				);
+		for (const node of consoleCalls) {
+			if (node.callee?.type !== "MemberExpression") {
+				continue;
 			}
+			const callee = node.callee as MemberExpression;
+
+			if (callee.object?.type !== "Identifier" || (callee.object as Identifier).name !== "console") {
+				continue;
+			}
+
+			if (callee.property?.type !== "Identifier") {
+				continue;
+			}
+			const member = callee.property as Identifier;
+
+			messages.push(
+				createMessage(
+					"no-console",
+					`Unexpected console.${member.name}() statement`,
+					"warning",
+					node.loc.start.line,
+					node.loc.start.column
+				)
+			);
 		}
 
 		return messages;

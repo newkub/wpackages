@@ -182,7 +182,7 @@ if (fastestBuilder) {
 		const bar = "█".repeat(Math.min(50, Math.round(tool.averageTime * 3)));
 
 		console.log(`${tool.name.padEnd(12)} ${bar}`);
-		console.log(`${''.padEnd(12)} ${tool.averageTime}s (${comparison.ratio})`);
+		console.log(`${"".padEnd(12)} ${tool.averageTime}s (${comparison.ratio})`);
 	}
 }
 

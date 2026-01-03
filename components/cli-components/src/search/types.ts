@@ -1,7 +1,7 @@
 export interface SearchOption<T> {
-    readonly value: T;
-    readonly label: string;
-    readonly description?: string;
+	readonly value: T;
+	readonly label: string;
+	readonly description?: string;
 }
 
 export interface SearchOptions<T> {

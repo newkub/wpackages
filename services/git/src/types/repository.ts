@@ -1,26 +1,18 @@
 import { Effect, Option } from "effect";
 import type { GitError } from "../errors";
+import type { GitBranch, GitCommit, GitRemote, GitStash, GitStatus, GitSubmodule, GitWorktree } from "./objects";
 import type {
-	GitCommit,
-	GitBranch,
-	GitStatus,
-	GitStash,
-	GitWorktree,
-	GitSubmodule,
-	GitRemote,
-} from "./objects";
-import type {
-	GitReflogEntry,
-	GitDiff,
-	GitBlameLine,
-	GitHook,
-	GitStats,
 	CommitValidation,
-	GitLFSFile,
+	GitBlameLine,
 	GitConflict,
-	GitGrepResult,
+	GitDiff,
 	GitFileHistory,
+	GitGrepResult,
+	GitHook,
+	GitLFSFile,
+	GitReflogEntry,
 	GitSignature,
+	GitStats,
 } from "./operations";
 
 // Git repository using Effect-TS
@@ -146,7 +138,10 @@ export type GitRepository = {
 	readonly continueMerge: () => Effect.Effect<void, GitError>;
 
 	// Search operations
-	readonly grep: (pattern: string, options?: { ignoreCase?: boolean; lineNumber?: boolean }) => Effect.Effect<readonly GitGrepResult[], GitError>;
+	readonly grep: (
+		pattern: string,
+		options?: { ignoreCase?: boolean; lineNumber?: boolean },
+	) => Effect.Effect<readonly GitGrepResult[], GitError>;
 	readonly searchCommits: (query: string) => Effect.Effect<readonly GitCommit[], GitError>;
 
 	// File history

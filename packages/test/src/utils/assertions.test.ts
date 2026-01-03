@@ -149,71 +149,71 @@ describe("Assertions", () => {
 	});
 
 	describe("toBeType", () => {
-			it("should pass for correct types", () => {
-				expect("hello").toBeType("string");
-				expect(123).toBeType("number");
-				expect({}).toBeType("object");
-			});
-
-			it("should fail for incorrect types", () => {
-				expect(() => expect(123).toBeType("string")).toThrow();
-			});
+		it("should pass for correct types", () => {
+			expect("hello").toBeType("string");
+			expect(123).toBeType("number");
+			expect({}).toBeType("object");
 		});
 
-		describe("toBeInstanceOf", () => {
-			class MyClass {}
-			it("should pass for correct instance", () => {
-				expect(new MyClass()).toBeInstanceOf(MyClass);
-			});
+		it("should fail for incorrect types", () => {
+			expect(() => expect(123).toBeType("string")).toThrow();
+		});
+	});
 
-			it("should fail for incorrect instance", () => {
-				expect(() => expect({}).toBeInstanceOf(MyClass)).toThrow();
-			});
+	describe("toBeInstanceOf", () => {
+		class MyClass {}
+		it("should pass for correct instance", () => {
+			expect(new MyClass()).toBeInstanceOf(MyClass);
 		});
 
-		describe("toThrow", () => {
-			it("should pass if function throws", () => {
-				expect(() => {
-					throw new Error("boom");
-				}).toThrow();
-			});
+		it("should fail for incorrect instance", () => {
+			expect(() => expect({}).toBeInstanceOf(MyClass)).toThrow();
+		});
+	});
 
-			it("should fail if function does not throw", () => {
-				expect(() => expect(() => {}).toThrow()).toThrow();
-			});
+	describe("toThrow", () => {
+		it("should pass if function throws", () => {
+			expect(() => {
+				throw new Error("boom");
+			}).toThrow();
 		});
 
-		describe("toThrowAsync", () => {
-			it("should pass if async function throws", async () => {
-				await expect(async () => {
-					throw new Error("boom");
-				}).toThrowAsync();
-			});
+		it("should fail if function does not throw", () => {
+			expect(() => expect(() => {}).toThrow()).toThrow();
+		});
+	});
 
-			it("should fail if async function does not throw", async () => {
-				await expect(expect(async () => {}).toThrowAsync()).toReject();
-			});
+	describe("toThrowAsync", () => {
+		it("should pass if async function throws", async () => {
+			await expect(async () => {
+				throw new Error("boom");
+			}).toThrowAsync();
 		});
 
-		describe("toResolve", () => {
-			it("should pass if promise resolves", async () => {
-				await expect(Promise.resolve(1)).toResolve();
-			});
+		it("should fail if async function does not throw", async () => {
+			await expect(expect(async () => {}).toThrowAsync()).toReject();
+		});
+	});
 
-			it("should fail if promise rejects", async () => {
-				await expect(expect(Promise.reject(1)).toResolve()).toReject();
-			});
+	describe("toResolve", () => {
+		it("should pass if promise resolves", async () => {
+			await expect(Promise.resolve(1)).toResolve();
 		});
 
-		describe("toReject", () => {
-			it("should pass if promise rejects", async () => {
-				await expect(Promise.reject(1)).toReject();
-			});
-
-			it("should fail if promise resolves", async () => {
-				await expect(expect(Promise.resolve(1)).toReject()).toReject();
-			});
+		it("should fail if promise rejects", async () => {
+			await expect(expect(Promise.reject(1)).toResolve()).toReject();
 		});
+	});
+
+	describe("toReject", () => {
+		it("should pass if promise rejects", async () => {
+			await expect(Promise.reject(1)).toReject();
+		});
+
+		it("should fail if promise resolves", async () => {
+			await expect(expect(Promise.resolve(1)).toReject()).toReject();
+		});
+	});
 
 	describe("not", () => {
 		it("should negate toBe", () => {

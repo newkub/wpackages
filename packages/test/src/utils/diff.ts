@@ -22,14 +22,14 @@ export const createDiff = (expected: unknown, actual: unknown): string => {
 	}
 
 	// For objects and arrays, just show the formatted values with labels.
-	if (typeof expected === 'object' && typeof actual === 'object' && expected !== null && actual !== null) {
+	if (typeof expected === "object" && typeof actual === "object" && expected !== null && actual !== null) {
 		return `\n\n${green(`- Expected`)}\n${red(`+ Received`)}\n\n${green(`- ${expectedStr}`)}\n${red(`+ ${actualStr}`)}`;
 	}
 
 	// Basic line-by-line diff for strings
-	if (typeof expected === 'string' && typeof actual === 'string') {
-		const expLines = expected.split('\n');
-		const actLines = actual.split('\n');
+	if (typeof expected === "string" && typeof actual === "string") {
+		const expLines = expected.split("\n");
+		const actLines = actual.split("\n");
 		const maxLines = Math.max(expLines.length, actLines.length);
 		let diff = "";
 		let hasDiff = false;

@@ -1,7 +1,7 @@
-import { levenshteinDistance } from './levenshtein-distance';
+import { levenshteinDistance } from "./levenshtein-distance";
 
-const str1 = 'kitten';
-const str2 = 'sitting';
+const str1 = "kitten";
+const str2 = "sitting";
 
 const distance = levenshteinDistance(str1, str2);
 

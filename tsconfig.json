@@ -2,14 +2,16 @@
 	"compilerOptions": {
 		"allowUnreachableCode": false,
 		"allowUnusedLabels": false,
-		"baseUrl": ".",
 		// Path Aliases for Monorepo
 		"paths": {
 			"@wpackages/*": [
-				"packages/*/src",
-				"utils/*/src",
-				"services/*/src",
-				"apps/*/src"
+				"./packages/*/src",
+				"./utils/*/src",
+				"./services/*/src",
+				"./apps/*/src"
+			],
+			"@w/*": [
+				"./rules/*"
 			]
 		},
 		"composite": false,
@@ -23,10 +25,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"incremental": false,
 		"isolatedModules": true,
-		"lib": [
-			"ESNext",
-			"DOM"
-		],
+		"lib": ["ESNext", "DOM"],
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"noEmit": false,
@@ -46,9 +45,7 @@
 		"useUnknownInCatchVariables": true,
 		// Language and Environment
 		"target": "ESNext",
-		"types": [
-			"bun-types"
-		]
+		"types": ["bun-types"]
 	},
 	"exclude": [
 		"node_modules",

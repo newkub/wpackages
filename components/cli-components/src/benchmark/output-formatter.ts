@@ -2,17 +2,17 @@ import { formatChart, formatComparison, formatJson, formatTable } from "../compo
 import type { BenchComparison } from "../types/index";
 
 export function formatOutput(
-    comparison: BenchComparison,
-    outputType: "json" | "table" | "chart" | "comparison",
+	comparison: BenchComparison,
+	outputType: "json" | "table" | "chart" | "comparison",
 ): string {
-    switch (outputType) {
-        case "json":
-            return formatJson(comparison);
-        case "table":
-            return formatTable(comparison);
-        case "chart":
-            return formatChart(comparison);
-        default:
-            return formatComparison(comparison);
-    }
+	switch (outputType) {
+		case "json":
+			return formatJson(comparison);
+		case "table":
+			return formatTable(comparison);
+		case "chart":
+			return formatChart(comparison);
+		default:
+			return formatComparison(comparison);
+	}
 }

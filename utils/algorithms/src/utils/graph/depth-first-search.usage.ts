@@ -1,16 +1,16 @@
-import { depthFirstSearch } from './depth-first-search';
-import { type Graph } from '@wpackages/data-structure';
+import { type Graph } from "@wpackages/data-structure";
+import { depthFirstSearch } from "./depth-first-search";
 
 const graph: Graph<string> = new Map([
-  ['A', ['B', 'C']],
-  ['B', ['D', 'E']],
-  ['C', ['F']],
-  ['D', []],
-  ['E', ['F']],
-  ['F', []],
+	["A", ["B", "C"]],
+	["B", ["D", "E"]],
+	["C", ["F"]],
+	["D", []],
+	["E", ["F"]],
+	["F", []],
 ]);
 
-const startNode = 'A';
+const startNode = "A";
 const traversalPath = depthFirstSearch(graph, startNode);
 
 console.log(`DFS traversal starting from ${startNode}:`, traversalPath);

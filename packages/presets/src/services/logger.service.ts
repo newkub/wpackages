@@ -1,3 +1,14 @@
-import { Effect } from "effect";
+import { Effect, Context, Layer } from "effect";
 
-export const log = (message: string): Effect.Effect<void, never> => Effect.sync(() => console.log(message));
+export interface Logger {
+	readonly log: (message: string) => Effect.Effect<void, never>;
+}
+
+export const Logger = Context.Tag<Logger>("@wpackages/presets/Logger");
+
+export const LoggerLive = Layer.succeed(
+	Logger,
+	{
+		log: (message: string) => Effect.sync(() => console.log(message)),
+	}
+);

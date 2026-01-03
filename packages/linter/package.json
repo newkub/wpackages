@@ -9,7 +9,6 @@
 	"scripts": {
 		"watch": "bun lint && bun watch && bun test",
 		"start": "bun --watch dev && vitest:ui",
-		"postinstall": "bun -e \"process.exit(0)\"",
 		"dev": "bun run src/index.ts",
 		"lint": "oxlint --fix --type-aware",
 		"build": "tsdown",
@@ -25,6 +24,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "^25.0.3",
+		"oxc-parser": "0.106.0",
 		"oxlint": "^1.36.0",
 		"tsdown": "^0.18.4",
 		"typescript": "^5.9.3",

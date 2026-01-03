@@ -11,7 +11,7 @@ export type WatchEvent =
 
 export const watch = (
 	path: string,
-			options?: WatchOptions,
+	options?: WatchOptions,
 ): Stream.Stream<WatchEvent, Error> =>
 	Stream.async<WatchEvent, Error>((emit) => {
 		const watcher = chokidar.watch(path, {

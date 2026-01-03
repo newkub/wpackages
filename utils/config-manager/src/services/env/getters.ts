@@ -102,8 +102,8 @@ export const getArray = <T, K extends keyof T>(
 	const value = get(envData, schema, key);
 	return value
 		? String(value)
-				.split(separator)
-				.map((v) => v.trim())
+			.split(separator)
+			.map((v) => v.trim())
 		: [];
 };
 

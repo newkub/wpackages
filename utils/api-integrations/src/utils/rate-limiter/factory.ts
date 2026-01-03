@@ -1,9 +1,9 @@
 import { patterns } from "@w/design-pattern";
 import type { RateLimitConfig, RateLimitStrategy } from "../../types";
+import { DEFAULT_RATE_LIMIT_CONFIG } from "./config";
 import { FixedWindowRateLimiter } from "./strategies/fixed-window";
 import { SlidingWindowRateLimiter } from "./strategies/sliding-window";
 import { TokenBucketRateLimiter } from "./strategies/token-bucket";
-import { DEFAULT_RATE_LIMIT_CONFIG } from "./config";
 
 const { selectFunctionByCondition } = patterns.behavioral.conditionalSelector;
 

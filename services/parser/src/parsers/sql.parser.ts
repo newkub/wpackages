@@ -17,33 +17,33 @@ export type SQLParseOptions = ParseOptionsBase;
  * SQL Parser implementation
  */
 export const sqlParser: Parser<SQLAST> = {
-    name: "sql",
-    supportedLanguages: ["sql"] as const,
+	name: "sql",
+	supportedLanguages: ["sql"] as const,
 
-    parse: (
-        source: string,
-        filename: string,
-        _options: ParseOptionsBase = {},
-    ): Result.Result<GenericParseResult<SQLAST>, string> => {
-        try {
-            const ast = parse(source);
+	parse: (
+		source: string,
+		filename: string,
+		_options: ParseOptionsBase = {},
+	): Result.Result<GenericParseResult<SQLAST>, string> => {
+		try {
+			const ast = parse(source);
 
-            return Result.ok(
-                createParseResult(ast, "sql" as Language, filename, source.length),
-            );
-        } catch (error) {
-            return Result.err(createParseErrorMessage("SQL", filename, error));
-        }
-    },
+			return Result.ok(
+				createParseResult(ast, "sql" as Language, filename, source.length),
+			);
+		} catch (error) {
+			return Result.err(createParseErrorMessage("SQL", filename, error));
+		}
+	},
 };
 
 /**
  * Parse SQL source
  */
 export const parseSQL = (
-    source: string,
-    filename = "input.sql",
-    options: SQLParseOptions = {},
+	source: string,
+	filename = "input.sql",
+	options: SQLParseOptions = {},
 ): Result.Result<GenericParseResult<SQLAST>, string> => {
-    return sqlParser.parse(source, filename, options);
+	return sqlParser.parse(source, filename, options);
 };

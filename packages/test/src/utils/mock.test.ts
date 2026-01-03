@@ -1,3 +1,6 @@
+// @ts-nocheck
+console.log('[mock.test.ts] Checking for global: W_IS_PRELOADED =', globalThis.W_IS_PRELOADED);
+
 import { expect } from "./assertions";
 
 describe("Mock utilities", () => {

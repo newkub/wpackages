@@ -1,7 +1,7 @@
-import { longestCommonSubsequence } from './longest-common-subsequence';
+import { longestCommonSubsequence } from "./longest-common-subsequence";
 
-const string1 = 'AGGTAB';
-const string2 = 'GXTXAYB';
+const string1 = "AGGTAB";
+const string2 = "GXTXAYB";
 
 const lcs = longestCommonSubsequence(string1, string2);
 

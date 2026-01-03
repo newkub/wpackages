@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { percentile, calculatePercentiles } from "../stats-core";
+import { calculatePercentiles, percentile } from "../stats-core";
 
 describe("percentile", () => {
 	it("should calculate 50th percentile (median)", () => {

@@ -1,7 +1,7 @@
-import { History } from './types';
-import { createHistory } from './history';
-import { createBrowserSource } from './sources/browser';
+import { createHistory } from "./history";
+import { createBrowserSource } from "./sources/browser";
+import { History } from "./types";
 
 export function createBrowserHistory(): History {
-  return createHistory(createBrowserSource());
+	return createHistory(createBrowserSource());
 }

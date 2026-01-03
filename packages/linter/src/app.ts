@@ -9,7 +9,7 @@ import { DEFAULT_CONFIG } from "./config";
 import { ALL_RULES } from "./rules";
 import { findFilesInMultipleDirs } from "./services/file-finder.service";
 import { lintFiles } from "./services/linter.service";
-import type { LinterOptions, LintReport, FileSystemError, SemanticLinterError } from "./types";
+import type { FileSystemError, LinterOptions, LintReport, SemanticLinterError } from "./types";
 
 /**
  * Lint configuration options
@@ -30,48 +30,49 @@ export type LintOptions = {
  */
 export const lint = (
 	options: LintOptions,
-): Effect.Effect<LintReport, FileSystemError | SemanticLinterError> => Effect.gen(function* (_) {
-    const {
-        rules: customRules,
-        fix = false,
-        silent = false,
-        ignore = DEFAULT_CONFIG.ignore,
-    } = options;
+): Effect.Effect<LintReport, FileSystemError | SemanticLinterError> =>
+	Effect.gen(function*(_) {
+		const {
+			rules: customRules,
+			fix = false,
+			silent = false,
+			ignore = DEFAULT_CONFIG.ignore,
+		} = options;
 
-    const mergedRules = { ...DEFAULT_CONFIG.rules, ...customRules };
+		const mergedRules = { ...DEFAULT_CONFIG.rules, ...customRules };
 
-    const linterOptions: LinterOptions = {
-        rules: mergedRules,
-        fix,
-        ignore,
-        extensions: DEFAULT_CONFIG.extensions,
-    };
+		const linterOptions: LinterOptions = {
+			rules: mergedRules,
+			fix,
+			ignore,
+			extensions: DEFAULT_CONFIG.extensions,
+		};
 
-    const files = yield* _(findFilesInMultipleDirs(options.paths, ignore));
+		const files = yield* _(findFilesInMultipleDirs(options.paths, ignore));
 
-    if (!silent) {
-        yield* _(Effect.log(`🔍 Found ${files.length} file(s) to lint`));
-    }
+		if (!silent) {
+			yield* _(Effect.log(`🔍 Found ${files.length} file(s) to lint`));
+		}
 
-    if (files.length === 0) {
-        return {
-            results: [],
-            errorCount: 0,
-            warningCount: 0,
-            fixableErrorCount: 0,
-            fixableWarningCount: 0,
-            filesLinted: 0,
-        };
-    }
+		if (files.length === 0) {
+			return {
+				results: [],
+				errorCount: 0,
+				warningCount: 0,
+				fixableErrorCount: 0,
+				fixableWarningCount: 0,
+				filesLinted: 0,
+			};
+		}
 
-    const report = yield* _(lintFiles(files, ALL_RULES, linterOptions));
+		const report = yield* _(lintFiles(files, ALL_RULES, linterOptions));
 
-    if (!silent) {
-        yield* _(Effect.log(`✅ Linting complete: ${report.errorCount} errors, ${report.warningCount} warnings`));
-    }
+		if (!silent) {
+			yield* _(Effect.log(`✅ Linting complete: ${report.errorCount} errors, ${report.warningCount} warnings`));
+		}
 
-    return report;
-});
+		return report;
+	});
 
 /**
  * Lint with default configuration

@@ -1,4 +1,4 @@
-import { euclideanAlgorithm } from './euclidean-algorithm';
+import { euclideanAlgorithm } from "./euclidean-algorithm";
 
 const a = 48;
 const b = 18;

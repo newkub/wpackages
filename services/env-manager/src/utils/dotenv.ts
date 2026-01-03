@@ -19,8 +19,8 @@ export const toDotenv = (obj: Record<string, unknown>): string => {
 	for (const [key, value] of Object.entries(obj)) {
 		if (value === undefined) continue;
 		const raw = toEnvValueString(value);
-		const escaped = raw.includes("\n") || raw.includes(" ") || raw.includes('"')
-			? `"${raw.replaceAll('"', '\\"')}"`
+		const escaped = raw.includes("\n") || raw.includes(" ") || raw.includes("\"")
+			? `"${raw.replaceAll("\"", "\\\"")}"`
 			: raw;
 		lines.push(`${key}=${escaped}`);
 	}

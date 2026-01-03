@@ -1,4 +1,4 @@
-import { sieveOfEratosthenes } from './sieve-of-eratosthenes';
+import { sieveOfEratosthenes } from "./sieve-of-eratosthenes";
 
 const limit = 30;
 const primes = sieveOfEratosthenes(limit);

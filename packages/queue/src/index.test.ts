@@ -1,123 +1,115 @@
-import { err, ok } from "@w/workflow";
 import type { Task } from "@wpackages/task";
-import { describe, expect, spyOn, test } from "bun:test";
-import { createQueue, enqueue, processNext } from ".";
+import { describe, expect, test } from "bun:test";
+import { Effect, Ref } from "effect";
+import { createQueueManager, processNext, QueueFullError } from ".";
 
-// Mock delay function to speed up tests
-const mockDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+// Helper to create a mock task
+const createTask = (
+	id: string,
+	name: string,
+	executeFn: () => Effect.Effect<string, Error>,
+): Task<void, string, Error> => ({
+	id,
+	name,
+	execute: executeFn,
+});
 
-describe("@wpackages/queue", () => {
-	const createTask = (id: string, name: string, executeFn: () => Promise<any>): Task<void, any, Error> => ({
-		id,
-		name,
-		execute: executeFn,
+describe("@wpackages/queue (Effect-based)", () => {
+	test("should create a queue manager with default config", async () => {
+		const program = Effect.gen(function*() {
+			const manager = yield* createQueueManager("test-queue");
+			const state = yield* Ref.get(manager.state);
+			return state;
+		});
+
+		const initialState = await Effect.runPromise(program);
+
+		expect(initialState.name).toBe("test-queue");
+		expect(initialState.config.maxConcurrent).toBe(5);
+		expect(initialState.config.maxRetries).toBe(3);
+		expect(initialState.pending).toBeArrayOfSize(0);
 	});
 
-	test("should create a queue with default config", () => {
-		const queue = createQueue("test-queue");
-		expect(queue.name).toBe("test-queue");
-		expect(queue.config.maxConcurrent).toBe(5);
-		expect(queue.config.maxRetries).toBe(3);
-		expect(queue.pending).toBeArrayOfSize(0);
-	});
+	test("should enqueue a task", async () => {
+		const program = Effect.gen(function*() {
+			const manager = yield* createQueueManager("test-queue");
+			const task = createTask("task1", "Test Task", () => Effect.succeed("success"));
+			yield* manager.enqueue(task);
+			return yield* Ref.get(manager.state);
+		});
 
-	test("should enqueue a task", () => {
-		let queue = createQueue("test-queue");
-		const task = createTask("task1", "Test Task", async () => ok("success"));
-		const result = enqueue(queue, task);
+		const finalState = await Effect.runPromise(program);
 
-		expect(result._tag).toBe("Success");
-		if (result._tag === "Success") {
-			queue = result.value;
-		}
-
-		expect(queue.pending).toBeArrayOfSize(1);
-		expect(queue.pending[0].id).toBe("task1");
+		expect(finalState.pending).toBeArrayOfSize(1);
+		expect(finalState.pending[0].id).toBe("task1");
 	});
 
 	test("should process a successful task", async () => {
-		let queue = createQueue("test-queue");
-		const task = createTask("task1", "Successful Task", async () => {
-			await mockDelay(10);
-			return ok("great success");
+		const program = Effect.gen(function*() {
+			const manager = yield* createQueueManager("test-queue");
+			const task = createTask("task1", "Successful Task", () => Effect.succeed("great success"));
+			yield* manager.enqueue(task);
+			yield* processNext(manager);
+			return yield* Ref.get(manager.state);
 		});
-		const enqueued = enqueue(queue, task);
-		if (enqueued._tag === "Success") {
-			queue = enqueued.value;
-		}
 
-		const result = await processNext(queue);
+		const finalState = await Effect.runPromise(program);
 
-		expect(result._tag).toBe("Success");
-		if (result._tag === "Success") {
-			const finalQueue = result.value;
-			expect(finalQueue.pending).toBeArrayOfSize(0);
-			expect(finalQueue.running).toBeArrayOfSize(0);
-			expect(finalQueue.completed).toBeArrayOfSize(1);
-			expect(finalQueue.failed).toBeArrayOfSize(0);
-			expect(finalQueue.completed[0].taskId).toBe("task1");
-			expect(finalQueue.completed[0].status).toBe("completed");
-			expect(finalQueue.completed[0].result?.value).toBe("great success");
-		}
+		expect(finalState.pending).toBeArrayOfSize(0);
+		expect(finalState.running).toBeArrayOfSize(0);
+		expect(finalState.completed).toBeArrayOfSize(1);
+		expect(finalState.failed).toBeArrayOfSize(0);
+		expect(finalState.completed[0].taskId).toBe("task1");
+		expect(finalState.completed[0].status).toBe("completed");
+		expect(finalState.completed[0].result).toBe("great success");
 	});
 
 	test("should handle a failing task with retries", async () => {
-		const executeFn = spyOn(console, "error"); // Suppress error logs in test output
-		let queue = createQueue("test-queue", { maxRetries: 2, retryDelay: 5 });
-		const task = createTask("task-fail", "Failing Task", async () => {
-			return err(new Error("failure"));
+		const program = Effect.gen(function*() {
+			const manager = yield* createQueueManager("test-queue", {
+				maxRetries: 2,
+				retryDelay: 1, // ms
+			});
+			const task = createTask("task-fail", "Failing Task", () => Effect.fail(new Error("failure")));
+			yield* manager.enqueue(task);
+			yield* processNext(manager);
+			return yield* Ref.get(manager.state);
 		});
 
-		const enqueued = enqueue(queue, task);
-		if (enqueued._tag === "Success") {
-			queue = enqueued.value;
-		}
+		const finalState = await Effect.runPromise(program);
 
-		const result = await processNext(queue);
-
-		expect(result._tag).toBe("Success");
-		if (result._tag === "Success") {
-			const finalQueue = result.value;
-			expect(finalQueue.completed).toBeArrayOfSize(0);
-			expect(finalQueue.failed).toBeArrayOfSize(1);
-			expect(finalQueue.failed[0].taskId).toBe("task-fail");
-			expect(finalQueue.failed[0].status).toBe("failed");
-			expect(finalQueue.failed[0].attempts).toBe(3); // 1 initial + 2 retries
-			expect(finalQueue.failed[0].error?.message).toBe("failure");
-		}
-		executeFn.mockRestore();
+		expect(finalState.completed).toBeArrayOfSize(0);
+		expect(finalState.failed).toBeArrayOfSize(1);
+		expect(finalState.failed[0].taskId).toBe("task-fail");
+		expect(finalState.failed[0].status).toBe("failed");
+		expect(finalState.failed[0].attempts).toBe(3); // 1 initial + 2 retries
+		expect(finalState.failed[0].error).toEqual(new Error("failure"));
 	});
 
 	test("should respect maxConcurrent limit", async () => {
-		// Create a queue that can only run 1 task at a time
-		let queue = createQueue("concurrent-test", { maxConcurrent: 1 });
+		const program = Effect.gen(function*() {
+			const manager = yield* createQueueManager("concurrent-test", {
+				maxConcurrent: 1,
+			});
 
-		// Create a long-running task
-		const longTask = createTask("long-task", "Long Task", () => mockDelay(100).then(() => ok("done")));
-		const shortTask = createTask("short-task", "Short Task", () => ok("done quick"));
+			// Manually set state to simulate a running task
+			yield* Ref.update(manager.state, (queue) => ({
+				...queue,
+				running: [
+					createTask("running-task", "Running Task", () => Effect.succeed("done")),
+				],
+			}));
 
-		// Enqueue both
-		let enqueued = enqueue(queue, longTask);
-		if (enqueued._tag === "Success") queue = enqueued.value;
-		enqueued = enqueue(queue, shortTask);
-		if (enqueued._tag === "Success") queue = enqueued.value;
+			// Enqueue a new task
+			const newTask = createTask("new-task", "New Task", () => Effect.succeed("done"));
+			yield* manager.enqueue(newTask);
 
-		// Start processing the first (long) task, but don't wait for it to finish
-		processNext(queue);
+			// This should fail because the queue is full
+			return yield* processNext(manager);
+		});
 
-		// Manually update the queue state to reflect the task is running
-		queue = {
-			...queue,
-			pending: [shortTask],
-			running: [longTask],
-		};
-
-		// Now, try to process the next task. It should fail because the queue is full.
-		const result = await processNext(queue);
-
-		expect(result._tag).toBe("Failure");
-		if (result._tag === "Failure") {
-			expect(result.error.code).toBe("QUEUE_FULL");
-		}
+		const result = await Effect.runPromise(Effect.flip(program));
+		expect(result).toBeInstanceOf(QueueFullError);
+		expect(result.running).toBe(1);
 	});
 });

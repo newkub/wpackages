@@ -1,2 +1,2 @@
-export * from 'zod';
-export * as pc from 'picocolors';
+export * as pc from "picocolors";
+export * from "zod";

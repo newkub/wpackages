@@ -1,9 +1,4 @@
-import {
-	findMostSimilar,
-	findSimilar,
-	levenshteinDistance,
-	similarityScore,
-} from "./string-similarity";
+import { findMostSimilar, findSimilar, levenshteinDistance, similarityScore } from "./string-similarity";
 
 /**
  * ตัวอย่างการใช้งาน string-similarity utils

@@ -4,6 +4,5 @@
  */
 
 export * from "./parser/functional";
-export * from "./parser/standard";
 export * from "./parser/result";
-
+export * from "./parser/standard";

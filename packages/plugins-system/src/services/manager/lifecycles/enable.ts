@@ -1,6 +1,6 @@
 import type { PluginEventEmitter, PluginManagerConfig, PluginRegistry } from "../../types";
-import type { PluginResult } from "../plugin-manager.service";
 import { createPluginAPI } from "../api";
+import type { PluginResult } from "../plugin-manager.service";
 
 export const enablePlugin = async (
 	pluginId: string,

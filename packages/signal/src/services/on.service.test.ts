@@ -7,19 +7,23 @@ describe("on", () => {
 	it("should only track the specified dependency", () => {
 		const [a, setA] = createSignal(0);
 		const [b, setB] = createSignal(0);
-		const effectFn = vi.fn(() => on(a, () => b()));
+		const callback = vi.fn(() => {
+			// Access b, but it should not be tracked
+			b();
+		});
 
-		createEffect(effectFn);
+		// The effect should only track 'a'
+		createEffect(on(a, callback));
 
-		expect(effectFn).toHaveBeenCalledTimes(1);
+		expect(callback).toHaveBeenCalledTimes(1);
 
 		// Changing 'b' should not trigger the effect
 		setB(1);
-		expect(effectFn).toHaveBeenCalledTimes(1);
+		expect(callback).toHaveBeenCalledTimes(1);
 
 		// Changing 'a' should trigger the effect
 		setA(1);
-		expect(effectFn).toHaveBeenCalledTimes(2);
+		expect(callback).toHaveBeenCalledTimes(2);
 	});
 
 	it("should pass the current and previous value to the callback", () => {

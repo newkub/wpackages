@@ -8,7 +8,7 @@ export const SpinnerComponent = <T,>({ message, type = "dots", action }: Spinner
 	const { submit } = usePrompt<T>();
 	const theme = useTheme();
 
-		useEffect(() => {
+	useEffect(() => {
 		let isCancelled = false;
 
 		action().then(result => {
@@ -40,6 +40,6 @@ export const spinner = <T,>(
 	return {
 		Component: SpinnerComponent,
 		props: options,
-				initialValue: undefined as any, // The value will come from the async action
+		initialValue: undefined as any, // The value will come from the async action
 	};
 };

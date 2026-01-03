@@ -23,11 +23,11 @@ export const tryPromise = <T>(
 	Effect.tryPromise({
 		try: (_signal) => Promise.resolve(fn()),
 		catch: (unknown) => {
-				const message = unknown instanceof Error ? unknown.message : String(unknown);
-				return new AppError({
-					message,
-					statusCode,
-					isOperational: true,
-				});
-			},
+			const message = unknown instanceof Error ? unknown.message : String(unknown);
+			return new AppError({
+				message,
+				statusCode,
+				isOperational: true,
+			});
+		},
 	});

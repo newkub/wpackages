@@ -4,22 +4,22 @@ import type { BenchmarkOptions, BenchmarkResult } from "../types/index";
 import { exportResult } from "./exporter";
 
 export async function runSingleBenchmark(
-    command: string,
-    options: BenchmarkOptions,
+	command: string,
+	options: BenchmarkOptions,
 ): Promise<BenchmarkResult> {
-    if (!options.silent) {
-        console.log(`🔥 Benchmarking: ${command}\n`);
-    }
+	if (!options.silent) {
+		console.log(`🔥 Benchmarking: ${command}\n`);
+	}
 
-    const result = await executeBenchmark(command, options);
+	const result = await executeBenchmark(command, options);
 
-    if (!options.silent) {
-        console.log(formatBenchmarkResult(result));
-    }
+	if (!options.silent) {
+		console.log(formatBenchmarkResult(result));
+	}
 
-    if (options.export) {
-        await exportResult(options.export, result, options.silent);
-    }
+	if (options.export) {
+		await exportResult(options.export, result, options.silent);
+	}
 
-    return result;
+	return result;
 }

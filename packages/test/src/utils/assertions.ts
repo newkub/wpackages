@@ -7,8 +7,8 @@ import type { AssertionOptions } from "../types";
 import { toContain, toContainString } from "./assertions/collections";
 import { toBe, toEqual } from "./assertions/equality";
 import { toBeInstanceOf } from "./assertions/instance";
-import { toMatchSchema } from "./assertions/schema";
 import { toReject, toResolve } from "./assertions/promises";
+import { toMatchSchema } from "./assertions/schema";
 import { toThrow, toThrowAsync } from "./assertions/throws";
 import { toBeFalsy, toBeNull, toBeTruthy, toBeUndefined } from "./assertions/truthiness";
 import { toBeType } from "./assertions/types";
@@ -114,11 +114,19 @@ class NotAssertion<T> extends Assertion<T> {
 	}
 
 	override toEqual(expected: T, options?: AssertionOptions): void {
-		this._negateSync(() => super.toEqual(expected, options), options?.message || "Expected values to not be equal", expected);
+		this._negateSync(
+			() => super.toEqual(expected, options),
+			options?.message || "Expected values to not be equal",
+			expected,
+		);
 	}
 
 	override toBe(expected: T, options?: AssertionOptions): void {
-		this._negateSync(() => super.toBe(expected, options), options?.message || "Expected values to not be strictly equal", expected);
+		this._negateSync(
+			() => super.toBe(expected, options),
+			options?.message || "Expected values to not be strictly equal",
+			expected,
+		);
 	}
 
 	override toBeTruthy(options?: AssertionOptions): void {
@@ -130,7 +138,11 @@ class NotAssertion<T> extends Assertion<T> {
 	}
 
 	override toContain(item: unknown, options?: AssertionOptions): void {
-		this._negateSync(() => super.toContain(item, options), options?.message || "Expected array to not contain item", item);
+		this._negateSync(
+			() => super.toContain(item, options),
+			options?.message || "Expected array to not contain item",
+			item,
+		);
 	}
 
 	override toBeNull(options?: AssertionOptions): void {
@@ -138,14 +150,18 @@ class NotAssertion<T> extends Assertion<T> {
 	}
 
 	override toBeUndefined(options?: AssertionOptions): void {
-		this._negateSync(() => super.toBeUndefined(options), options?.message || "Expected value to not be undefined", undefined);
+		this._negateSync(
+			() => super.toBeUndefined(options),
+			options?.message || "Expected value to not be undefined",
+			undefined,
+		);
 	}
 
 	override toContainString(substring: string, options?: AssertionOptions): void {
 		this._negateSync(
 			() => super.toContainString(substring, options),
 			options?.message || `Expected string to not contain "${substring}"`,
-			substring
+			substring,
 		);
 	}
 
@@ -153,7 +169,7 @@ class NotAssertion<T> extends Assertion<T> {
 		this._negateSync(
 			() => super.toBeInstanceOf(expected, options),
 			options?.message || "Expected value to not be instance of class",
-			expected
+			expected,
 		);
 	}
 
@@ -170,11 +186,21 @@ class NotAssertion<T> extends Assertion<T> {
 	}
 
 	override async toResolve(options?: AssertionOptions): Promise<void> {
-		await this._negateAsync(() => super.toResolve(options), options?.message || "Expected promise to not resolve", "reject", "resolve");
+		await this._negateAsync(
+			() => super.toResolve(options),
+			options?.message || "Expected promise to not resolve",
+			"reject",
+			"resolve",
+		);
 	}
 
 	override async toReject(options?: AssertionOptions): Promise<void> {
-		await this._negateAsync(() => super.toReject(options), options?.message || "Expected promise to not reject", "resolve", "reject");
+		await this._negateAsync(
+			() => super.toReject(options),
+			options?.message || "Expected promise to not reject",
+			"resolve",
+			"reject",
+		);
 	}
 }
 

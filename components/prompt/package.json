@@ -23,13 +23,7 @@
 		"format": "dprint fmt",
 		"verify": "bun format && bun lint && bun test && bun audit && bun build"
 	},
-	"keywords": [
-		"cli",
-		"prompt",
-		"cli-components",
-		"terminal",
-		"clack"
-	],
+	"keywords": ["cli", "prompt", "cli-components", "terminal", "clack"],
 	"author": "wrikka",
 	"license": "MIT",
 	"devDependencies": {

@@ -22,8 +22,8 @@ export * from "./utils";
 export * from "./services";
 
 // Property-Based Testing
-export { it } from "./property";
 export * as fc from "fast-check";
+export { it } from "./property";
 
 // Note: Core vitest utilities (describe, test, etc.) should be imported directly from 'vitest'
 // Example: import { describe, test } from 'vitest'

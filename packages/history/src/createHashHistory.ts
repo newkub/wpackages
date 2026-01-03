@@ -1,7 +1,7 @@
-import { History } from './types';
-import { createHistory } from './history';
-import { createHashSource } from './sources/hash';
+import { createHistory } from "./history";
+import { createHashSource } from "./sources/hash";
+import { History } from "./types";
 
 export function createHashHistory(): History {
-  return createHistory(createHashSource());
+	return createHistory(createHashSource());
 }

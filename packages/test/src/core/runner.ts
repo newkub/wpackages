@@ -1,6 +1,6 @@
-import { getSuites, clearSuites } from './registry';
-import type { TestSuite } from './types';
-import { ConsoleReporter } from '../reporter/console';
+import { ConsoleReporter } from "../reporter/console";
+import { clearSuites, getSuites } from "./registry";
+import type { TestSuite } from "./types";
 
 async function runSuite(suite: TestSuite, reporter: ConsoleReporter): Promise<void> {
 	// Run beforeAll hooks
@@ -12,10 +12,10 @@ async function runSuite(suite: TestSuite, reporter: ConsoleReporter): Promise<vo
 	for (const test of suite.tests) {
 		try {
 			await test.fn();
-			reporter.addResult({ suiteName: suite.name, testName: test.name, status: 'passed' });
+			reporter.addResult({ suiteName: suite.name, testName: test.name, status: "passed" });
 		} catch (error) {
 			const testError = error instanceof Error ? error : new Error(String(error));
-			reporter.addResult({ suiteName: suite.name, testName: test.name, status: 'failed', error: testError });
+			reporter.addResult({ suiteName: suite.name, testName: test.name, status: "failed", error: testError });
 		}
 	}
 

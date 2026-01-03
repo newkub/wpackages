@@ -1,8 +1,8 @@
 import { Effect, Layer } from "@wpackages/functional";
-import { runWithBun, type ExecOptions } from "../internal/bun";
+import { CommandError } from "../error";
+import { type ExecOptions, runWithBun } from "../internal/bun";
 import { runWithNode } from "../internal/node";
 import { Command } from "../types/Command";
-import { CommandError } from "../error";
 
 const runCommand = (file: string, args: ReadonlyArray<string>, options: ExecOptions) => {
 	if (typeof Bun !== "undefined" && typeof Bun.spawn === "function") {

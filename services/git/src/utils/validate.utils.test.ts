@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest";
 import {
-	isValidCommitHash,
-	isValidShortHash,
-	isValidFullHash,
-	isValidBranchName,
-	isValidTagName,
-	isValidRemoteName,
-	isValidEmail,
-	isValidGitUrl,
 	isConventionalCommit,
+	isValidBranchName,
+	isValidCommitHash,
+	isValidEmail,
+	isValidFullHash,
+	isValidGitUrl,
+	isValidRemoteName,
 	isValidSemVer,
+	isValidShortHash,
+	isValidTagName,
 } from "./validate.utils";
 
 describe("isValidCommitHash", () => {
@@ -60,47 +60,47 @@ describe("isValidBranchName", () => {
 });
 
 describe("isValidTagName", () => {
-    it("should validate correct tag names", () => {
-        expect(isValidTagName("v1.0.0")).toBe(true);
-    });
+	it("should validate correct tag names", () => {
+		expect(isValidTagName("v1.0.0")).toBe(true);
+	});
 });
 
 describe("isValidRemoteName", () => {
-    it("should validate correct remote names", () => {
-        expect(isValidRemoteName("origin")).toBe(true);
-    });
+	it("should validate correct remote names", () => {
+		expect(isValidRemoteName("origin")).toBe(true);
+	});
 });
 
 describe("isValidEmail", () => {
-    it("should validate correct email", () => {
-        expect(isValidEmail("test@example.com")).toBe(true);
-    });
-    it("should invalidate incorrect email", () => {
-        expect(isValidEmail("test@.com")).toBe(false);
-    });
+	it("should validate correct email", () => {
+		expect(isValidEmail("test@example.com")).toBe(true);
+	});
+	it("should invalidate incorrect email", () => {
+		expect(isValidEmail("test@.com")).toBe(false);
+	});
 });
 
 describe("isValidGitUrl", () => {
-    it("should validate SSH git URL", () => {
-        expect(isValidGitUrl("git@github.com:user/repo.git")).toBe(true);
-    });
-    it("should validate HTTPS git URL", () => {
-        expect(isValidGitUrl("https://github.com/user/repo.git")).toBe(true);
-    });
+	it("should validate SSH git URL", () => {
+		expect(isValidGitUrl("git@github.com:user/repo.git")).toBe(true);
+	});
+	it("should validate HTTPS git URL", () => {
+		expect(isValidGitUrl("https://github.com/user/repo.git")).toBe(true);
+	});
 });
 
 describe("isConventionalCommit", () => {
-    it("should validate conventional commit message", () => {
-        expect(isConventionalCommit("feat: add new feature")).toBe(true);
-    });
-    it("should invalidate non-conventional commit message", () => {
-        expect(isConventionalCommit("add new feature")).toBe(false);
-    });
+	it("should validate conventional commit message", () => {
+		expect(isConventionalCommit("feat: add new feature")).toBe(true);
+	});
+	it("should invalidate non-conventional commit message", () => {
+		expect(isConventionalCommit("add new feature")).toBe(false);
+	});
 });
 
 describe("isValidSemVer", () => {
-    it("should validate semantic version", () => {
-        expect(isValidSemVer("1.0.0")).toBe(true);
-        expect(isValidSemVer("v2.3.4-alpha.1")).toBe(true);
-    });
+	it("should validate semantic version", () => {
+		expect(isValidSemVer("1.0.0")).toBe(true);
+		expect(isValidSemVer("v2.3.4-alpha.1")).toBe(true);
+	});
 });

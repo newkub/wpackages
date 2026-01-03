@@ -1,14 +1,9 @@
+// Main entry point for the queue package
+
 // Types
-export type { QueueConfig, QueueError, TaskQueue } from "./types";
+export { QueueEmptyError, QueueFullError, StateInvalidError, TimeoutError } from "./types/error";
+export type { QueueConfig, TaskQueue } from "./types/queue";
 
-// Core Queue Management
-export { processNext } from "./processor";
-export { createQueue, enqueue } from "./queue";
-
-// State Management (Advanced)
-export { moveToFinished, moveToRunning } from "./queue-state";
-export { runTask } from "./task-runner";
-
-// Utilities
-export { queueError } from "./errors";
-export { clearCompleted, clearFailed, getQueueStats } from "./stats";
+// Services
+export { processNext } from "./services/processor";
+export { make as createQueueManager, type QueueManager } from "./services/queue-manager";

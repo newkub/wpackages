@@ -1,5 +1,5 @@
 import type { Accessor, EffectCleanup, WatchOptions } from "../types";
-import { createEffect } from "./effect.scope";
+import { createEffect, currentEffect, setCurrentEffect } from "./effect.scope";
 
 // Watch a source and run a callback when it changes
 export function watch<T>(
@@ -38,22 +38,30 @@ export function on<T, U>(
 	fn: (value: T | T[], prevValue: T | T[] | undefined) => U,
 ): () => U {
 	let prevValue: T | T[] | undefined;
-	let value: T | T[];
+	let inited = false;
 
-	const deferFn = () => {
-		if (Array.isArray(deps)) {
-			value = deps.map(d => d());
-		} else {
-			value = deps();
+	return () => {
+		const value = Array.isArray(deps) ? deps.map(d => d()) : deps();
+
+		if (inited && value === prevValue) {
+			return;
 		}
-		const res = untrack(() => fn(value as T | T[], prevValue));
-		prevValue = value;
-		return res;
-	};
 
-	return deferFn;
+		untrack(() => {
+			fn(value, prevValue);
+		});
+
+		prevValue = value;
+		inited = true;
+	};
 }
 
 function untrack<T>(fn: () => T): T {
-	return fn();
+	const prevEffect = currentEffect;
+	setCurrentEffect(null);
+	try {
+		return fn();
+	} finally {
+		setCurrentEffect(prevEffect);
+	}
 }

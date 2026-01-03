@@ -1,7 +1,6 @@
 import { javascriptParser } from "@wpackages/parser";
-import type { Parser } from "../types";
 import type { JavaScriptAST } from "@wpackages/parser";
-
+import type { Parser } from "../types";
 
 /**
  * TypeScript/JavaScript Parser implementation using OXC

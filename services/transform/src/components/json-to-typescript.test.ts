@@ -14,7 +14,8 @@ describe("JsonToTypeScriptTransformer", () => {
 			user: { name: "Jane", roles: ["admin", "editor"] },
 			posts: [{ id: 1, title: "Post 1" }],
 		});
-		const expected = `export type GeneratedType = {\n  user: {\n    name: string;\n    roles: string[];\n  };\n  posts: {\n    id: number;\n    title: string;\n  }[];\n};\n`;
+		const expected =
+			`export type GeneratedType = {\n  user: {\n    name: string;\n    roles: string[];\n  };\n  posts: {\n    id: number;\n    title: string;\n  }[];\n};\n`;
 		const result = JsonToTypeScriptTransformer.transform(json, { pretty: false });
 		expect(result.trim()).toBe(expected.trim());
 	});

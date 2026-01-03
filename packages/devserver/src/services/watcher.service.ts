@@ -5,7 +5,7 @@ import { createLogger } from "../utils/logger";
 export type WatcherService = {
 	start: (paths: string | readonly string[]) => void;
 	stop: () => Promise<void>;
-	on: (event: 'all', listener: (event: string, path: string) => void) => void;
+	on: (event: "all", listener: (event: string, path: string) => void) => void;
 };
 
 export function createWatcherService(): WatcherService {
@@ -17,7 +17,7 @@ export function createWatcherService(): WatcherService {
 			logger.warn("Watcher is already running.");
 			return;
 		}
-		logger.info(`Watching for file changes in: ${Array.isArray(paths) ? paths.join(', ') : paths}`);
+		logger.info(`Watching for file changes in: ${Array.isArray(paths) ? paths.join(", ") : paths}`);
 		watcher = chokidar.watch(paths, {
 			ignored: /(^|[\\/])\../, // ignore dotfiles
 			persistent: true,
@@ -32,7 +32,7 @@ export function createWatcherService(): WatcherService {
 		}
 	};
 
-	const on = (event: 'all', listener: (event: string, path: string) => void) => {
+	const on = (event: "all", listener: (event: string, path: string) => void) => {
 		if (watcher) {
 			watcher.on(event, listener);
 		} else {

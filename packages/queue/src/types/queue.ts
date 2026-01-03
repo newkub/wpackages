@@ -22,4 +22,3 @@ export interface TaskQueue<T_OUT = unknown, E = Error> {
 	readonly completed: TaskResult<T_OUT, E>[];
 	readonly failed: TaskResult<T_OUT, E>[];
 }
-

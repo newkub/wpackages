@@ -2,7 +2,7 @@
  * Injects test APIs into the global scope.
  */
 
-import { describe, it, test, beforeAll, afterAll } from "./core/globals";
+import { afterAll, beforeAll, describe, it, test } from "./core/globals";
 import { w } from "./core/w";
 import { expect } from "./utils";
 

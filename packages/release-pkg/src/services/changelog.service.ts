@@ -7,7 +7,7 @@ import {
 	generateChangelogHeader,
 } from "../components/changelog-formatter";
 import { DEFAULT_CHANGELOG_FILE } from "../constant/index";
-import type { Commit, ChangelogRenderer } from "../types/index";
+import type { ChangelogRenderer, Commit } from "../types/index";
 import { readTextFile, writeTextFile } from "../utils/file-system";
 
 export class ChangelogService {

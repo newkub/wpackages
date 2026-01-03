@@ -2,13 +2,7 @@ import { Option } from "effect";
 import type { GitBranch, GitCommit, GitRemote, GitStash, GitStatus } from "../../types/objects";
 import type { GitBlameLine, GitDiff, GitReflogEntry } from "../../types/operations";
 import { splitLines } from "./helpers";
-import {
-	parseBranchLine,
-	parseCommitLine,
-	parseReflogLine,
-	parseRemoteLine,
-	parseStashLine,
-} from "./line.parser";
+import { parseBranchLine, parseCommitLine, parseReflogLine, parseRemoteLine, parseStashLine } from "./line.parser";
 
 // Parse multiple remote lines
 export const parseGitRemotes = (

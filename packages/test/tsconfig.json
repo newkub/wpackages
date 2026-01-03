@@ -2,21 +2,10 @@
 	"extends": "./../../tsconfig.json",
 	"compilerOptions": {
 		"outDir": "./dist",
-		"types": [
-			"bun-types",
-			"node"
-		],
+		"types": ["bun-types", "node"],
 		"noUnusedLocals": true,
 		"noUnusedParameters": true
 	},
-	"include": [
-		"src",
-		"src/globals.d.ts"
-	],
-	"exclude": [
-		"node_modules",
-		"dist",
-		"**/*.test.ts",
-		"**/*.usage.ts"
-	]
+	"include": ["src", "src/globals.d.ts"],
+	"exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.usage.ts"]
 }

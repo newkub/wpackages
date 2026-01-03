@@ -1,5 +1,5 @@
-import type { Transaction, Result } from "../types";
-import { ok, err } from "@w/workflow";
+import { err, ok } from "@w/workflow";
+import type { Result, Transaction } from "../types";
 
 /**
  * Create a transaction

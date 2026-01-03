@@ -1,17 +1,17 @@
 import { Effect } from "effect";
-import type { GitStatus } from "../types/git";
 import { GitCommandError, GitParseError } from "../errors";
-import { runGitCommand } from "./runGitCommand";
+import type { GitStatus } from "../types/git";
 import { parseGitStatus } from "../utils/parse.utils";
+import { runGitCommand } from "./runGitCommand";
 
 export const getStatus = (
-    path: string,
+	path: string,
 ): Effect.Effect<GitStatus, GitCommandError | GitParseError> =>
-    runGitCommand(path, "status --porcelain -b").pipe(
-        Effect.flatMap((output) =>
-            Effect.try({
-                try: () => parseGitStatus(output),
-                catch: (cause) => new GitParseError({ cause, input: output }),
-            }),
-        ),
-    );
+	runGitCommand(path, "status --porcelain -b").pipe(
+		Effect.flatMap((output) =>
+			Effect.try({
+				try: () => parseGitStatus(output),
+				catch: (cause) => new GitParseError({ cause, input: output }),
+			})
+		),
+	);

@@ -19,16 +19,18 @@ import { AppError } from "../types";
  */
 export const fromEither = <E>(
 	options: { readonly statusCode?: number } = {},
-) => <A>(either: Either.Either<A, E>): Effect.Effect<A, AppError> =>
+) =>
+<A>(either: Either.Either<A, E>): Effect.Effect<A, AppError> =>
 	Either.match(either, {
-		onLeft: (e) =>
-			{
-				const message = e instanceof Error ? e.message : String(e);
-				return Effect.fail(new AppError({
+		onLeft: (e) => {
+			const message = e instanceof Error ? e.message : String(e);
+			return Effect.fail(
+				new AppError({
 					message,
 					statusCode: options.statusCode ?? 500,
 					isOperational: true,
-				}));
-			},
+				}),
+			);
+		},
 		onRight: (a) => Effect.succeed(a),
 	});

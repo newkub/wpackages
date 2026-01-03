@@ -10,7 +10,7 @@ export { createMemo } from "./apis/memo";
 
 // Core services (can be used for advanced cases)
 export * from "./services/batch.service";
-export * from "./services/effect.scope";
+export { createEffect, createEffectScope, onCleanup } from "./services/effect.scope";
 export * from "./services/reactive.service";
 export * from "./services/resource.service";
 export * from "./services/selector.service";

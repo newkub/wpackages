@@ -1,9 +1,9 @@
-import { createServer as createHttpServer, type Server } from "node:http";
 import { toNodeListener } from "h3";
+import { createServer as createHttpServer, type Server } from "node:http";
 import { createDevServerConfig } from "../config";
+import { createServer as createApp } from "../server";
 import type { DevServerConfig, DevServerInstance, ServerStats } from "../types";
 import { createLogger } from "../utils/logger";
-import { createServer as createApp } from "../server";
 import { createPerformanceMonitor } from "./performance-monitor.service";
 import { createWatcherService } from "./watcher.service";
 
@@ -33,20 +33,17 @@ export const createDevServer = (
 			logger.info("Development server started successfully!");
 		} catch (error) {
 			logger.error(
-				`Failed to start development server: ${
-					error instanceof Error ? error.message : "Unknown error"
-				}`,
+				`Failed to start development server: ${error instanceof Error ? error.message : "Unknown error"}`,
 			);
 			throw error;
 		}
 	};
 
-	
 	const stop = async (): Promise<void> => {
 		logger.info("Stopping development server...");
 
 		try {
-						await watcher.stop();
+			await watcher.stop();
 			if (server) {
 				server.close();
 				server = null;
@@ -55,16 +52,14 @@ export const createDevServer = (
 			logger.info("Development server stopped successfully!");
 		} catch (error) {
 			logger.error(
-				`Failed to stop development server: ${
-					error instanceof Error ? error.message : "Unknown error"
-				}`,
+				`Failed to stop development server: ${error instanceof Error ? error.message : "Unknown error"}`,
 			);
 			throw error;
 		}
 	};
 
 	const onReload = (callback: () => void | Promise<void>): void => {
-		watcher.on('all', (event, path) => {
+		watcher.on("all", (event, path) => {
 			logger.info(`File ${event}: ${path}. Triggering reload...`);
 			Promise.resolve(callback()).catch(err => logger.error(`Reload callback failed: ${err}`));
 		});

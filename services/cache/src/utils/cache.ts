@@ -79,7 +79,6 @@ class DoublyLinkedList<K, V> {
 	}
 }
 
-
 /**
  * Create a new cache instance using design patterns
  */
@@ -111,7 +110,6 @@ export const createCache = <K extends string | number, V>(config: CacheConfig = 
 		}
 	};
 
-
 	const setFn = (key: K, value: V): void => {
 		pruneExpired();
 
@@ -142,7 +140,7 @@ export const createCache = <K extends string | number, V>(config: CacheConfig = 
 			} else {
 				// Fallback for non-lru cache, evict first key
 				const firstKey = cache.keys().next().value;
-				if(firstKey) {
+				if (firstKey) {
 					cache.delete(firstKey);
 					evictions++;
 				}

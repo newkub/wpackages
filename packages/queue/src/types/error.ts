@@ -17,4 +17,3 @@ export class StateInvalidError extends Data.TaggedError("StateInvalidError")<{
 export class TimeoutError extends Data.TaggedError("TimeoutError")<{
 	readonly after: number;
 }> {}
-

@@ -8,10 +8,10 @@ export * from "./assertions/collections";
 export * from "./assertions/equality";
 export * from "./assertions/instance";
 export * from "./assertions/promises";
+export * from "./assertions/schema";
 export * from "./assertions/throws";
 export * from "./assertions/truthiness";
 export * from "./assertions/types";
-export * from "./assertions/schema";
 
 // Error
 export { AssertionError } from "./error";

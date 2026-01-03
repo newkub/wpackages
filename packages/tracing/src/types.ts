@@ -6,7 +6,7 @@ export interface SpanContext {
 	spanId: SpanId;
 }
 
-export type SpanStatus = 'ok' | 'error' | 'unset';
+export type SpanStatus = "ok" | "error" | "unset";
 
 export type SpanEvent = {
 	name: string;

@@ -1,5 +1,5 @@
-import { addSuite, getSuites } from './registry';
-import type { TestSuite, TestCase, TestFunction } from './types';
+import { addSuite, getSuites } from "./registry";
+import type { TestCase, TestFunction, TestSuite } from "./types";
 
 let currentSuite: TestSuite | null = null;
 
@@ -25,7 +25,7 @@ export function describe(name: string, fn: () => void): void {
 function addTest(name: string, fn: TestFunction): void {
 	if (!currentSuite) {
 		// Allow tests to be defined at the top level
-		const defaultSuite = createSuite('default');
+		const defaultSuite = createSuite("default");
 		addSuite(defaultSuite);
 		currentSuite = defaultSuite;
 	}

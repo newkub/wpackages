@@ -1,4 +1,12 @@
-import type { QueryBuilder, QueryCondition, QueryGroup, QueryOptions, QueryOperator, SortField, SortOrder } from "../../types";
+import type {
+	QueryBuilder,
+	QueryCondition,
+	QueryGroup,
+	QueryOperator,
+	QueryOptions,
+	SortField,
+	SortOrder,
+} from "../../types";
 import { buildQueryStringFromParams, queryOptionsToParams } from "./params";
 
 /**

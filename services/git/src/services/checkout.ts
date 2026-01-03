@@ -1,12 +1,12 @@
 import { Effect } from "effect";
-import { runGitCommand } from "./runGitCommand";
 import type { GitCommandError } from "../errors";
+import { runGitCommand } from "./runGitCommand";
 
 export const checkout = (
-    path: string,
-    branch: string,
-    create?: boolean,
+	path: string,
+	branch: string,
+	create?: boolean,
 ): Effect.Effect<void, GitCommandError> => {
-    const command = `checkout ${create ? '-b' : ''} ${branch}`.trim();
-    return runGitCommand(path, command).pipe(Effect.asVoid);
+	const command = `checkout ${create ? "-b" : ""} ${branch}`.trim();
+	return runGitCommand(path, command).pipe(Effect.asVoid);
 };

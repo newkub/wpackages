@@ -1,9 +1,8 @@
 import { Effect } from "effect";
-import { runGitCommand } from "./runGitCommand";
 import type { GitCommandError } from "../errors";
+import { runGitCommand } from "./runGitCommand";
 
 export const add = (
-    path: string,
-    files: readonly string[],
-): Effect.Effect<void, GitCommandError> =>
-    runGitCommand(path, `add ${files.join(' ')}`).pipe(Effect.asVoid);
+	path: string,
+	files: readonly string[],
+): Effect.Effect<void, GitCommandError> => runGitCommand(path, `add ${files.join(" ")}`).pipe(Effect.asVoid);

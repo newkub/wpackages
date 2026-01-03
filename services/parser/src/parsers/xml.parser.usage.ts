@@ -1,7 +1,7 @@
 /**
  * XML Parser usage examples
  */
-import { parseXML, buildXML } from "./xml.parser";
+import { buildXML, parseXML } from "./xml.parser";
 
 const xmlSource = `
   <root>

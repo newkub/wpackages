@@ -195,6 +195,6 @@ const main = async () => {
 };
 
 Effect.runPromise(Effect.catchAllCause(main(), (cause) => {
-    console.error(pc.red("Fatal error:"), cause);
-    process.exit(2);
+	console.error(pc.red("Fatal error:"), cause);
+	process.exit(2);
 }));

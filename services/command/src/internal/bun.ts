@@ -12,18 +12,22 @@ const readBunOutput = async (output: number | ReadableStream<Uint8Array> | undef
 	return new Response(output).text();
 };
 
-export const runWithBun = async (file: string, args: ReadonlyArray<string>, options: ExecOptions): Promise<CommandResult> => {
+export const runWithBun = async (
+	file: string,
+	args: ReadonlyArray<string>,
+	options: ExecOptions,
+): Promise<CommandResult> => {
 	const spawnOptions: Parameters<typeof Bun.spawn>[1] = {
 		stderr: "pipe",
 		stdout: "pipe",
 		...(options.cwd ? { cwd: options.cwd } : {}),
 		...(options.env
 			? {
-					env: Object.fromEntries(Object.entries(options.env).filter(([, v]) => v !== undefined)) as Record<
-						string,
-						string
-					>,
-			  }
+				env: Object.fromEntries(Object.entries(options.env).filter(([, v]) => v !== undefined)) as Record<
+					string,
+					string
+				>,
+			}
 			: {}),
 	};
 

@@ -1,5 +1,13 @@
-import { describe, expect, it } from "vitest";
-import { batch, createEffect, createMemo, createSignal, watch } from "./index";
+import { describe, expect, it, vi } from "vitest";
+import {
+	batch,
+	createEffect,
+	createEffectScope,
+	createMemo,
+	createSignal,
+	onCleanup,
+	watch,
+} from "./index";
 
 describe("reactivity", () => {
 	it("should create and update signals", () => {
@@ -68,5 +76,62 @@ describe("reactivity", () => {
 		});
 
 		expect(effectRun).toBe(2); // Should only run once despite two updates
+	});
+
+	it("should cleanup effects", () => {
+		const [count, setCount] = createSignal(0);
+		let effectRun = 0;
+
+		const cleanup = createEffect(() => {
+			count();
+			effectRun++;
+		});
+
+		expect(effectRun).toBe(1);
+
+		setCount(1);
+		expect(effectRun).toBe(2);
+
+		cleanup();
+
+		setCount(2);
+		expect(effectRun).toBe(2); // Should not run again after cleanup
+	});
+
+	it("should run onCleanup when an effect is cleaned up", () => {
+		const cleanupFn = vi.fn();
+
+		const cleanup = createEffect(() => {
+			onCleanup(cleanupFn);
+		});
+
+		expect(cleanupFn).not.toHaveBeenCalled();
+
+		cleanup();
+
+		expect(cleanupFn).toHaveBeenCalledTimes(1);
+	});
+
+	it("should dispose effects within a scope", () => {
+		const [count, setCount] = createSignal(0);
+		let effectRun = 0;
+		const scope = createEffectScope();
+
+		scope.run(() => {
+			createEffect(() => {
+				count();
+				effectRun++;
+			});
+		});
+
+		expect(effectRun).toBe(1);
+
+		setCount(1);
+		expect(effectRun).toBe(2);
+
+		scope.dispose();
+
+		setCount(2);
+		expect(effectRun).toBe(2); // Should not run again after dispose
 	});
 });

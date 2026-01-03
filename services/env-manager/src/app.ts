@@ -13,7 +13,7 @@ const parseOptions = (args: string[]) =>
 	});
 
 const loadEnv = (opts: CliOptions) =>
-	Effect.gen(function* (_) {
+	Effect.gen(function*(_) {
 		const manager = createEnvManager({
 			paths: opts.paths,
 			...(opts.environment !== undefined ? { environment: opts.environment } : {}),
@@ -40,7 +40,7 @@ const formatOutput = (
 		return JSON.stringify(data, null, 2);
 	});
 
-const program = Effect.gen(function* (_) {
+const program = Effect.gen(function*(_) {
 	const args = yield* _(getArgs);
 	const opts = yield* _(parseOptions(args));
 	const envData = yield* _(loadEnv(opts));

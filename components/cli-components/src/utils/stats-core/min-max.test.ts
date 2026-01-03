@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { min, max } from "../stats-core";
+import { max, min } from "../stats-core";
 
 describe("min", () => {
 	it("should find minimum value", () => {

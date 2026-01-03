@@ -104,7 +104,7 @@ describe("VersionService", () => {
 			await service.updatePackageJson("2.0.0");
 			expect(mockWriteFile).toHaveBeenCalledWith(
 				expect.stringContaining("package.json"),
-				expect.stringContaining('"version": "2.0.0"'),
+				expect.stringContaining("\"version\": \"2.0.0\""),
 			);
 		});
 

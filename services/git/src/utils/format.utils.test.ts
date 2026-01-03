@@ -1,26 +1,26 @@
 import { describe, expect, it } from "vitest";
 import {
-	formatHash,
-	formatFileSize,
-	formatRelativeTime,
+	formatAuthor,
+	formatBranchName,
+	formatBulletList,
+	formatCommitCount,
+	formatCommitMessage,
+	formatCommitMessageShort,
 	formatDateISO,
 	formatDateLocale,
-	formatBranchName,
-	formatRemoteBranch,
-	formatCommitMessageShort,
-	formatCommitMessage,
-	formatAuthor,
-	parseAuthor,
-	formatGitUrl,
-	formatFileStatus,
 	formatDiffStats,
-	formatCommitCount,
 	formatFileCount,
+	formatFileSize,
+	formatFileStatus,
+	formatGitUrl,
+	formatHash,
 	formatLineCount,
-	truncate,
 	formatList,
 	formatNumberedList,
-	formatBulletList,
+	formatRelativeTime,
+	formatRemoteBranch,
+	parseAuthor,
+	truncate,
 } from "./format.utils";
 
 describe("formatHash", () => {
@@ -45,15 +45,15 @@ describe("formatFileSize", () => {
 });
 
 describe("formatRelativeTime", () => {
-    it("should return 'just now' for recent dates", () => {
-        expect(formatRelativeTime(new Date())).toContain('just now');
-    });
+	it("should return 'just now' for recent dates", () => {
+		expect(formatRelativeTime(new Date())).toContain("just now");
+	});
 
-    it("should format time correctly for past dates", () => {
-        const now = new Date();
-        const pastDate = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000); // 2 days ago
-        expect(formatRelativeTime(pastDate)).toBe('2 days ago');
-    });
+	it("should format time correctly for past dates", () => {
+		const now = new Date();
+		const pastDate = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000); // 2 days ago
+		expect(formatRelativeTime(pastDate)).toBe("2 days ago");
+	});
 });
 
 describe("formatBranchName", () => {
@@ -75,98 +75,98 @@ describe("parseAuthor", () => {
 });
 
 describe("formatDateISO", () => {
-    it("should format date to ISO string", () => {
-        const date = new Date('2023-01-01T12:00:00.000Z');
-        expect(formatDateISO(date)).toBe('2023-01-01T12:00:00.000Z');
-    });
+	it("should format date to ISO string", () => {
+		const date = new Date("2023-01-01T12:00:00.000Z");
+		expect(formatDateISO(date)).toBe("2023-01-01T12:00:00.000Z");
+	});
 });
 
 describe("formatDateLocale", () => {
-    it("should format date to locale string", () => {
-        const date = new Date('2023-01-01T12:00:00.000Z');
-        expect(formatDateLocale(date, 'en-US')).toContain('1/1/2023');
-    });
+	it("should format date to locale string", () => {
+		const date = new Date("2023-01-01T12:00:00.000Z");
+		expect(formatDateLocale(date, "en-US")).toContain("1/1/2023");
+	});
 });
 
 describe("formatRemoteBranch", () => {
-    it("should remove origin/ prefix", () => {
-        expect(formatRemoteBranch("origin/main")).toBe("main");
-    });
+	it("should remove origin/ prefix", () => {
+		expect(formatRemoteBranch("origin/main")).toBe("main");
+	});
 });
 
 describe("formatCommitMessage", () => {
-    it("should format commit message with subject and body", () => {
-        const message = "feat: new feature\n\nDetails about the feature.";
-        expect(formatCommitMessage(message)).toEqual({ subject: "feat: new feature", body: "Details about the feature." });
-    });
+	it("should format commit message with subject and body", () => {
+		const message = "feat: new feature\n\nDetails about the feature.";
+		expect(formatCommitMessage(message)).toEqual({ subject: "feat: new feature", body: "Details about the feature." });
+	});
 });
 
 describe("formatAuthor", () => {
-    it("should format author name and email", () => {
-        expect(formatAuthor("John Doe", "john.doe@example.com")).toBe("John Doe <john.doe@example.com>");
-    });
+	it("should format author name and email", () => {
+		expect(formatAuthor("John Doe", "john.doe@example.com")).toBe("John Doe <john.doe@example.com>");
+	});
 });
 
 describe("formatGitUrl", () => {
-    it("should hide credentials in git URL", () => {
-        expect(formatGitUrl("https://user:pass@github.com/repo.git")).toBe("https://***:***@github.com/repo.git");
-    });
+	it("should hide credentials in git URL", () => {
+		expect(formatGitUrl("https://user:pass@github.com/repo.git")).toBe("https://***:***@github.com/repo.git");
+	});
 });
 
 describe("formatFileStatus", () => {
-    it("should return correct status string", () => {
-        expect(formatFileStatus("M")).toBe("Modified");
-        expect(formatFileStatus("A")).toBe("Added");
-    });
+	it("should return correct status string", () => {
+		expect(formatFileStatus("M")).toBe("Modified");
+		expect(formatFileStatus("A")).toBe("Added");
+	});
 });
 
 describe("formatDiffStats", () => {
-    it("should format additions and deletions", () => {
-        expect(formatDiffStats(10, 5)).toBe("+10 -5");
-    });
+	it("should format additions and deletions", () => {
+		expect(formatDiffStats(10, 5)).toBe("+10 -5");
+	});
 });
 
 describe("formatCommitCount", () => {
-    it("should format commit count correctly", () => {
-        expect(formatCommitCount(1)).toBe("1 commit");
-        expect(formatCommitCount(5)).toBe("5 commits");
-    });
+	it("should format commit count correctly", () => {
+		expect(formatCommitCount(1)).toBe("1 commit");
+		expect(formatCommitCount(5)).toBe("5 commits");
+	});
 });
 
 describe("formatFileCount", () => {
-    it("should format file count correctly", () => {
-        expect(formatFileCount(1)).toBe("1 file");
-        expect(formatFileCount(3)).toBe("3 files");
-    });
+	it("should format file count correctly", () => {
+		expect(formatFileCount(1)).toBe("1 file");
+		expect(formatFileCount(3)).toBe("3 files");
+	});
 });
 
 describe("formatLineCount", () => {
-    it("should format line count correctly", () => {
-        expect(formatLineCount(1)).toBe("1 line");
-        expect(formatLineCount(100)).toBe("100 lines");
-    });
+	it("should format line count correctly", () => {
+		expect(formatLineCount(1)).toBe("1 line");
+		expect(formatLineCount(100)).toBe("100 lines");
+	});
 });
 
 describe("truncate", () => {
-    it("should truncate text correctly", () => {
-        expect(truncate("This is a long text", 10)).toBe("This is...");
-    });
+	it("should truncate text correctly", () => {
+		expect(truncate("This is a long text", 10)).toBe("This is...");
+	});
 });
 
 describe("formatList", () => {
-    it("should format a list with a separator", () => {
-        expect(formatList(["a", "b", "c"])).toBe("a, b, c");
-    });
+	it("should format a list with a separator", () => {
+		expect(formatList(["a", "b", "c"])).toBe("a, b, c");
+	});
 });
 
 describe("formatNumberedList", () => {
-    it("should format a numbered list", () => {
-        expect(formatNumberedList(["one", "two"])).toBe("1. one\n2. two");
-    });
+	it("should format a numbered list", () => {
+		expect(formatNumberedList(["one", "two"])).toBe("1. one\n2. two");
+	});
 });
 
 describe("formatBulletList", () => {
-    it("should format a bullet list", () => {
-        expect(formatBulletList(["one", "two"])).toBe("• one\n• two");
-    });
+	it("should format a bullet list", () => {
+		expect(formatBulletList(["one", "two"])).toBe("• one\n• two");
+	});
 });

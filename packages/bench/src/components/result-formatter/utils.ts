@@ -1,5 +1,5 @@
-import type { BenchmarkResult, ComparisonResult } from "../../types/index";
 import { COLORS } from "../../constant/cli.const";
+import type { BenchmarkResult, ComparisonResult } from "../../types/index";
 
 export const sortByMean = (comparison: ComparisonResult): BenchmarkResult[] => {
 	return [...comparison.results].sort((a, b) => a.mean - b.mean);

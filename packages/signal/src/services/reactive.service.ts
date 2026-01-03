@@ -1,4 +1,5 @@
-import type { Reactive } from "../types";
+import type { Effect, Reactive } from "../types";
+import { queueEffect } from "./batch.service";
 import { currentEffect } from "./effect.scope";
 
 const targetMap = new WeakMap<object, Map<any, Set<() => void>>>();
@@ -10,12 +11,16 @@ export function track(target: object, key: any): void {
 			depsMap = new Map();
 			targetMap.set(target, depsMap);
 		}
-		let dep = depsMap.get(key);
+		let dep = depsMap.get(key) as Set<() => void> & { add: (effect: import('../types').Effect) => void };
 		if (!dep) {
 			dep = new Set();
 			depsMap.set(key, dep);
 		}
 		dep.add(currentEffect);
+		if (!currentEffect.deps) {
+			currentEffect.deps = new Set();
+		}
+		currentEffect.deps.add(dep as any);
 	}
 }
 
@@ -24,8 +29,10 @@ export function trigger(target: object, key: any): void {
 	if (!depsMap) return;
 	const dep = depsMap.get(key);
 	if (dep) {
-		dep.forEach(effect => {
-			effect();
+		// Create a new set to avoid issues with deps being modified during iteration
+		const effectsToRun = new Set(dep as Set<Effect>);
+		effectsToRun.forEach(effect => {
+			queueEffect(effect);
 		});
 	}
 }

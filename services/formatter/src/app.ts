@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
-import pc from "picocolors";
 import { defineCommand, runMain } from "citty";
+import pc from "picocolors";
 import { format } from "./services/formatter.service";
 import { ProcessError } from "./utils";
 
@@ -17,7 +17,7 @@ const main = defineCommand({
 		},
 		engine: {
 			type: "string",
-			description: 'The formatting engine to use ("auto", "dprint", "biome")',
+			description: "The formatting engine to use (\"auto\", \"dprint\", \"biome\")",
 			default: "auto",
 		},
 		cwd: {
@@ -72,4 +72,3 @@ const main = defineCommand({
 export const runFormatterApp = async (argv: string[]) => {
 	await runMain(main, { argv });
 };
-

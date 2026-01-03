@@ -10,7 +10,10 @@ export const validate = <T = Record<string, unknown>>(
 ): { validation: ValidationResult; result: Result<ValidationResult, Error> } => {
 	if (!schema) {
 		const error = new Error("No schema provided for validation");
-		return { validation: { valid: false, errors: [{ key: "_schema", message: error.message }] }, result: err(error) as Result<ValidationResult, Error> };
+		return {
+			validation: { valid: false, errors: [{ key: "_schema", message: error.message }] },
+			result: err(error) as Result<ValidationResult, Error>,
+		};
 	}
 
 	if (validationCache && useCache) {

@@ -50,9 +50,8 @@ export const generateExample = <T = Record<string, unknown>>(
 		lines.push(`# ${metadata.join(", ")}`);
 
 		// Add example value
-		const exampleValue =
-			def.default ||
-			(def.sensitive ? "***SENSITIVE***" : `your_${key.toLowerCase()}`);
+		const exampleValue = def.default
+			|| (def.sensitive ? "***SENSITIVE***" : `your_${key.toLowerCase()}`);
 
 		lines.push(`${key}=${exampleValue}`);
 		lines.push("");

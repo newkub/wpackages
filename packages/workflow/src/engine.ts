@@ -1,14 +1,19 @@
+import { workflowError } from "./creators";
+import { err, ok } from "./result";
 import type { Result } from "./types";
 import type { Workflow, WorkflowContext, WorkflowError, WorkflowStep } from "./types";
-import { workflowError } from "./creators";
-import { ok, err } from "./result";
 
 /**
  * Execute a workflow
  */
 export async function executeWorkflow<E = Error>(
 	workflow: Workflow<E>,
-	log: { info: (msg: string) => void; warn: (msg: string) => void; error: (msg: string) => void; success: (msg: string) => void },
+	log: {
+		info: (msg: string) => void;
+		warn: (msg: string) => void;
+		error: (msg: string) => void;
+		success: (msg: string) => void;
+	},
 ): Promise<Result<WorkflowError, WorkflowContext>> {
 	log.info(`Executing workflow '${workflow.id}' (${workflow.name}).`);
 	const context: WorkflowContext = new Map<string, any>();
@@ -47,7 +52,12 @@ async function executeSequential<E = Error>(
 	context: WorkflowContext,
 	executed: Set<string>,
 	rollbacks: Array<() => Promise<void>>,
-	log: { info: (msg: string) => void; warn: (msg: string) => void; error: (msg: string) => void; success: (msg: string) => void },
+	log: {
+		info: (msg: string) => void;
+		warn: (msg: string) => void;
+		error: (msg: string) => void;
+		success: (msg: string) => void;
+	},
 ): Promise<Result<WorkflowError, WorkflowContext>> {
 	for (const step of workflow.steps) {
 		// Check dependencies
@@ -110,7 +120,12 @@ async function executeParallel<E = Error>(
 	context: WorkflowContext,
 	executed: Set<string>,
 	rollbacks: Array<() => Promise<void>>,
-	log: { info: (msg: string) => void; warn: (msg: string) => void; error: (msg: string) => void; success: (msg: string) => void },
+	log: {
+		info: (msg: string) => void;
+		warn: (msg: string) => void;
+		error: (msg: string) => void;
+		success: (msg: string) => void;
+	},
 ): Promise<Result<WorkflowError, WorkflowContext>> {
 	log.info(`Executing parallel steps for workflow '${workflow.id}'.`);
 	const remaining = new Set(workflow.steps.map((s) => s.id));
@@ -179,7 +194,12 @@ async function executeParallel<E = Error>(
  */
 async function rollbackWorkflow(
 	rollbacks: Array<() => Promise<void>>,
-	log: { info: (msg: string) => void; warn: (msg: string) => void; error: (msg: string) => void; success: (msg: string) => void },
+	log: {
+		info: (msg: string) => void;
+		warn: (msg: string) => void;
+		error: (msg: string) => void;
+		success: (msg: string) => void;
+	},
 ): Promise<void> {
 	// Execute rollbacks in reverse order
 	for (const rollback of rollbacks.reverse()) {

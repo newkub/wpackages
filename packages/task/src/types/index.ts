@@ -29,38 +29,34 @@ export interface Task<T_IN = unknown, T_OUT = unknown, E = Error> {
  * Task result definition
  */
 export interface TaskResult<T_OUT = unknown, E = Error> {
-    readonly taskId: string;
-    readonly status: "completed" | "failed";
-    readonly result: Result<E, T_OUT> | undefined;
-    readonly startedAt: Date;
-    readonly completedAt: Date;
-    readonly duration: number; // in milliseconds
-    readonly attempts: number;
-    readonly error?: E | undefined;
+	readonly taskId: string;
+	readonly status: "completed" | "failed";
+	readonly result: Result<E, T_OUT> | undefined;
+	readonly startedAt: Date;
+	readonly completedAt: Date;
+	readonly duration: number; // in milliseconds
+	readonly attempts: number;
+	readonly error?: E | undefined;
 }
 
 // Helper functions for Result type
 export function ok<A>(value: A): Result<never, A> {
-    return { _tag: "Success", value };
+	return { _tag: "Success", value };
 }
 
 export function err<E>(error: E): Result<E, never> {
-    return { _tag: "Failure", error };
+	return { _tag: "Failure", error };
 }
 
 export function isOk<E, A>(result: Result<E, A>): result is { readonly _tag: "Success"; readonly value: A } {
-    return result._tag === "Success";
+	return result._tag === "Success";
 }
 
 export function isErr<E, A>(result: Result<E, A>): result is { readonly _tag: "Failure"; readonly error: E } {
-    return result._tag === "Failure";
+	return result._tag === "Failure";
 }
 
-export type {
-    QueueConfig,
-    QueueError,
-    TaskQueue
-};
+export type { QueueConfig, QueueError, TaskQueue };
 
 /**
  * Base task definition
@@ -88,7 +84,6 @@ export interface ScheduledTask<T_IN = unknown, T_OUT = unknown, E = Error> exten
 	readonly nextRun?: Date | undefined;
 	readonly lastRun?: Date | undefined;
 }
-
 
 /**
  * Workflow step
@@ -148,7 +143,6 @@ export interface ScheduleError {
 	readonly metadata?: Record<string, unknown> | undefined;
 	readonly cause?: Error | undefined;
 }
-
 
 export interface WorkflowError {
 	readonly name: "WorkflowError";

@@ -1,4 +1,4 @@
-import { fibonacci } from './fibonacci-sequence';
+import { fibonacci } from "./fibonacci-sequence";
 
 const n = 10;
 const sequence = fibonacci(n);

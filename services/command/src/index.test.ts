@@ -1,7 +1,7 @@
 import { Effect } from "@wpackages/functional";
 import { describe, expect, test } from "vitest";
-import { CommandLive, run } from "./index";
 import { CommandError } from "./error";
+import { CommandLive, run } from "./index";
 
 describe("@wts/command", () => {
 	test("run should execute a command and return stdout", async () => {

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { createResource } from "./resource.service";
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -15,9 +15,8 @@ describe("createResource", () => {
 		expect(loading()).toBe(true);
 		expect(data()).toBe(undefined);
 
-		await vi.waitFor(() => {
-			expect(loading()).toBe(false);
-		});
+		await sleep(100);
+		expect(loading()).toBe(false);
 
 		expect(data()).toBe("Hello, World!");
 		expect(error()).toBe(undefined);
@@ -33,9 +32,8 @@ describe("createResource", () => {
 
 		expect(loading()).toBe(true);
 
-		await vi.waitFor(() => {
-			expect(loading()).toBe(false);
-		});
+		await sleep(100);
+		expect(loading()).toBe(false);
 
 		expect(data()).toBe(undefined);
 		expect(error()).toBeInstanceOf(Error);
@@ -52,12 +50,14 @@ describe("createResource", () => {
 
 		const [data, { refetch }] = createResource(fetchData);
 
-		await vi.waitFor(() => expect(data()).toBe("Count: 1"));
+		await sleep(100);
+		expect(data()).toBe("Count: 1");
 		expect(count).toBe(1);
 
 		await refetch();
 
-		await vi.waitFor(() => expect(data()).toBe("Count: 2"));
+		await sleep(100);
+		expect(data()).toBe("Count: 2");
 		expect(count).toBe(2);
 	});
 });

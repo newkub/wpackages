@@ -1,6 +1,5 @@
 import * as pc from "picocolors";
 import type { BenchComparison, BenchResult, BenchSuite, ComparisonResult } from "../types/index";
-import { formatOps, formatPercentage, formatTime } from "./stats-formatters";
 import {
 	formatBenchmarkResult as formatBenchmarkResultCli,
 	formatBoxPlot,
@@ -10,6 +9,7 @@ import {
 	formatTable,
 } from "./formatters/cli";
 import { formatCSV, formatHTMLTable, formatJSON, formatMarkdownTable } from "./formatters/data";
+import { formatOps, formatPercentage, formatTime } from "./stats-formatters";
 
 // Re-exporting for backward compatibility and centralized access
 export {
@@ -32,7 +32,7 @@ const formatterMap: Record<Exclude<ComparisonFormat, "default">, (comparison: Co
 	boxplot: formatBoxPlot,
 } as const;
 
-const selectFormatter = (format: ComparisonFormat): ((comparison: ComparisonResult) => string) => {
+const selectFormatter = (format: ComparisonFormat): (comparison: ComparisonResult) => string => {
 	if (format === "default") return formatComparisonCli;
 	return formatterMap[format];
 };
@@ -96,12 +96,11 @@ export const formatBenchComparison = (comparison: BenchComparison): string => {
 
 	for (const item of sorted) {
 		const color = item.relativeTo === 1 ? pc.green : pc.yellow;
-		const diff =
-			item.percentage === 0
-				? "baseline"
-				: item.percentage > 0
-				? `+${formatPercentage(item.percentage)}`
-				: formatPercentage(item.percentage);
+		const diff = item.percentage === 0
+			? "baseline"
+			: item.percentage > 0
+			? `+${formatPercentage(item.percentage)}`
+			: formatPercentage(item.percentage);
 
 		lines.push(`  ${color(item.name)}: ${pc.dim(item.ratio)} ${pc.dim(`(${diff})`)}`);
 	}
@@ -131,4 +130,3 @@ export const formatSuite = (suite: BenchSuite): string => {
 
 // Alias for formatBenchmarkResultCli for clarity
 export const formatBenchmarkResultCliVerbose = formatBenchmarkResultCli;
-

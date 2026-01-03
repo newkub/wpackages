@@ -175,7 +175,9 @@ export const formatBoxPlot = (comparison: ComparisonResult): string => {
 		plotArr[maxPos] = "|";
 
 		output += `  ${pc.cyan(plotArr.join(""))}\n`;
-		output += `  Min: ${formatTime(min)}, P25: ${formatTime(p25)}, Med: ${formatTime(median)}, P75: ${formatTime(p75)}, Max: ${formatTime(max)}\n\n`;
+		output += `  Min: ${formatTime(min)}, P25: ${formatTime(p25)}, Med: ${formatTime(median)}, P75: ${
+			formatTime(p75)
+		}, Max: ${formatTime(max)}\n\n`;
 	}
 
 	return output;

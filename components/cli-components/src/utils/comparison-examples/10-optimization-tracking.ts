@@ -1,11 +1,7 @@
 /**
  * Example 10: Real-world Optimization Tracking
  */
-import {
-	calculateSpeedup,
-	formatRatio,
-	percentageDifference,
-} from "../comparison.utils";
+import { calculateSpeedup, formatRatio, percentageDifference } from "../comparison.utils";
 
 interface BenchResult {
 	name: string;

@@ -7,11 +7,7 @@ import { parseSync } from "oxc-parser";
 import { createParseErrorMessage, createParseResult } from "../components";
 import type { Language } from "../types/language.type";
 import type { ParseError } from "../types/parse-error.type";
-import type {
-	GenericParseResult,
-	ParseOptionsBase,
-	StringifyableParser,
-} from "../types/parser-base.type";
+import type { GenericParseResult, ParseOptionsBase, StringifyableParser } from "../types/parser-base.type";
 import { Result } from "../utils";
 
 export type JavaScriptParseOptions = ParseOptionsBase & {
@@ -76,7 +72,6 @@ export const javascriptParser: StringifyableParser<JavaScriptAST, JavaScriptPars
 			return Result.err(createParseErrorMessage("JavaScript", filename, error));
 		}
 	},
-
 	// stringify: (ast: JavaScriptAST, _options = {}): string => {
 	// 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	// 	const { code } = print(ast.program as any);

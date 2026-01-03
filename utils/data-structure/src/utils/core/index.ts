@@ -1,31 +1,31 @@
 export {
-  type PriorityQueue,
-  createPriorityQueue,
-  enqueue as pqEnqueue,
-  dequeue as pqDequeue,
-  peek as pqPeek,
-  isEmpty as pqIsEmpty,
-  size as pqSize,
-} from './PriorityQueue';
+	createPriorityQueue,
+	dequeue as pqDequeue,
+	enqueue as pqEnqueue,
+	isEmpty as pqIsEmpty,
+	peek as pqPeek,
+	type PriorityQueue,
+	size as pqSize,
+} from "./PriorityQueue";
 
 export {
-  type Queue,
-  createQueue,
-  enqueue as queueEnqueue,
-  dequeue as queueDequeue,
-  peek as queuePeek,
-  isEmpty as queueIsEmpty,
-  size as queueSize,
-} from './Queue';
+	createQueue,
+	dequeue as queueDequeue,
+	enqueue as queueEnqueue,
+	isEmpty as queueIsEmpty,
+	peek as queuePeek,
+	type Queue,
+	size as queueSize,
+} from "./Queue";
 
 export {
-  type Stack,
-  createStack,
-  push as stackPush,
-  pop as stackPop,
-  peek as stackPeek,
-  isEmpty as stackIsEmpty,
-  size as stackSize,
-} from './Stack';
+	createStack,
+	isEmpty as stackIsEmpty,
+	peek as stackPeek,
+	pop as stackPop,
+	push as stackPush,
+	size as stackSize,
+	type Stack,
+} from "./Stack";
 
-export * from './DisjointSetUnion';
+export * from "./DisjointSetUnion";

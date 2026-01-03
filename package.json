@@ -10,7 +10,8 @@
 		"plugins/**/*",
 		"framework/**/*",
 		"cli/**/*",
-		"components/**/*"
+		"components/**/*",
+		"!**/node_modules/**"
 	],
 	"packageManager": "bun@1.3.5",
 	"globalConcurrency": 32,
@@ -29,7 +30,6 @@
 		"lint": "turbo lint --concurrency=4",
 		"test": "turbo test",
 		"test:coverage": "turbo test:coverage",
-		"test:wtest": "turbo wtest",
 		"build": "turbo build",
 		"verify": "turbo verify",
 		"clean": "bunx rimraf */bun.lockb */node_modules"
@@ -54,6 +54,7 @@
 		"vitest": "^4.0.16"
 	},
 	"dependencies": {
+		"@effect/schema": "^0.75.5",
 		"@wpackages/schema": "workspace:*",
 		"effect": "^3.19.14"
 	}
