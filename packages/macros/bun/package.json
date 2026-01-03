@@ -1,5 +1,6 @@
 {
-	"name": "@wpackages/bun",
+	"name": "@wpackages/macros-bun",
+	"description": "A collection of useful Bun macros",
 	"version": "0.0.1",
 	"private": true,
 	"type": "module",

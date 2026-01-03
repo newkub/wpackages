@@ -1,0 +1,25 @@
+{
+  "name": "@wpackages/presets",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "lint": "echo 'lint'",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "effect": "^3.4.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}
