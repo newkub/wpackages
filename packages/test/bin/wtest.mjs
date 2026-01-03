@@ -11,7 +11,7 @@ async function executeTests() {
 	const promises = testFiles.map(file =>
 		new Promise((resolve, reject) => {
 			const worker = Bun.spawn({
-				cmd: ["bun", "--preload", "./src/setup.ts", "./bin/run-test.mjs", file],
+				cmd: ["bun", "--preload", "./src/setup.ts", "./bin/run-test.ts", file],
 				stdout: "pipe",
 				stderr: "pipe",
 			});

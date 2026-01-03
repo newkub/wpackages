@@ -10,6 +10,7 @@ import { toBeInstanceOf } from "./assertions/instance";
 import { toReject, toResolve } from "./assertions/promises";
 import { toMatchSchema } from "./assertions/schema";
 import { toThrow, toThrowAsync } from "./assertions/throws";
+import { toHaveBeenCalled, toHaveBeenCalledWith } from "./assertions/mock";
 import { toBeFalsy, toBeNull, toBeTruthy, toBeUndefined } from "./assertions/truthiness";
 import { toBeType } from "./assertions/types";
 import { AssertionError } from "./error";

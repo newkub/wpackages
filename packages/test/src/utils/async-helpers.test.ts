@@ -1,5 +1,5 @@
-import { describe, it, expect } from '../index';
-import { delay, waitFor, retry, withTimeout } from './async-helpers';
+import { describe, expect, it } from "../index";
+import { delay, retry, waitFor, withTimeout } from "./async-helpers";
 
 describe("Async helpers", () => {
 	describe("delay", () => {

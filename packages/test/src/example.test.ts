@@ -1,4 +1,4 @@
-import { describe, it, test, expect, beforeAll, afterAll } from './index';
+import { afterAll, beforeAll, describe, expect, it, test } from "./index";
 
 describe("Example Suite", () => {
 	beforeAll(() => {

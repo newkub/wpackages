@@ -3,17 +3,16 @@
  */
 
 // Core test functions and hooks
-export { describe, it, test, beforeAll, afterAll } from './core/globals';
+export { afterAll, beforeAll, describe, it, test } from "./core/globals";
 
 // Mocking and spying utilities
-export { w } from './core/w';
+export { w } from "./core/w";
 
 // Assertion library
-export { expect } from './utils/assertions';
+export { expect } from "./utils/assertions";
 
 // All other utilities (diff, async helpers, etc.)
-export * from './utils';
+export * from "./utils";
 
 // Core types
-export type * from './types';
-
+export type * from "./types";

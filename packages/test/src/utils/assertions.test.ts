@@ -1,4 +1,4 @@
-import { describe, it, expect } from '../index';
+import { describe, expect, it } from "../index";
 import { AssertionError } from "./error";
 
 describe("Assertions", () => {

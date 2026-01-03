@@ -1,4 +1,4 @@
-import { describe, it, expect, w } from "../index";
+import { describe, expect, it, w } from "../index";
 
 describe("Mock utilities", () => {
 	describe("w.fn", () => {
