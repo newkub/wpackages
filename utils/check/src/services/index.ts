@@ -9,4 +9,6 @@ export * from "./imports-checker.service";
 export * from "./security-checker.service";
 export * from "./size-checker.service";
 export * from "./type-checker.service";
+export * from "./check-type-safe.service";
+export * from "./type-analyzer.service";
 export * from "./unused-checker.service";

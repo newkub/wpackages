@@ -1,5 +1,7 @@
+#!/usr/bin/env bun
+import { intro, isCancel, multiselect, outro, spinner } from "@clack/prompts";
 import { Effect, Layer } from "effect";
-import { formatCheckResult, formatJson, formatSummary, formatTable } from "./components/index";
+import { formatCheckResult, formatSummary } from "./components/index";
 import { createCheckerConfig } from "./config/index";
 import {
 	CircularCheckerLive,
@@ -14,12 +16,12 @@ import {
 	TypeCheckerLive,
 	TypeSafeCheckerLive,
 	UnusedCheckerLive,
+    TypeAnalyzerLive
 } from "./services/index";
-import type { CheckerOptions, CheckResults } from "./types/index";
+import type { CheckType, CheckerOptions, CheckResults } from "./types/index";
 import { runChecks } from "./utils/index";
 
-// Combine all service layers
-const CheckerServicesLive = Layer.mergeAll(
+const AllCheckerServicesLive = Layer.mergeAll(
 	TypeCheckerLive,
 	UnusedCheckerLive,
 	DepsCheckerLive,
@@ -32,6 +34,7 @@ const CheckerServicesLive = Layer.mergeAll(
 	SecurityCheckerLive,
 	TypeSafeCheckerLive,
 	SideEffectCheckerLive,
+    TypeAnalyzerLive
 );
 
 export const runChecker = (
@@ -39,39 +42,69 @@ export const runChecker = (
 ): Effect.Effect<CheckResults, Error> =>
 	Effect.gen(function*() {
 		const options = createCheckerConfig(partialOptions);
-
-		if (!options.silent) {
-			console.log("🔍 Running code quality checks...\n");
-		}
-
-		// Run all checks
 		const results = yield* runChecks(options);
 
-		// Format output
-		if (!options.silent) {
-			switch (options.output) {
-				case "json":
-					console.log(formatJson(results));
-					break;
-				case "table":
-					console.log(formatTable(results));
-					console.log(formatSummary(results));
-					break;
-				default:
-					for (const result of results.results) {
-						console.log(formatCheckResult(result));
-					}
-					console.log(formatSummary(results));
-			}
+		for (const result of results.results) {
+			console.log(formatCheckResult(result));
 		}
+		console.log(formatSummary(results));
 
-		// Exit with appropriate code
 		if (results.failed > 0) {
 			return yield* Effect.fail(new Error(`${results.failed} checks failed`));
 		}
-
 		return results;
-	}).pipe(Effect.provide(CheckerServicesLive));
+	}).pipe(Effect.provide(AllCheckerServicesLive));
 
-// Export program for direct execution
-export const CheckerProgram = runChecker();
+async function main() {
+	intro(`Code Quality Checker`);
+
+	const checkTypes = await multiselect({
+		message: "Which checks would you like to run?",
+		options: [
+			{ value: "type", label: "TypeScript Type Checking" },
+			{ value: "unused", label: "Detect Unused Code" },
+			{ value: "deps", label: "Check Dependencies" },
+			{ value: "depsUpdate", label: "Check for Outdated Dependencies" },
+			{ value: "imports", label: "Validate Imports" },
+			{ value: "circular", label: "Detect Circular Dependencies" },
+			{ value: "complexity", label: "Check Code Complexity" },
+			{ value: "size", label: "Check File Sizes" },
+			{ value: "duplicates", label: "Find Duplicate Code" },
+			{ value: "security", label: "Security Checks" },
+			{ value: "typeSafe", label: "Check Type Safety Settings" },
+			{ value: "sideEffect", label: "Detect Side Effects" },
+            { value: "type-analysis", label: "Analyze Type Declarations" },
+		],
+		initialValues: ["type", "unused", "deps"],
+	});
+
+	if (isCancel(checkTypes)) {
+		outro("Cancelled");
+		process.exit(0);
+	}
+
+	const s = spinner();
+	s.start("Running checks...");
+
+	const options = {
+		types: checkTypes as CheckType[],
+	};
+
+	const program = runChecker(options);
+
+	Effect.runPromise(program)
+		.then(() => {
+			s.stop("Checks completed successfully.");
+			outro("All checks passed!");
+			process.exit(0);
+		})
+		.catch((error: any) => {
+			s.stop("Checks failed.");
+			outro(`Error: ${error.message}`);
+			process.exit(1);
+		});
+}
+
+if (import.meta.main) {
+	main().catch(console.error);
+}

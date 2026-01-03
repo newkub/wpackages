@@ -27,7 +27,7 @@ export const makeComplexityCheckerService = () => {
 			try {
 				const configPath = ts.findConfigFile(
 					process.cwd(),
-					ts.sys.fileExists,
+					(path) => ts.sys.fileExists(path),
 					"tsconfig.json",
 				);
 
@@ -41,7 +41,7 @@ export const makeComplexityCheckerService = () => {
 					};
 				}
 
-				const configFile = ts.readConfigFile(configPath, ts.sys.readFile);
+				const configFile = ts.readConfigFile(configPath, (path) => ts.sys.readFile(path));
 				const parsedConfig = ts.parseJsonConfigFileContent(
 					configFile.config,
 					ts.sys,

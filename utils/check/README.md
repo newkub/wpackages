@@ -12,48 +12,36 @@ Comprehensive code quality checker with TypeScript, unused code detection, depen
 - 📊 **Complexity** - Measure code complexity
 - 🎯 **Parallel Execution** - Run checks concurrently
 - 🎨 **Beautiful Output** - Colorful, readable reports
-- 📄 **Multiple Formats** - Text, table, or JSON output
+- ✨ **Interactive Mode** - User-friendly interactive prompt
 
 ## Installation
 
 ```bash
-bun add -D check
+bun add -D @wpackages/check
 ```
 
 ## Usage
 
 ### CLI
 
+The CLI runs in interactive mode, allowing you to select which checks to run.
+
 ```bash
-# Run default checks (type, unused, deps)
+# Run the interactive checker
+bun run dev
+
+# Or, after installation:
 wcheck
-
-# Run all checks
-wcheck --all
-
-# Run specific checks
-wcheck -t type -t unused
-
-# Run with parallel execution
-wcheck --all --parallel
-
-# Output as JSON
-wcheck --output json
-
-# Output as table
-wcheck --output table
 ```
 
 ### Programmatic
 
 ```typescript
-import { runChecker } from "check";
+import { runChecker } from "@wpackages/check";
 import { Effect } from "effect";
 
 const program = runChecker({
 	types: ["type", "unused", "deps"],
-	parallel: true,
-	output: "text",
 });
 
 await Effect.runPromise(program);
@@ -61,18 +49,19 @@ await Effect.runPromise(program);
 
 ## Check Types
 
-- **type** - TypeScript type checking via compiler API ✅
-- **unused** - Find unused variables, imports, parameters ✅
-- **deps** - Check package.json dependencies ✅
-- **depsUpdate** - Check for outdated dependencies ✅ NEW
-- **imports** - Validate import statements and paths ✅
-- **circular** - Detect circular dependency chains ✅
-- **complexity** - Measure cyclomatic complexity ✅
-- **size** - Check file sizes ✅
-- **duplicates** - Find duplicate code blocks ✅
-- **security** - Security vulnerability checks ✅
-- **typeSafe** - Check type safety settings ✅ NEW
-- **sideEffect** - Detect side effects in code ✅ NEW
+- **type** - TypeScript type checking via compiler API
+- **unused** - Find unused variables, imports, parameters
+- **deps** - Check package.json dependencies
+- **depsUpdate** - Check for outdated dependencies
+- **imports** - Validate import statements and paths
+- **circular** - Detect circular dependency chains
+- **complexity** - Measure cyclomatic complexity
+- **size** - Check file sizes
+- **duplicates** - Find duplicate code blocks
+- **security** - Security vulnerability checks
+- **typeSafe** - Check type safety settings
+- **sideEffect** - Detect side effects in code
+- **type-analysis** - Analyze and display type declarations for variables
 
 ## Options
 
@@ -81,12 +70,6 @@ interface CheckerOptions {
 	types: CheckType[]; // Which checks to run
 	include?: string[]; // Glob patterns to include
 	exclude?: string[]; // Glob patterns to exclude
-	fix?: boolean; // Auto-fix issues
-	parallel?: boolean; // Run in parallel
-	maxConcurrency?: number; // Max parallel checks
-	verbose?: boolean; // Verbose output
-	silent?: boolean; // Silent mode
-	output?: "json" | "text" | "table"; // Output format
 }
 ```
 
