@@ -7,10 +7,10 @@ import type { AssertionOptions } from "../types";
 import { toContain, toContainString } from "./assertions/collections";
 import { toBe, toEqual } from "./assertions/equality";
 import { toBeInstanceOf } from "./assertions/instance";
+import { toHaveBeenCalled, toHaveBeenCalledWith } from "./assertions/mock";
 import { toReject, toResolve } from "./assertions/promises";
 import { toMatchSchema } from "./assertions/schema";
 import { toThrow, toThrowAsync } from "./assertions/throws";
-import { toHaveBeenCalled, toHaveBeenCalledWith } from "./assertions/mock";
 import { toBeFalsy, toBeNull, toBeTruthy, toBeUndefined } from "./assertions/truthiness";
 import { toBeType } from "./assertions/types";
 import { AssertionError } from "./error";
@@ -85,6 +85,15 @@ export class Assertion<T> {
 
 	toMatchSchema(schema: ZodSchema<any>, options?: AssertionOptions): void {
 		toMatchSchema(this._value, schema, options);
+	}
+
+	toHaveBeenCalled(options?: AssertionOptions): void {
+		toHaveBeenCalled(this._value, options);
+	}
+
+	toHaveBeenCalledWith(...args: any[]): void {
+		// Note: options are not supported here as the last arg could be an options object
+		toHaveBeenCalledWith(this._value, ...args);
 	}
 
 	get not(): Assertion<T> {
@@ -201,6 +210,20 @@ class NotAssertion<T> extends Assertion<T> {
 			options?.message || "Expected promise to not reject",
 			"resolve",
 			"reject",
+		);
+	}
+
+	override toHaveBeenCalled(options?: AssertionOptions): void {
+		this._negateSync(
+			() => super.toHaveBeenCalled(options),
+			options?.message || "Expected mock function to not have been called",
+		);
+	}
+
+	override toHaveBeenCalledWith(...args: any[]): void {
+		this._negateSync(
+			() => super.toHaveBeenCalledWith(...args),
+			options?.message || `Expected mock function to not have been called with arguments: ${JSON.stringify(args)}`,
 		);
 	}
 }
