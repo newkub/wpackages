@@ -1,4 +1,4 @@
-import { describe, expect, it } from "bun:test";
+import { describe, expect, it } from "vitest";
 import { chainSelectors } from "./chainSelectors";
 
 describe("chainSelectors", () => {
@@ -34,7 +34,7 @@ describe("chainSelectors", () => {
 	});
 
 	it("should throw an error if no selectors are provided", () => {
-		// @ts-ignore - testing invalid usage
-		expect(() => chainSelectors()).toThrow("chainSelectors requires at least one selector.");
+		const unsafeChainSelectors = chainSelectors as unknown as () => unknown;
+		expect(() => unsafeChainSelectors()).toThrow("chainSelectors requires at least one selector.");
 	});
 });

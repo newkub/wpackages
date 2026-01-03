@@ -19,12 +19,13 @@ export function literal<T extends readonly [Literal, ...Literal[]]>(
 			if (options.options.includes(input as Literal)) {
 				return { success: true, data: input as T[number] };
 			}
+			const received = typeof input === "string" ? input : JSON.stringify(input);
 			return {
 				success: false,
 				issues: [
 					{
 						message: options.message
-							|| `Expected one of ${options.options.join(", ")}, but received ${input}`,
+							|| `Expected one of ${options.options.join(", ")}, but received ${received}`,
 						path: [],
 					},
 				],

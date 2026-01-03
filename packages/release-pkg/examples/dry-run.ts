@@ -2,13 +2,11 @@
  * Dry run example - preview release without making changes
  */
 
-import { ReleaseOrchestrator } from "release";
+import { release } from "../src/index";
 
 async function main() {
-	const orchestrator = new ReleaseOrchestrator();
-
 	// Preview what will happen without actually releasing
-	const result = await orchestrator.release({
+	const result = await release({
 		type: "minor",
 		dryRun: true,
 		verbose: true,

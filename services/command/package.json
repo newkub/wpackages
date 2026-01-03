@@ -10,7 +10,10 @@
 		".": "./dist/index.mjs",
 		"./package.json": "./package.json"
 	},
-	"files": ["dist", "README.md"],
+	"files": [
+		"dist",
+		"README.md"
+	],
 	"scripts": {
 		"build": "tsdown --exports --dts --minify",
 		"dev": "bun --watch src/index.ts",
@@ -21,8 +24,7 @@
 		"verify": "bun run format && bun run lint && bun run test && bun audit && bun run build"
 	},
 	"dependencies": {
-		"@wpackages/functional": "workspace:*",
-		"@wpackages/types": "workspace:*"
+		"@wpackages/functional": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/bun": "^1.3.5",

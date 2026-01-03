@@ -17,7 +17,7 @@ describe("cleanup service", () => {
 
 	it("should delete specified targets", async () => {
 		const targets = ["/test/node_modules", "/test/dist"];
-		vi.mocked(rimraf).mockResolvedValue(true as any);
+		(rimraf as vi.Mock).mockResolvedValue(true as any);
 
 		const results = await cleanup(targets);
 
@@ -34,7 +34,7 @@ describe("cleanup service", () => {
 		const targets = ["/test/dist"];
 		const error = new Error("Permission denied");
 
-		vi.mocked(rimraf).mockRejectedValue(error);
+		(rimraf as vi.Mock).mockRejectedValue(error);
 
 		const results = await cleanup(targets);
 

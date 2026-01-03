@@ -1,5 +1,10 @@
-import { Command } from "@wpackages/types";
+import { Schema } from "@effect/schema";
 import { Context, Data, Effect } from "effect";
+
+export class Command extends Schema.Class<Command>("Command")({
+	name: Schema.String,
+	args: Schema.Array(Schema.String),
+}) {}
 
 // A union type for all possible values a command can return.
 // For now, it can be a simple string, a table structure, or nothing.

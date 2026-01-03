@@ -1,8 +1,8 @@
-import type { GenerateResult, GeneratorOptions } from "../types";
-import { generateComponent, type ComponentGeneratorOptions } from "../generators/component.generator";
 import { generateCode } from "../generators/code.generator";
+import { type ComponentGeneratorOptions, generateComponent } from "../generators/component.generator";
 import { generateModule, type ModuleGeneratorOptions } from "../generators/module.generator";
 import { generateTest } from "../generators/test.generator";
+import type { GenerateResult, GeneratorOptions } from "../types";
 
 /**
  * Preset configuration for common patterns
@@ -50,7 +50,11 @@ export const generateFromPreset = async (
 					result = await generateTest(file.name, file.template, mergedOptions as GeneratorOptions);
 					break;
 				default:
-					throw new Error(`Unknown file type: ${file.type}`);
+					// This should be unreachable due to the discriminated union type
+					// This ensures all cases are handled at compile time
+					// This ensures all cases are handled at compile time
+					const _exhaustiveCheck: never = file.type;
+					throw new Error("Unhandled file type encountered. This should not happen.");
 			}
 
 			results.push(result);

@@ -20,4 +20,7 @@ export const api = builder()
 export type ApiType = typeof api;
 
 // Create and start the server
-createServer(api);
+if (import.meta.main) {
+	createServer(api);
+	console.log("Server running at http://localhost:3000");
+}

@@ -1,6 +1,5 @@
 #!/usr/bin/env bun
 import { glob } from "glob";
-import path from "node:path";
 import { ConsoleReporter } from "../src/reporter/console";
 
 async function executeTests() {
@@ -8,39 +7,42 @@ async function executeTests() {
 	const testFiles = await glob("src/**/*.test.ts", { cwd, absolute: true });
 	const reporter = new ConsoleReporter();
 
-	const promises = testFiles.map(file =>
-		new Promise((resolve, reject) => {
-			const worker = Bun.spawn({
-				cmd: ["bun", "--preload", "./src/setup.ts", "./bin/run-test.ts", file],
-				stdout: "pipe",
-				stderr: "pipe",
-			});
+	const promises = testFiles.map(async file => {
+		const worker = Bun.spawn({
+			cmd: ["bun", "--preload", "./src/setup.ts", "./bin/run-test.ts", file],
+			stdout: "pipe",
+			stderr: "pipe",
+		});
 
-			let stdout = "";
-			const textDecoder = new TextDecoder();
-			worker.stdout.on("data", chunk => stdout += textDecoder.decode(chunk));
+		const chunks = [];
+		for await (const chunk of worker.stdout) {
+			chunks.push(chunk);
+		}
+		const stdout = new TextDecoder().decode(Buffer.concat(chunks));
 
-			worker.exited.then(exitCode => {
-				if (exitCode !== 0) {
-					return reject(new Error(`Test worker for ${file} exited with code ${exitCode}`));
-				}
-				try {
-					const result = JSON.parse(stdout);
-					if (result.error) {
-						return reject(new Error(`Error in test file ${file}: ${result.error}`));
-					}
-					result.results.forEach(res => reporter.addResult(res));
-					resolve();
-				} catch (e) {
-					reject(new Error(`Failed to parse test results from ${file}: ${e.message}`));
-				}
-			});
-		})
-	);
+		const exitCode = await worker.exited;
+
+		if (exitCode !== 0) {
+			throw new Error(`Test worker for ${file} exited with code ${exitCode}`);
+		}
+
+		try {
+			const result = JSON.parse(stdout);
+			if (result.error) {
+				throw new Error(`Error in test file ${file}: ${result.error}`);
+			}
+			result.results.forEach(res => reporter.addResult(res));
+		} catch (e) {
+			throw new Error(`Failed to parse test results from ${file}: ${e.message}`);
+		}
+	});
 
 	await Promise.all(promises);
 
 	reporter.printSummary();
 }
 
-asy;
+executeTests().catch(error => {
+	console.error(error);
+	process.exit(1);
+});

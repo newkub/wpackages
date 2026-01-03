@@ -1,11 +1,9 @@
 import { HistorySource } from "../history";
 import { Action, Location } from "../types";
 import { parsePath } from "../utils";
+import { isBrowser } from "../dom";
 import { createMockSource } from "./mock";
 
-const isBrowser = typeof window !== "undefined"
-	&& typeof window.location !== "undefined"
-	&& typeof window.history !== "undefined";
 
 export function createHashSource(): HistorySource {
 	if (!isBrowser) {

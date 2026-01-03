@@ -8,7 +8,7 @@
 	"scripts": {
 		"build": "tsc -b",
 		"dev": "tsc -b --watch",
-		"lint": "eslint .",
+		"lint": "oxlint --fix --type-aware",
 		"test": "vitest"
 	},
 	"keywords": [],

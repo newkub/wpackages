@@ -8,6 +8,7 @@ type ObjectOutput<TShape extends Record<string, Schema<unknown, unknown>>> = {
 export function object<TShape extends Record<string, Schema<unknown, unknown>>>(
 	options: ObjectOptions<TShape>,
 ): Schema<Record<string, unknown>, ObjectOutput<TShape>> {
+	const unknownKeys = options.unknownKeys ?? "strip";
 	return createSchema({
 		_metadata: { name: options.name || "object" },
 		_input: {} as Record<string, unknown>,
@@ -30,6 +31,21 @@ export function object<TShape extends Record<string, Schema<unknown, unknown>>>(
 			const issues: Issue[] = [];
 			const output: Record<string, unknown> = {};
 			const record = input as Record<string, unknown>;
+
+			if (unknownKeys !== "strip") {
+				for (const key in record) {
+					if (Object.hasOwn(record, key) && !Object.hasOwn(options.shape, key)) {
+						if (unknownKeys === "strict") {
+							issues.push({
+								message: `Unknown key: ${key}`,
+								path: [key],
+							});
+						} else {
+							output[key] = record[key];
+						}
+					}
+				}
+			}
 
 			for (const key in options.shape) {
 				if (Object.hasOwn(options.shape, key)) {

@@ -3,6 +3,15 @@
  */
 
 import type { CustomMatcher } from "../types";
+import { isEqual } from "./diff";
+
+function safeStringify(value: unknown): string {
+	try {
+		return JSON.stringify(value);
+	} catch {
+		return String(value);
+	}
+}
 
 /**
  * Create custom matcher
@@ -27,8 +36,8 @@ export const createMatcher = <T>(
  * Compares values by JSON serialization
  */
 export const deepEqualMatcher: CustomMatcher<unknown> = (actual, expected) => ({
-	pass: JSON.stringify(actual) === JSON.stringify(expected),
-	message: () => `Expected ${JSON.stringify(actual)} to deeply equal ${JSON.stringify(expected)}`,
+	pass: isEqual(actual, expected),
+	message: () => `Expected ${safeStringify(actual)} to deeply equal ${safeStringify(expected)}`,
 });
 
 /**

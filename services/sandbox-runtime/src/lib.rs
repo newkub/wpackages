@@ -17,6 +17,13 @@ pub struct WasmSandbox {
 }
 
 #[wasm_bindgen]
+impl Default for WasmSandbox {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[wasm_bindgen]
 impl WasmSandbox {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {

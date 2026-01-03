@@ -77,6 +77,10 @@ async function start() {
 start();
 ```
 
+## Comparison with Other Libraries
+
+For a detailed comparison with other popular configuration libraries like `dotenv`, `convict`, and `nconf`, please see the [detailed comparison document](./docs/comparison.md).
+
 ## License
 
 This project is licensed under the MIT License.

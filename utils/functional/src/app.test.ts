@@ -36,6 +36,8 @@ describe("appLogic", () => {
 
 		expect(loggedMessages).toContain("App started");
 		expect(loggedMessages).toContain(`Fetched users: ${JSON.stringify(testUsers)}`);
-		expect(loggedMessages).toContain("Rendering button: <button>Click me</button>");
+		expect(loggedMessages).toContain(
+			"Rendering button: <button style=\"color:#007bff\">Click me</button>",
+		);
 	});
 });

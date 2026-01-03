@@ -32,7 +32,13 @@ export const coerceString = (
 				]);
 			}
 
-			return Result.ok(String(input));
+			let value: string;
+			try {
+				value = JSON.stringify(input) ?? Object.prototype.toString.call(input);
+			} catch {
+				value = Object.prototype.toString.call(input);
+			}
+			return Result.ok(value);
 		},
 		_metadata: { name: "string" },
 		// biome-ignore lint/suspicious/noExplicitAny: Required for type inference

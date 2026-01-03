@@ -2,7 +2,7 @@
  * Basic preview release example
  */
 
-import { PreviewService } from "release";
+import { PreviewService } from "../src/index";
 
 async function main() {
 	const preview = new PreviewService();
@@ -11,6 +11,7 @@ async function main() {
 		// Publish preview for current commit
 		const result = await preview.publishPreview({
 			ttl: 7, // Expire in 7 days
+			dryRun: true,
 		});
 
 		console.log("✅ Preview published!");

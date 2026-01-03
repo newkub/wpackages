@@ -2,16 +2,15 @@
  * Prerelease example - create beta/alpha releases
  */
 
-import { ReleaseOrchestrator } from "release";
+import { release } from "../src/index";
 
 async function main() {
-	const orchestrator = new ReleaseOrchestrator();
-
 	// Create a beta prerelease
-	const result = await orchestrator.release({
+	const result = await release({
 		type: "prepatch",
 		preid: "beta",
 		verbose: true,
+		dryRun: true,
 	});
 
 	console.log(`\n✅ Created prerelease: ${result.version}`);

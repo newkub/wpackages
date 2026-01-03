@@ -1,5 +1,5 @@
 import { CommandService } from "@wpackages/command";
-import { Command } from "@wpackages/types";
+import { Command } from "@wpackages/command";
 import { Context, Data, Effect, Layer } from "effect";
 import { DisplayService } from "./display.service";
 
@@ -29,7 +29,7 @@ export const ExecutorServiceLive = Layer.effect(
 					});
 					await proc.exited;
 				},
-				catch: (e) => new ExecuteError({ message: `Failed to execute command: ${e}` }),
+				catch: (e) => new ExecuteError({ message: `Failed to execute command: ${String(e)}` }),
 			});
 
 		return ExecutorService.of({

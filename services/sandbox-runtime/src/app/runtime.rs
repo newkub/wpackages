@@ -11,6 +11,12 @@ pub struct AppRuntime {
     runtime: SandboxRuntime,
 }
 
+impl Default for AppRuntime {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AppRuntime {
     pub fn new() -> Self {
         let mut root = FsNode::Directory {

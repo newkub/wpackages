@@ -1,5 +1,5 @@
-import { validateTemplate, validateTemplateWithDefaults, assertTemplateValid } from "./template-validator";
 import { createTemplateHelpers } from "../utils";
+import { assertTemplateValid, validateTemplate, validateTemplateWithDefaults } from "./template-validator";
 
 /**
  * Example 1: Validate template with context

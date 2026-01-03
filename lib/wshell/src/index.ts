@@ -30,4 +30,7 @@ const AppLive = Layer.mergeAll(
 
 const runnable = main.pipe(Effect.provide(AppLive));
 
-Effect.runPromise(runnable);
+Effect.runPromise(runnable).catch((e) => {
+	console.error("An unhandled error occurred:", e);
+	process.exit(1);
+});

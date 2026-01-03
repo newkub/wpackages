@@ -5,6 +5,7 @@ export type StringSchema = Schema<string> & {
 	readonly min: (value: number) => StringSchema;
 	readonly max: (value: number) => StringSchema;
 	readonly pattern: (value: RegExp) => StringSchema;
+	readonly literal: <T extends string>(value: T) => Schema<unknown, T>;
 	readonly message: (msg: string) => StringSchema;
 	readonly name: (name: string) => StringSchema;
 };
@@ -65,6 +66,31 @@ export function string(options: StringOptions = {}): StringSchema {
 			min: (value) => create({ ...next, min: value }),
 			max: (value) => create({ ...next, max: value }),
 			pattern: (value) => create({ ...next, pattern: value }),
+			literal: <T extends string>(value: T): Schema<unknown, T> => {
+				return createSchema({
+					_metadata: { name: next.name || "string" },
+					_input: undefined as unknown,
+					_output: value as T,
+					parse(input: unknown): Result<T> {
+						const baseResult = base.parse(input);
+						if (!baseResult.success) {
+							return baseResult as unknown as Result<T>;
+						}
+						if (baseResult.data !== value) {
+							return {
+								success: false,
+								issues: [
+									{
+										message: `Expected literal ${value}, but received ${baseResult.data}`,
+										path: [],
+									},
+								],
+							};
+						}
+						return { success: true, data: value };
+					},
+				});
+			},
 			message: (msg) => create({ ...next, message: msg }),
 			name: (name) => create({ ...next, name }),
 		};

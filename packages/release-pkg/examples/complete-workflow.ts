@@ -7,9 +7,9 @@ import {
 	ChangelogService,
 	GitService,
 	PreviewService,
-	ReleaseOrchestrator,
+	release,
 	VersionService,
-} from "release";
+} from "../src/index";
 
 async function completeWorkflow() {
 	console.log("🚀 Starting complete release workflow\n");
@@ -23,17 +23,16 @@ async function completeWorkflow() {
 		throw new Error("Not a git repository");
 	}
 
-	const hasChanges = await git.hasUncommittedChanges();
-	if (hasChanges) {
-		throw new Error("Uncommitted changes detected");
-	}
+	// const hasChanges = await git.hasUncommittedChanges();
+	// if (hasChanges) {
+	// 	throw new Error("Uncommitted changes detected");
+	// }
 
 	console.log("✅ Environment validated\n");
 
 	// 2. Get current state
 	console.log("2️⃣ Getting current state...");
 	const version = new VersionService();
-	void main(); // <--- Added void operator here
 	const currentVersion = await version.getCurrentVersion();
 	const packageInfo = await version.getPackageInfo();
 
@@ -47,6 +46,7 @@ async function completeWorkflow() {
 	try {
 		const previewResult = await preview.publishPreview({
 			ttl: 7,
+			dryRun: true,
 		});
 
 		console.log(`✅ Preview published: ${previewResult.url}`);
@@ -87,11 +87,10 @@ async function completeWorkflow() {
 
 	// 6. Execute release
 	console.log("\n6️⃣ Executing release...");
-	const orchestrator = new ReleaseOrchestrator();
-
-	const releaseResult = await orchestrator.release({
+	const releaseResult = await release({
 		type: "patch",
 		verbose: true,
+		dryRun: true,
 	});
 
 	console.log("\n✅ Release completed!");

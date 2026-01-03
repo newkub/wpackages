@@ -92,6 +92,18 @@ async function main() {
 main();
 ```
 
+## Comparison with Other Tools
+
+`@wpackages/api-builder` is designed to provide a superior developer experience for building type-safe APIs. Here's how it compares to other popular solutions:
+
+| Feature | @wpackages/api-builder | effect-http | tRPC | Hono |
+| --- | --- | --- | --- | --- |
+| **Core Philosophy** | Effect-TS, Functional | Effect-TS, Declarative | End-to-end typesafe APIs | Lightweight, Fast |
+| **Type Safety** | End-to-end with `@effect/schema` | End-to-end with `@effect/schema` | End-to-end, inferred | Middleware & Validators |
+| **Developer Experience** | Excellent (declarative, simple) | Excellent (declarative, composable) | Excellent (autocomplete) | Good |
+
+For a more detailed breakdown, see the [full comparison document](./docs/comparison.md).
+
 ## License
 
 This project is licensed under the MIT License.

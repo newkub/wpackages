@@ -47,7 +47,6 @@
 		"useDefineForClassFields": true,
 
 		/* Path Aliases */
-		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"]
 		}

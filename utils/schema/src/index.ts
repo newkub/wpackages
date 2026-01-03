@@ -17,9 +17,11 @@ export type {
 
 export * from "./types/array";
 export * from "./types/literal";
+export * from "./types/boolean";
 export * from "./types/number";
 export * from "./types/object";
 export * from "./types/optional";
 export * from "./types/string";
 export * from "./types/union";
 export * from "./utils/builder";
+export * from "./utils/format-issues";

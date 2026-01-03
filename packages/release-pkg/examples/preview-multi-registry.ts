@@ -2,7 +2,7 @@
  * Multi-registry preview example - publish to multiple registries
  */
 
-import { type RegistryConfig, RegistryService, VersionService } from "release";
+import { type RegistryConfig, RegistryService, VersionService } from "../src/index";
 
 async function main() {
 	const registry = new RegistryService();
@@ -16,15 +16,18 @@ async function main() {
 		{
 			type: "npm",
 			url: "https://registry.npmjs.org",
+			dryRun: true,
 		},
 		{
 			type: "jsr",
 			url: "https://jsr.io",
+			dryRun: true,
 		},
 		{
 			type: "github" as const,
 			url: "https://npm.pkg.github.com",
 			token: process.env["GITHUB_TOKEN"] ?? undefined,
+			dryRun: true,
 		} as RegistryConfig,
 	]);
 

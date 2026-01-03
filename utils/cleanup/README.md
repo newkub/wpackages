@@ -39,15 +39,12 @@ To start the interactive cleanup wizard, run the `computer-cleanup` command from
 bun computer-cleanup
 ```
 
-This will launch a prompt asking you to select which of the following items to clean up:
+The tool will then:
 
-- `node_modules`
-- `dist` folders
-- `coverage` reports
-- `.turbo` cache
-- `bun.lockb` lockfile
-
-After you make your selection, the tool will find and delete all matching files and directories.
+1. **Scan Your Workspace**: It searches for common project artifacts based on pre-configured patterns (e.g., `node_modules`, `dist` folders, `.turbo` cache, etc.).
+2. **Display Found Items**: It presents you with an interactive list of all the files and directories it found, along with their respective sizes.
+3. **Select and Confirm**: You can use the spacebar to select the items you wish to delete.
+4. **Clean Up**: After you confirm your selection, the tool will safely delete the chosen items and report the total disk space saved.
 
 ## License
 

@@ -12,25 +12,21 @@ export class DisplayService extends Context.Tag("DisplayService")<
 export const DisplayServiceLive = Layer.effect(
 	DisplayService,
 	Effect.gen(function*() {
-		const console = yield* ConsoleService;
+		const consoleService = yield* ConsoleService;
 
 		const displayTable = (data: ReadonlyArray<Record<string, any>>) =>
 			Effect.sync(() => {
-				if (data.length === 0) {
-					return;
+				if (data.length > 0) {
+					// Use the built-in console.table for a nicely formatted table.
+					console.table(data);
 				}
-				// A simple table display. We can use a library like `cli-table3` later.
-				console.log(Object.keys(data[0]).join("\t"));
-				data.forEach((row) => {
-					console.log(Object.values(row).join("\t"));
-				});
 			});
 
 		return DisplayService.of({
 			display: (value) =>
 				Effect.gen(function*() {
 					if (typeof value === "string") {
-						yield* console.log(value);
+						yield* consoleService.log(value);
 					} else if (value && value.type === "table") {
 						yield* displayTable(value.data);
 					}

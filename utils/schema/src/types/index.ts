@@ -14,6 +14,7 @@ export type Result<T> =
 	| { success: true; data: T }
 	| { success: false; issues: Issue[] };
 export type Schema<TInput, TOutput = TInput> = {
+	optional: () => Schema<TInput | undefined, TOutput | undefined>;
 	transform: <TNewOutput>(
 		transformer: (value: TOutput) => TNewOutput,
 	) => Schema<TInput, TNewOutput>;
@@ -54,11 +55,14 @@ export type NumberOptions = {
 	name?: string;
 };
 
+export type UnknownKeysPolicy = "strip" | "passthrough" | "strict";
+
 export type ObjectOptions<
 	TShape extends Record<string, Schema<unknown, unknown>>,
 > = {
 	shape: TShape;
 	message?: string;
+	unknownKeys?: UnknownKeysPolicy;
 	name?: string;
 };
 

@@ -14,7 +14,7 @@
 		"lint": "oxlint --fix --type-aware",
 		"build": "tsdown",
 		"test": "vitest --run --config ./vitest.config.ts",
-		"verify": "bun format && bun lint && bun test && bun audit && run build"
+		"verify": "bun format && bun lint && bun test && bun run build"
 	},
 	"dependencies": {
 		"@clack/prompts": "^0.11.0",

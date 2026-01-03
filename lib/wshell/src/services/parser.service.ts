@@ -1,4 +1,4 @@
-import { Command } from "@wpackages/types";
+import { Command } from "@wpackages/command";
 import { Context, Data, Effect, Layer } from "effect";
 
 export class ParseError extends Data.TaggedError("ParseError")<{

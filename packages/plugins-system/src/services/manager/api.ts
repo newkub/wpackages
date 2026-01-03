@@ -6,7 +6,7 @@ export const createPluginAPI = (
 	apiHandlers: Map<string, unknown>,
 ): PluginAPI => ({
 	emit: (event: string, data?: unknown) => {
-		eventEmitter.emit({
+		void eventEmitter.emit({
 			data,
 			pluginId,
 			timestamp: new Date(),

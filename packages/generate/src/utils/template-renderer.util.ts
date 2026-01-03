@@ -18,9 +18,11 @@ export const renderTemplate = (
 			const helper = context.helpers[helperName as keyof TemplateHelpers];
 			const value = context.variables[varName];
 
-			if (!helper || !value) return _;
-			if (typeof value !== "string") return String(value);
-
+			if (!helper || value === undefined) return _;
+			// Helpers should only operate on strings
+			if (typeof value !== "string") {
+				return _;
+			}
 			return helper(value);
 		},
 	);
@@ -28,7 +30,18 @@ export const renderTemplate = (
 	// Second pass: replace simple variables
 	rendered = rendered.replace(TEMPLATE_VARIABLE_PATTERN, (_, varName) => {
 		const value = context.variables[varName];
-		return value !== undefined ? String(value) : _;
+		if (value === undefined || value === null) return _;
+
+		// Only render primitive values to avoid [object Object]
+		if (
+			typeof value === "string"
+			|| typeof value === "number"
+			|| typeof value === "boolean"
+		) {
+			return String(value);
+		}
+
+		return _;
 	});
 
 	return rendered;

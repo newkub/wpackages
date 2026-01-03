@@ -12,6 +12,7 @@
 	"scripts": {
 		"postinstall": "bunx taze -r -w -i",
 		"watch": "bun --watch run verify",
+		"format": "dprint fmt",
 		"dev": "bun run src/index.ts",
 		"lint": "oxlint --fix --type-aware",
 		"build": "tsdown src/index.ts --out-dir dist",

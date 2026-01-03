@@ -1,7 +1,7 @@
 import { AssertionError } from "../../error";
+import type { AssertionOptions } from "../../types";
 import { isEqual } from "../diff";
 import type { MockFn } from "../mock";
-import type { AssertionOptions } from '../../types';
 
 function assertIsMock(actual: any, assertionName: string): asserts actual is MockFn<any> {
 	if (!actual || typeof actual.mockReturnValue !== "function") {
@@ -10,9 +10,9 @@ function assertIsMock(actual: any, assertionName: string): asserts actual is Moc
 }
 
 export function toHaveBeenCalled(actual: MockFn<any>, options?: AssertionOptions): void {
-	assertIsMock(actual, 'toHaveBeenCalled');
+	assertIsMock(actual, "toHaveBeenCalled");
 	if (actual.callCount === 0) {
-		throw new AssertionError(options?.message || 'Expected mock function to have been called.');
+		throw new AssertionError(options?.message || "Expected mock function to have been called.");
 	}
 }
 

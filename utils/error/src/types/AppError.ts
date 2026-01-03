@@ -16,4 +16,5 @@ export class AppError extends Data.TaggedError("AppError")<{
 	message: string;
 	statusCode: number;
 	isOperational?: boolean;
+	cause?: unknown;
 }> {}

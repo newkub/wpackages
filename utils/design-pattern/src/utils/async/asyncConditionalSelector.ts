@@ -2,6 +2,8 @@
  * @template T The type of the input value.
  * @template U The type of the result value.
  */
+import { resolveAsyncValue } from "../selector/resolver";
+
 interface AsyncConditionPair<T, U> {
 	/** A function that evaluates the input and returns a Promise resolving to true or false. */
 	condition: (input: T) => Promise<boolean> | boolean;
@@ -26,17 +28,10 @@ export const createAsyncSelector = <T, U>(
 	return async (input: T): Promise<U> => {
 		for (const pair of conditions) {
 			if (await Promise.resolve(pair.condition(input))) {
-				const result = pair.result;
-				if (typeof result === "function") {
-					return Promise.resolve((result as (input: T) => U | Promise<U>)(input));
-				}
-				return Promise.resolve(result);
+				return resolveAsyncValue(pair.result, input);
 			}
 		}
 
-		if (typeof defaultValue === "function") {
-			return Promise.resolve((defaultValue as (input: T) => U | Promise<U>)(input));
-		}
-		return Promise.resolve(defaultValue);
+		return resolveAsyncValue(defaultValue, input);
 	};
 };

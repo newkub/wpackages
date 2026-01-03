@@ -9,27 +9,39 @@ export interface HistorySource {
 	listen(listener: (location: Location, action: Action) => void): () => void;
 }
 
+/**
+ * Creates a history object that can be used to manage session history.
+ *
+ * @param {HistorySource} source The source of history events.
+ * @returns {History} A history object.
+ */
 export function createHistory(source: HistorySource): History {
-	let listeners: Listener[] = [];
+	const listeners = new Set<Listener>();
 	let sourceUnlisten: (() => void) | null = null;
 
+	/**
+	 * Subscribes a listener to history changes.
+	 *
+	 * @param {Listener} listener The listener to subscribe.
+	 * @returns {() => void} A function to unsubscribe the listener.
+	 */
 	function listen(listener: Listener): () => void {
-		if (listeners.length === 0) {
-			sourceUnlisten = source.listen((location, action) => {
-				listeners.forEach(l => l(location, action));
-			});
-		}
-
-		listeners.push(listener);
-
-		return () => {
-			listeners = listeners.filter(l => l !== listener);
-
-			if (listeners.length === 0 && sourceUnlisten) {
-				sourceUnlisten();
-				sourceUnlisten = null;
+			if (listeners.size === 0) {
+				sourceUnlisten = source.listen((location, action) => {
+					listeners.forEach(l => l(location, action));
+				});
 			}
-		};
+
+			listeners.add(listener);
+
+			return () => {
+				listeners.delete(listener);
+
+				if (listeners.size === 0 && sourceUnlisten) {
+					sourceUnlisten();
+					sourceUnlisten = null;
+				}
+			};
 	}
 
 	return {

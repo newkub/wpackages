@@ -84,7 +84,7 @@ export const createPluginLogger = (
 			formatted += ` ${JSON.stringify(context)}`;
 		}
 		if (error) {
-			formatted += `\n${error instanceof Error ? error.stack : String(error)}`;
+			formatted += `\n${error instanceof Error ? (error.stack ?? error.message) : String(error)}`;
 		}
 		return formatted;
 	};
@@ -98,7 +98,7 @@ export const createPluginLogger = (
 		if (!shouldLog(level)) return;
 
 		let context: Record<string, unknown> | undefined;
-		let error: unknown | undefined;
+		let error: unknown;
 
 		if (level === "error" || level === "fatal") {
 			error = contextOrError;

@@ -85,8 +85,8 @@ export const example5 = async () => {
 	};
 
 	const result = await generateFromPreset(customPreset, {
-		outputDir: './src/api',
-		variables: { name: 'getUser' }
+		outputDir: "./src/api",
+		variables: { name: "getUser" },
 	});
 
 	console.log("Generated custom preset:", result.files.length, "files");

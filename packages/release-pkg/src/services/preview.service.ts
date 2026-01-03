@@ -8,6 +8,7 @@ export interface PreviewOptions {
 	registry?: string | undefined;
 	tag?: string | undefined;
 	ttl?: number | undefined; // Time to live in days
+	dryRun?: boolean | undefined;
 }
 
 export interface PreviewResult {
@@ -39,8 +40,10 @@ export class PreviewService {
 			await this.buildPackage();
 
 			// Publish to preview registry
-			const registry = options.registry || this.defaultRegistry;
-			await this.publishToRegistry(registry, options.tag);
+			if (!options.dryRun) {
+				const registry = options.registry || this.defaultRegistry;
+				await this.publishToRegistry(registry, options.tag);
+			}
 
 			const url = this.generatePreviewUrl(
 				packageInfo.name,

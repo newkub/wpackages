@@ -4,6 +4,12 @@ export type PathParts = Readonly<{
 	hash?: string;
 }>;
 
+/**
+ * Creates a URL path from its component parts.
+ *
+ * @param {PathParts} parts The parts of the path.
+ * @returns {string} The complete URL path.
+ */
 export function createPath({ pathname = "/", search = "", hash = "" }: PathParts): string {
 	let path = pathname;
 
@@ -24,33 +30,29 @@ export type ParsedPath = Readonly<{
 	hash: string;
 }>;
 
+/**
+ * Parses a URL path into its component parts.
+ *
+ * @param {string} path The URL path to parse.
+ * @returns {ParsedPath} The parsed parts of the path.
+ */
 export function parsePath(path: string): ParsedPath {
-	const partialPath: { pathname?: string; search?: string; hash?: string } = {};
-	let remaining = path;
-
-	if (remaining) {
-		const hashIndex = remaining.indexOf("#");
-		if (hashIndex >= 0) {
-			partialPath.hash = remaining.substring(hashIndex);
-			remaining = remaining.substring(0, hashIndex);
-		}
-
-		const searchIndex = remaining.indexOf("?");
-		if (searchIndex >= 0) {
-			partialPath.search = remaining.substring(searchIndex);
-			remaining = remaining.substring(0, searchIndex);
-		}
-
-		if (remaining) {
-			partialPath.pathname = remaining;
-		}
+	try {
+		const url = new URL(path, "http://localhost");
+		return {
+			pathname: url.pathname,
+			search: url.search,
+			hash: url.hash,
+		};
+	} catch (e) {
+		console.warn(`Failed to parse path: "${path}"`, e);
+		// Fallback for invalid paths
+		return {
+			pathname: path,
+			search: "",
+			hash: "",
+		};
 	}
-
-	return {
-		pathname: partialPath.pathname || "/",
-		search: partialPath.search || "",
-		hash: partialPath.hash || "",
-	};
 }
 
 export function createKey(): string {

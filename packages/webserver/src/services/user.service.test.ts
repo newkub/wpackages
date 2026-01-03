@@ -1,4 +1,4 @@
-import { Effect, Exit, Layer } from "effect";
+import { Cause, Effect, Exit, Layer, Option } from "effect";
 import { describe, expect, test, vi } from "vitest";
 import { Database } from "../db/database.service";
 import { UserNotFoundError, UserService, UserServiceLive } from "./user.service";
@@ -24,13 +24,16 @@ describe("UserService", () => {
 			program.pipe(Effect.provide(AppLayer)),
 		);
 
-		expect(Exit.isSuccess(result)).toBe(true);
-		if (Exit.isSuccess(result)) {
-			expect(result.value).toEqual({ id: 1, name: "John Doe" });
+		if (!Exit.isSuccess(result)) {
+			throw new Error("Expected success Exit");
 		}
-		expect(mockDb.db.query.users.findFirst).toHaveBeenCalledWith({
-			where: expect.any(Function),
-		});
+		expect(result.value).toEqual({ id: 1, name: "John Doe" });
+		expect(mockDb.db.query.users.findFirst).toHaveBeenCalledTimes(1);
+		expect(mockDb.db.query.users.findFirst).toHaveBeenCalledWith(
+			expect.objectContaining({
+				where: expect.anything(),
+			}),
+		);
 	});
 
 	test("getUserById should return UserNotFoundError when user not found", async () => {
@@ -53,9 +56,13 @@ describe("UserService", () => {
 			program.pipe(Effect.provide(AppLayer)),
 		);
 
-		expect(Exit.isFailure(result)).toBe(true);
-		if (Exit.isFailure(result)) {
-			expect(result.cause.errors[0]).toBeInstanceOf(UserNotFoundError);
+		if (!Exit.isFailure(result)) {
+			throw new Error("Expected failure Exit");
 		}
+		const failure = Cause.failureOption(result.cause);
+		if (!Option.isSome(failure)) {
+			throw new Error("Expected failure cause to contain a failure value");
+		}
+		expect(failure.value).toBeInstanceOf(UserNotFoundError);
 	});
 });

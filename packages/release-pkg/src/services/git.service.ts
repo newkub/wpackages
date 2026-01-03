@@ -30,13 +30,15 @@ export class GitService {
 
 	async getCommits(from?: string, to = "HEAD"): Promise<Commit[]> {
 		const range = from ? `${from}..${to}` : to;
-		const result = await execa(
-			"git",
-			["log", range, "--format=%H|||%s|||%b|||%an|||%aI"],
-			{
-				reject: false,
-			},
-		);
+		const args = ["log", range, "--format=%H|||%s|||%b|||%an|||%aI"];
+
+		if (!from) {
+			args.push("--max-count=200");
+		}
+
+		const result = await execa("git", args, {
+			reject: false,
+		});
 
 		if (!result.stdout) return [];
 

@@ -2,7 +2,7 @@
  * Preview analytics example - track usage and generate reports
  */
 
-import { AnalyticsService } from "release";
+import { AnalyticsService } from "../src/index";
 
 async function main() {
 	const analytics = new AnalyticsService();

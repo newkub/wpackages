@@ -1,3 +1,5 @@
+import { safeStringify } from "./safeStringify";
+
 type Selector<T, U> = (input: T) => U;
 
 /**
@@ -17,9 +19,9 @@ export const withDebugging = <T, U>(
 	logger: (message: string) => void = console.log,
 ): Selector<T, U> => {
 	return (input: T): U => {
-		logger(`[${selectorName}] Input: ${JSON.stringify(input, null, 2)}`);
+		logger(`[${selectorName}] Input: ${safeStringify(input)}`);
 		const result = selector(input);
-		logger(`[${selectorName}] Output: ${JSON.stringify(result, null, 2)}`);
+		logger(`[${selectorName}] Output: ${safeStringify(result)}`);
 		return result;
 	};
 };

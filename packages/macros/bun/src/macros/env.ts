@@ -1,6 +1,4 @@
-import { macro } from "bun";
-
-export const env = macro((key: string, defaultValue?: string) => {
+export const env = Bun.macro((key: string, defaultValue?: string) => {
 	const value = process.env[key];
 	if (value === undefined) {
 		if (defaultValue !== undefined) {

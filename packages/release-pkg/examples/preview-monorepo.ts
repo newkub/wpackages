@@ -2,7 +2,7 @@
  * Monorepo preview example - auto-detect and publish changed packages
  */
 
-import { MonorepoService, PreviewService } from "release";
+import { MonorepoService, PreviewService } from "../src/index";
 
 async function main() {
 	const monorepo = new MonorepoService();

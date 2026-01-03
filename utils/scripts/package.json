@@ -25,6 +25,7 @@
 	},
 	"dependencies": {
 		"@wpackages/config-manager": "workspace:*",
+		"@wpackages/scripts": "workspace:*",
 		"effect": "^3.19.14"
 	},
 	"devDependencies": {

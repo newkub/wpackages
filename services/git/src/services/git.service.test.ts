@@ -1,4 +1,5 @@
 import { exec } from "node:child_process";
+import { Effect } from "effect";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("node:child_process", () => ({
@@ -19,10 +20,7 @@ describe("GitService", () => {
 		mockExec.mockImplementation((command, options, callback) => callback(null, { stdout, stderr: "" }));
 
 		const repo = createGitRepository(".");
-		const statusResult = await repo.status();
-
-		expect(statusResult.success).toBe(true);
-		const status = (statusResult as Extract<typeof statusResult, { success: true }>).value;
+		const status = await Effect.runPromise(repo.status());
 
 		expect(status.branch).toBe("main");
 		// For ' M', the first char is the index status (' '), the second is the work-tree status ('M').
@@ -36,10 +34,7 @@ describe("GitService", () => {
 		mockExec.mockImplementation((command, options, callback) => callback(null, { stdout, stderr: "" }));
 
 		const repo = createGitRepository(".");
-		const logResult = await repo.log(2);
-
-		expect(logResult.success).toBe(true);
-		const commits = (logResult as Extract<typeof logResult, { success: true }>).value;
+		const commits = await Effect.runPromise(repo.log(2));
 
 		expect(commits).toHaveLength(2);
 		expect(commits[0].shortHash).toBe("short1");
@@ -57,10 +52,7 @@ describe("GitService", () => {
 		mockExec.mockImplementationOnce((command, options, callback) => callback(null, { stdout: finalHash, stderr: "" }));
 
 		const repo = createGitRepository(".");
-		const commitResult = await repo.commit(commitMessage);
-
-		expect(commitResult.success).toBe(true);
-		const hash = (commitResult as Extract<typeof commitResult, { success: true }>).value;
+		const hash = await Effect.runPromise(repo.commit(commitMessage));
 
 		expect(hash).toBe(finalHash);
 		expect(mockExec).toHaveBeenCalledWith(`git commit -m '${commitMessage}'`, expect.any(Object), expect.any(Function));

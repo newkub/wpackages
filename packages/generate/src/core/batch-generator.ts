@@ -42,9 +42,7 @@ export const generateBatchParallel = async (
 
 	for (const chunk of chunks) {
 		const results = await Promise.all(
-			chunk.map(file =>
-				generateFiles([file], mergedOptions),
-			),
+			chunk.map(file => generateFiles([file], mergedOptions)),
 		);
 		allResults.push(...results);
 	}

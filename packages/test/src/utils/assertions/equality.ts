@@ -3,10 +3,11 @@
  */
 
 import type { AssertionOptions } from "../../types";
+import { isEqual } from "../diff";
 import { throwIfFails } from "../error";
 
 export function toEqual<T>(actual: T, expected: T, options?: AssertionOptions): void {
-	const pass = JSON.stringify(actual) === JSON.stringify(expected);
+	const pass = isEqual(actual, expected);
 	throwIfFails(pass, options?.message || "Expected values to be equal", expected, actual);
 }
 

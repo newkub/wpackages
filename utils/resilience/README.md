@@ -62,6 +62,18 @@ const resilientEffect = createResilientEffect(myApiCallEffect, {
 const result = await Effect.runPromise(resilientEffect);
 ```
 
+## Comparison with Other Libraries
+
+While `@wpackages/resilience` is designed to be a lightweight, `Effect-TS` native solution, there are other excellent resilience libraries in the TypeScript ecosystem. Here’s a quick comparison:
+
+| Library | Ecosystem | API Style | Key Features |
+| --- | --- | --- | --- |
+| **@wpackages/resilience** | `Effect-TS` | Functional | Retry, Timeout, Circuit Breaker |
+| **cockatiel** | `Promise` | Functional/Builder | Advanced Retry, Bulkhead, Fallback |
+| **resily** | `Promise` | Class-based | Caching, Bulkhead, Fallback |
+
+A more detailed breakdown can be found in the [full comparison document](./docs/comparison.md).
+
 ## License
 
 This project is licensed under the MIT License.

@@ -1,11 +1,13 @@
 import { Effect, Either, pipe } from "effect";
 import { describe, expect, it } from "vitest";
+import { z } from "zod";
 import {
 	AppError,
 	AuthenticationError,
 	AuthorizationError,
 	ConflictError,
 	fromEither,
+	fromZodError,
 	NotFoundError,
 	tryPromise,
 	ValidationError,
@@ -178,5 +180,40 @@ describe("Tagged Errors", () => {
 
 		const result = await Effect.runPromise(caughtEffect);
 		expect(result).toBe("Caught conflict error: Email already exists");
+	});
+});
+
+describe("fromZodError", () => {
+	it("should create a ValidationError from a ZodError", () => {
+		const schema = z.object({
+			name: z.string().min(3),
+			email: z.string().email(),
+		});
+
+		const result = schema.safeParse({ name: "a", email: "invalid" });
+
+		expect(result.success).toBe(false);
+		if (result.success) return; // type guard
+
+		const validationError = fromZodError(result.error);
+
+		expect(validationError).toBeInstanceOf(ValidationError);
+		expect(validationError.message).toContain("name - String must contain at least 3 character(s)");
+		expect(validationError.message).toContain("email - Invalid email");
+		expect(validationError.statusCode).toBe(400);
+		expect(validationError.cause).toBe(result.error);
+	});
+
+	it("should respect custom options", () => {
+		const schema = z.string();
+		const result = schema.safeParse(123);
+
+		expect(result.success).toBe(false);
+		if (result.success) return; // type guard
+
+		const validationError = fromZodError(result.error, { statusCode: 422, isOperational: false });
+
+		expect(validationError.statusCode).toBe(422);
+		expect(validationError.isOperational).toBe(false);
 	});
 });

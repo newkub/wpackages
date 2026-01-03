@@ -17,6 +17,7 @@
 		"build": "tsdown --exports --dts --minify",
 		"dev": "tsdown --watch",
 		"lint": "oxlint --fix --type-aware",
+		"format": "dprint fmt",
 		"review": "bun format && bun lint && bun test",
 		"test": "vitest"
 	},

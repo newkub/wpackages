@@ -3,15 +3,14 @@
  * Useful for private packages or when you want to publish manually
  */
 
-import { ReleaseOrchestrator } from "release";
+import { release } from "../src/index";
 
 async function main() {
-	const orchestrator = new ReleaseOrchestrator();
-
-	const result = await orchestrator.release({
+	const result = await release({
 		type: "patch",
 		noPublish: true, // Skip npm publish
 		verbose: true,
+		dryRun: true,
 	});
 
 	console.log(`✅ Released ${result.version} (not published to npm)`);

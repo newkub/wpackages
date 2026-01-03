@@ -10,7 +10,7 @@ import {
 	isValidVersion,
 	parseVersion,
 	VersionService,
-} from "release";
+} from "../src/index";
 
 async function main() {
 	// Use individual services

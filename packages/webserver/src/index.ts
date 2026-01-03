@@ -1,6 +1,5 @@
 import "dotenv/config";
-import { createApp } from "./app";
+import { BunRuntime } from "@effect/platform-bun";
+import { main } from "./app";
 
-const app = createApp();
-
-app.listen(3000);
+BunRuntime.runMain(main);

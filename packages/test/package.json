@@ -13,7 +13,11 @@
 	"bin": {
 		"wtest": "./bin/wtest.mjs"
 	},
-	"files": ["dist", "README.md", "LICENSE"],
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
 	"scripts": {
 		"build": "tsdown --exports --dts --minify",
 		"dev": "bun --watch src/index.ts",
@@ -26,6 +30,7 @@
 		"prepublishOnly": "bun run clean && bun run build"
 	},
 	"dependencies": {
+		"@wpackages/diff": "workspace:*",
 		"@wpackages/reporter": "workspace:*"
 	},
 	"devDependencies": {
@@ -33,7 +38,6 @@
 		"@types/node": "^25.0.3",
 		"chokidar": "^5.0.0",
 		"fast-check": "^4.5.3",
-		"jest-diff": "^30.2.0",
 		"tsdown": "^0.18.4",
 		"typescript": "^5.9.3",
 		"zod": "^4.3.4"

@@ -10,6 +10,7 @@
 - interactive **Interactive CLI**: A user-friendly interactive mode powered by `@clack/prompts` that allows you to select which checks to run.
 - 🚀 **Parallel Execution**: The ability to run multiple checks concurrently for maximum speed.
 - 🎨 **Beautiful Output**: Presents results in a colorful, readable, and easy-to-understand format.
+- 🧭 **Smart Path Display**: Cleans up file paths in output for readability (uses `~/` for paths in home, relative paths for files under the current working directory, otherwise normalized absolute paths).
 - 🧩 **Functional and Type-Safe**: The entire tool is built with `Effect-TS`, making it robust, testable, and maintainable.
 - 🔧 **Programmatic API**: In addition to the CLI, it exposes a functional API for integration into other tools and scripts.
 

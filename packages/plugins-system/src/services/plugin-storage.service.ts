@@ -1,6 +1,8 @@
 import type { PluginRegistry } from "../types";
 import { formatFileOperationError } from "../components";
 import { registryToJson, jsonToRegistry } from "../components";
+import { access, mkdir, readFile, unlink, writeFile } from "node:fs/promises";
+import { dirname } from "node:path";
 
 export interface PluginStorage {
 	readonly save: (registry: PluginRegistry) => Promise<void>;
@@ -12,9 +14,6 @@ export interface PluginStorage {
 export const createFileStorage = (filePath: string): PluginStorage => {
 	const save = async (registry: PluginRegistry): Promise<void> => {
 		try {
-			const { writeFile, mkdir } = await import("node:fs/promises");
-			const { dirname } = await import("node:path");
-
 			await mkdir(dirname(filePath), { recursive: true });
 
 			const json = registryToJson(registry);
@@ -26,7 +25,6 @@ export const createFileStorage = (filePath: string): PluginStorage => {
 
 	const load = async (): Promise<PluginRegistry> => {
 		try {
-			const { readFile } = await import("node:fs/promises");
 			const data = await readFile(filePath, "utf-8");
 			return jsonToRegistry(data);
 		} catch (error) {
@@ -39,7 +37,6 @@ export const createFileStorage = (filePath: string): PluginStorage => {
 
 	const clear = async (): Promise<void> => {
 		try {
-			const { unlink } = await import("node:fs/promises");
 			await unlink(filePath);
 		} catch (error) {
 			if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
@@ -50,7 +47,6 @@ export const createFileStorage = (filePath: string): PluginStorage => {
 
 	const exists = async (): Promise<boolean> => {
 		try {
-			const { access } = await import("node:fs/promises");
 			await access(filePath);
 			return true;
 		} catch {

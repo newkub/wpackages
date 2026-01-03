@@ -76,7 +76,7 @@ export const parseGitBranches = (
 
 // Parse git log output
 export const parseGitStatus = (output: string): GitStatus => {
-	const lines = splitLines(output);
+	const lines = [...splitLines(output)];
 	const branchLine = lines.shift();
 	if (!branchLine) {
 		throw new Error("Could not determine branch from git status.");

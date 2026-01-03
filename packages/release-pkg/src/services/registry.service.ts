@@ -7,6 +7,7 @@ export interface RegistryConfig {
 	url: string;
 	token?: string | undefined;
 	scope?: string | undefined;
+	dryRun?: boolean | undefined;
 }
 
 export interface PublishResult {
@@ -43,6 +44,13 @@ export class RegistryService {
 	 * Publish to a single registry
 	 */
 	async publishToRegistry(config: RegistryConfig): Promise<PublishResult> {
+		if (config.dryRun) {
+			return {
+				success: true,
+				url: `(Dry Run) ${config.url || this.registries[config.type]}`,
+			};
+		}
+
 		try {
 			switch (config.type) {
 				case "npm":

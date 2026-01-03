@@ -1,4 +1,4 @@
-import { createSelector } from "../core/conditionalSelector";
+import { createSelector } from "../selector/conditionalSelector";
 import { withMemoization } from "./withMemoization";
 
 // --------------------------

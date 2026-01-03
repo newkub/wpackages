@@ -2,16 +2,15 @@
  * Basic usage example of release
  */
 
-import { ReleaseOrchestrator } from "release";
+import { release } from "../src/index";
 
 async function main() {
-	const orchestrator = new ReleaseOrchestrator();
-
 	try {
 		// Simple patch release
-		const result = await orchestrator.release({
+		const result = await release({
 			type: "patch",
 			verbose: true,
+			dryRun: true,
 		});
 
 		console.log(`✅ Released version ${result.version}`);

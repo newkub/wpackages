@@ -1,5 +1,6 @@
 import { COLORS, SEVERITY_COLORS, SEVERITY_SYMBOLS, STATUS_COLORS, STATUS_SYMBOLS } from "../constant/index";
 import type { CheckIssue, CheckResult, CheckResults } from "../types/index";
+import { formatPathForDisplay } from "../utils/path";
 
 export const formatCheckResult = (result: CheckResult): string => {
 	const statusColor = STATUS_COLORS[result.status];
@@ -29,9 +30,10 @@ export const formatIssues = (issues: CheckIssue[]): string => {
 		output += `  ${severityColor(severitySymbol)} ${issue.message}\n`;
 
 		if (issue.file) {
+			const displayFile = formatPathForDisplay(issue.file);
 			const location = issue.line
-				? `${issue.file}:${issue.line}${issue.column ? `:${issue.column}` : ""}`
-				: issue.file;
+				? `${displayFile}:${issue.line}${issue.column ? `:${issue.column}` : ""}`
+				: displayFile;
 			output += `    ${COLORS.dim(location)}\n`;
 		}
 

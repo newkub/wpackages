@@ -1,11 +1,9 @@
 import { HistorySource } from "../history";
 import { Action, Location } from "../types";
 import { createKey, createPath, parsePath } from "../utils";
+import { isBrowser } from "../dom";
 import { createMockSource } from "./mock";
 
-const isBrowser = typeof window !== "undefined"
-	&& typeof window.history !== "undefined"
-	&& typeof window.location !== "undefined";
 
 export function createBrowserSource(): HistorySource {
 	if (!isBrowser) {
@@ -39,20 +37,14 @@ export function createBrowserSource(): HistorySource {
 			const newLocation = parsePath(path);
 			const key = createKey();
 			globalHistory.pushState({ key, state }, "", createPath(newLocation));
-			location = { ...newLocation, state, key };
-			(window.location as any).pathname = newLocation.pathname;
-			(window.location as any).search = newLocation.search;
-			(window.location as any).hash = newLocation.hash;
+			location = getLocation();
 		},
 		replace(path: string, state?: unknown) {
 			action = "REPLACE";
 			const newLocation = parsePath(path);
 			const key = createKey();
 			globalHistory.replaceState({ key, state }, "", createPath(newLocation));
-			location = { ...newLocation, state, key };
-			(window.location as any).pathname = newLocation.pathname;
-			(window.location as any).search = newLocation.search;
-			(window.location as any).hash = newLocation.hash;
+			location = getLocation();
 		},
 		go(delta: number) {
 			globalHistory.go(delta);

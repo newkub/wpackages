@@ -85,6 +85,10 @@ scripts run-all
 scripts run-all --parallel
 ```
 
+## Comparison
+
+See [`docs/comparison.md`](./docs/comparison.md).
+
 ## License
 
 This project is licensed under the MIT License.

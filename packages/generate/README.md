@@ -84,6 +84,19 @@ const template =
 
 **Built-in Helpers:** `pascal`, `camel`, `kebab`, `snake`, `constant`, `plural`, `singular`.
 
+## Comparison with Other Tools
+
+`@wpackages/generate` is designed to be a lightweight, flexible, and programmatic alternative to other popular scaffolding tools.
+
+| Tool                    | Key Strength                                   |
+| ----------------------- | ---------------------------------------------- |
+| **@wpackages/generate** | **Zero-dependency, functional, type-safe API** |
+| `yeoman`                | Large ecosystem and robust features            |
+| `plop`                  | Simplicity and ease of use for small tasks     |
+| `hygen`                 | Speed and scalability                          |
+
+A more detailed comparison can be found in the [comparison document](./docs/comparison.md).
+
 ## License
 
 This project is licensed under the MIT License.
