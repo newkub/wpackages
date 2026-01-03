@@ -1,4 +1,4 @@
 export interface Theme {
-  primaryColor: string;
-  backgroundColor: string;
+	primaryColor: string;
+	backgroundColor: string;
 }

@@ -1,23 +1,23 @@
 {
-  "name": "@presets/ts-build",
-  "version": "0.0.1",
-  "private": true,
-  "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
-  "scripts": {
-    "build": "bun build ./src/index.ts --outdir ./dist",
-    "lint": "echo 'lint'",
-    "test": "bun test"
-  },
-  "devDependencies": {
-    "typescript": "^5.4.5",
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "engines": {
-    "bun": ">=1.0.0"
-  }
+	"name": "@presets/ts-build",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"main": "./src/index.ts",
+	"types": "./src/index.ts",
+	"scripts": {
+		"build": "bun build ./src/index.ts --outdir ./dist",
+		"lint": "echo 'lint'",
+		"test": "bun test"
+	},
+	"devDependencies": {
+		"typescript": "^5.4.5",
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"engines": {
+		"bun": ">=1.0.0"
+	}
 }

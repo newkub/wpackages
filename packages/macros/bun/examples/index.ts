@@ -1,8 +1,8 @@
-import { log } from '../src/index';
+import { log } from "../src/index";
 
 const user = {
-  name: 'John Doe',
-  age: 30
+	name: "John Doe",
+	age: 30,
 };
 
-log('User object:', user);
+log("User object:", user);

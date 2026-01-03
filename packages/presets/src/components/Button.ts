@@ -1,7 +1,7 @@
 interface ButtonProps {
-  label: string;
+	label: string;
 }
 
 export const Button = (props: ButtonProps): string => {
-  return `<button>${props.label}</button>`;
+	return `<button>${props.label}</button>`;
 };

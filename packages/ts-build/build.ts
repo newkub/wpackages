@@ -1,12 +1,12 @@
-import { createBuilder } from './src';
+import { createBuilder } from "./src";
 
-const isWatchMode = process.argv.includes('--watch');
+const isWatchMode = process.argv.includes("--watch");
 
 createBuilder({
-  config: {
-    entrypoints: ['./src/index.ts'],
-    outdir: './dist',
-    target: 'bun',
-  },
-  watch: isWatchMode,
+	config: {
+		entrypoints: ["./src/index.ts"],
+		outdir: "./dist",
+		target: "bun",
+	},
+	watch: isWatchMode,
 });
