@@ -3,7 +3,7 @@ import { unwatchFile, watchFile } from "node:fs";
 import { join } from "node:path";
 import { DEFAULT_ENV_CONFIG, ENV_PATHS } from "../constant/defaults.const";
 import type { EnvConfig, EnvManager, EnvSchema, ParsedEnv, Result, ValidationResult } from "../types/env";
-import { expandEnv, decryptValue } from "../utils";
+import { decryptValue, expandEnv } from "../utils";
 import * as Getters from "./env/getters";
 import { loadEnvFromPaths } from "./env/loader";
 import * as Utils from "./env/utils";

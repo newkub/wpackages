@@ -10,9 +10,10 @@
 		"watch": "bun lint && bun watch && bun test",
 		"start": "bun --watch dev && vitest:ui",
 		"dev": "bun run src/index.ts",
+		"format": "dprint fmt",
 		"lint": "oxlint --fix --type-aware",
 		"build": "tsdown",
-		"test": "vitest --run",
+		"test": "vitest --run --config ./vitest.config.ts",
 		"verify": "bun format && bun lint && bun test && bun audit && run build"
 	},
 	"dependencies": {

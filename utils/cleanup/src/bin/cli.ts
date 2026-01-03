@@ -7,7 +7,8 @@ const main = async () => {
 	if (args.includes("init")) {
 		await handleInit();
 	} else {
-		await runCleanupApp();
+		const dryRun = args.includes("--dry-run");
+		await runCleanupApp({ dryRun });
 	}
 };
 

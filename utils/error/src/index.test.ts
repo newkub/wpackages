@@ -1,6 +1,15 @@
 import { Effect, Either, pipe } from "effect";
 import { describe, expect, it } from "vitest";
-import { AppError, fromEither, NotFoundError, tryPromise, ValidationError, AuthenticationError, AuthorizationError, ConflictError } from "./index";
+import {
+	AppError,
+	AuthenticationError,
+	AuthorizationError,
+	ConflictError,
+	fromEither,
+	NotFoundError,
+	tryPromise,
+	ValidationError,
+} from "./index";
 
 describe("tryPromise", () => {
 	it("should return a successful Effect with the correct value when the promise resolves", async () => {
@@ -49,7 +58,7 @@ describe("Effect.mapError", () => {
 		const effect = Effect.fail(originalError);
 		const mappedEffect = pipe(
 			effect,
-			Effect.mapError((e) => new AppError({ message: `Mapped: ${e.message}`, statusCode: 418 }))
+			Effect.mapError((e) => new AppError({ message: `Mapped: ${e.message}`, statusCode: 418 })),
 		);
 
 		const result = await Effect.runPromise(Effect.flip(mappedEffect));
@@ -63,7 +72,7 @@ describe("Effect.mapError", () => {
 		const effect = Effect.succeed("Still good");
 		const mappedEffect = pipe(
 			effect,
-			Effect.mapError(() => new AppError({ message: "Should not happen", statusCode: 500 }))
+			Effect.mapError(() => new AppError({ message: "Should not happen", statusCode: 500 })),
 		);
 
 		const result = await Effect.runPromise(mappedEffect);
@@ -106,7 +115,7 @@ describe("Tagged Errors", () => {
 		const effect = Effect.fail(new ValidationError({ message: "Invalid input" }));
 
 		const caughtEffect = effect.pipe(
-			Effect.catchTag("ValidationError", (e) => Effect.succeed(`Caught validation error: ${e.message}`))
+			Effect.catchTag("ValidationError", (e) => Effect.succeed(`Caught validation error: ${e.message}`)),
 		);
 
 		const result = await Effect.runPromise(caughtEffect);
@@ -117,7 +126,7 @@ describe("Tagged Errors", () => {
 		const effect = Effect.fail(new NotFoundError({ message: "User not found" }));
 
 		const caughtEffect = effect.pipe(
-			Effect.catchTag("NotFoundError", (e) => Effect.succeed(`Caught not found error: ${e.message}`))
+			Effect.catchTag("NotFoundError", (e) => Effect.succeed(`Caught not found error: ${e.message}`)),
 		);
 
 		const result = await Effect.runPromise(caughtEffect);
@@ -125,47 +134,49 @@ describe("Tagged Errors", () => {
 	});
 
 	it("should not catch an error of a different tag", async () => {
-		const effect: Effect.Effect<never, ValidationError | NotFoundError> = Effect.fail(new NotFoundError({ message: "Resource not found" }));
+		const effect: Effect.Effect<never, ValidationError | NotFoundError> = Effect.fail(
+			new NotFoundError({ message: "Resource not found" }),
+		);
 
-    const caughtEffect = effect.pipe(
-      Effect.catchTag("ValidationError", (_e) => Effect.succeed(`This should not run`))
-    );
+		const caughtEffect = effect.pipe(
+			Effect.catchTag("ValidationError", (_e) => Effect.succeed(`This should not run`)),
+		);
 
-    const result = await Effect.runPromise(Effect.flip(caughtEffect));
-    expect(result).toBeInstanceOf(NotFoundError);
-    expect(result.message).toBe("Resource not found");
-  });
+		const result = await Effect.runPromise(Effect.flip(caughtEffect));
+		expect(result).toBeInstanceOf(NotFoundError);
+		expect(result.message).toBe("Resource not found");
+	});
 
-  it("should correctly catch a specific AuthenticationError", async () => {
-    const effect = Effect.fail(new AuthenticationError({ message: "Invalid token" }));
+	it("should correctly catch a specific AuthenticationError", async () => {
+		const effect = Effect.fail(new AuthenticationError({ message: "Invalid token" }));
 
-    const caughtEffect = effect.pipe(
-      Effect.catchTag("AuthenticationError", (e) => Effect.succeed(`Caught auth error: ${e.message}`))
-    );
+		const caughtEffect = effect.pipe(
+			Effect.catchTag("AuthenticationError", (e) => Effect.succeed(`Caught auth error: ${e.message}`)),
+		);
 
-    const result = await Effect.runPromise(caughtEffect);
-    expect(result).toBe("Caught auth error: Invalid token");
-  });
+		const result = await Effect.runPromise(caughtEffect);
+		expect(result).toBe("Caught auth error: Invalid token");
+	});
 
-  it("should correctly catch a specific AuthorizationError", async () => {
-    const effect = Effect.fail(new AuthorizationError({ message: "Permission denied" }));
+	it("should correctly catch a specific AuthorizationError", async () => {
+		const effect = Effect.fail(new AuthorizationError({ message: "Permission denied" }));
 
-    const caughtEffect = effect.pipe(
-      Effect.catchTag("AuthorizationError", (e) => Effect.succeed(`Caught authorization error: ${e.message}`))
-    );
+		const caughtEffect = effect.pipe(
+			Effect.catchTag("AuthorizationError", (e) => Effect.succeed(`Caught authorization error: ${e.message}`)),
+		);
 
-    const result = await Effect.runPromise(caughtEffect);
-    expect(result).toBe("Caught authorization error: Permission denied");
-  });
+		const result = await Effect.runPromise(caughtEffect);
+		expect(result).toBe("Caught authorization error: Permission denied");
+	});
 
-  it("should correctly catch a specific ConflictError", async () => {
-    const effect = Effect.fail(new ConflictError({ message: "Email already exists" }));
+	it("should correctly catch a specific ConflictError", async () => {
+		const effect = Effect.fail(new ConflictError({ message: "Email already exists" }));
 
-    const caughtEffect = effect.pipe(
-      Effect.catchTag("ConflictError", (e) => Effect.succeed(`Caught conflict error: ${e.message}`))
-    );
+		const caughtEffect = effect.pipe(
+			Effect.catchTag("ConflictError", (e) => Effect.succeed(`Caught conflict error: ${e.message}`)),
+		);
 
-    const result = await Effect.runPromise(caughtEffect);
-    expect(result).toBe("Caught conflict error: Email already exists");
-  });
+		const result = await Effect.runPromise(caughtEffect);
+		expect(result).toBe("Caught conflict error: Email already exists");
+	});
 });

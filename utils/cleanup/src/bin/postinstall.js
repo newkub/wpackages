@@ -69,4 +69,7 @@ async function createConfigIfNotExists() {
 	}
 }
 
-createConfigIfNotExists();
+createConfigIfNotExists().catch((error) => {
+	console.error("An error occurred during postinstall script:", error);
+	process.exit(1);
+});

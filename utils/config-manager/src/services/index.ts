@@ -1,4 +1,4 @@
-export { createConfigManager, loadAdvancedConfig, ConfigManager } from "./config-manager.service";
+export { ConfigManager, createConfigManager, loadAdvancedConfig } from "./config-manager.service";
 export * from "./env-manager.service";
 export { createConfigLoader } from "./loader.service";
 export * from "./preset.service";

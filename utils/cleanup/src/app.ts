@@ -26,7 +26,7 @@ export const handleInit = async () => {
 	}
 };
 
-export const runCleanupApp = async () => {
+export const runCleanupApp = async ({ dryRun = false }: { dryRun?: boolean } = {}) => {
 	console.clear();
 	p.intro(pc.cyan("🧹 Welcome to computer-cleanup"));
 
@@ -89,6 +89,17 @@ export const runCleanupApp = async () => {
 		}. Are you sure?`,
 	});
 
+	if (dryRun) {
+		p.note(
+			selectedItems
+				.map((item) => (item as CleanableItem).path)
+				.join("\n"),
+			"Dry Run: The following items would be deleted",
+		);
+		p.outro(pc.green(`Dry run complete. ${formatBytes(totalSize)} would be saved.`));
+		return;
+	}
+
 	if (!confirm || p.isCancel(confirm)) {
 		p.cancel("Operation cancelled. No files were cleaned.");
 		return;
@@ -112,7 +123,7 @@ export const runCleanupApp = async () => {
 				p.log.success(`Deleted: ${result.path}`);
 				successCount++;
 			} else {
-				p.log.error(`Failed to delete ${result.path}: ${result.reason}`);
+				p.log.error(`Failed to delete ${result.path}: ${String(result.reason)}`);
 				failCount++;
 			}
 		});

@@ -19,16 +19,8 @@
 		"skipLibCheck": true,
 		"strict": true
 	},
-	"include": [
-		"src",
-		"src/utils/topological-sort.ts"
-	],
-	"exclude": [
-		"node_modules",
-		"dist",
-		"**/*.test.ts",
-		"**/*.usage.ts"
-	],
+	"include": ["src", "src/utils/topological-sort.ts"],
+	"exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.usage.ts"],
 	"references": [
 		{
 			"path": "../data-structure"
