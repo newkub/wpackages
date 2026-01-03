@@ -20,7 +20,9 @@ const signJwtRs256 = (args: { readonly pem: string; readonly payload: Record<str
 	return `${input}.${base64Url(signature)}`;
 };
 
-const createAppJwt = async (args: { readonly appId: string; readonly privateKeyPemBase64: string }): Promise<string> => {
+const createAppJwt = async (
+	args: { readonly appId: string; readonly privateKeyPemBase64: string },
+): Promise<string> => {
 	const now = Math.floor(Date.now() / 1000);
 	const pem = base64ToPem(args.privateKeyPemBase64);
 	const payload = {
@@ -37,14 +39,17 @@ export const getInstallationToken = async (args: {
 	readonly privateKeyPemBase64: string;
 }): Promise<string> => {
 	const jwt = await createAppJwt({ appId: args.appId, privateKeyPemBase64: args.privateKeyPemBase64 });
-	const res = await fetch(new URL(`/app/installations/${args.installationId}/access_tokens`, "https://api.github.com"), {
-		method: "POST",
-		headers: {
-			Accept: "application/vnd.github+json",
-			"User-Agent": "@wpackages/github-app-bot",
-			Authorization: `Bearer ${jwt}`,
+	const res = await fetch(
+		new URL(`/app/installations/${args.installationId}/access_tokens`, "https://api.github.com"),
+		{
+			method: "POST",
+			headers: {
+				Accept: "application/vnd.github+json",
+				"User-Agent": "@wpackages/github-app-bot",
+				Authorization: `Bearer ${jwt}`,
+			},
 		},
-	});
+	);
 
 	if (!res.ok) {
 		const body = await res.text().catch(() => "");

@@ -5,7 +5,7 @@ import { Text } from "./components/Text";
 import { Renderer, RendererLive } from "./services/renderer.service";
 import { type Terminal, TerminalLive } from "./services/terminal.service";
 
-const main = Effect.gen(function* (_) {
+const main = Effect.gen(function*(_) {
 	// 1. Create reactive state
 	const [counter, setCounter] = createSignal(0);
 

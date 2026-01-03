@@ -3,12 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"description": "Functional scheduling utilities for cron expressions and task scheduling",
-	"keywords": [
-		"schedule",
-		"cron",
-		"functional-programming",
-		"typescript"
-	],
+	"keywords": ["schedule", "cron", "functional-programming", "typescript"],
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
@@ -18,9 +13,7 @@
 			"types": "./dist/index.d.ts"
 		}
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"engines": {
 		"bun": ">=1.0.0"
 	},

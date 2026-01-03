@@ -1,6 +1,8 @@
 import type { AppEnv } from "../config/env";
 
-export const summarizeWithLlm = async (args: { readonly env: AppEnv; readonly input: string }): Promise<string | null> => {
+export const summarizeWithLlm = async (
+	args: { readonly env: AppEnv; readonly input: string },
+): Promise<string | null> => {
 	const baseUrl = args.env.llmBaseUrl;
 	const apiKey = args.env.llmApiKey;
 	const model = args.env.llmModel;

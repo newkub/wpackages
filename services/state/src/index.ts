@@ -10,7 +10,7 @@ export { Text } from "./components/Text";
 
 // The main render function for users
 export const render = (node: VNode): Effect.Effect<void, never, Terminal> => {
-	const program = Effect.gen(function* (_) {
+	const program = Effect.gen(function*(_) {
 		const renderer = yield* _(Renderer);
 		yield* _(renderer.render(node));
 	});

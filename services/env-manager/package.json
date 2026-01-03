@@ -17,10 +17,7 @@
 		"./bin/cli": "./dist/bin/cli.mjs",
 		"./package.json": "./package.json"
 	},
-	"files": [
-		"dist",
-		"README.md"
-	],
+	"files": ["dist", "README.md"],
 	"scripts": {
 		"dev": "bun --watch src/bin/cli.ts",
 		"build": "tsdown",

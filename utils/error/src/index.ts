@@ -1,4 +1,4 @@
-import { Effect, Data, Either } from 'effect';
+import { Data, Effect, Either } from "effect";
 
 /**
  * Represents an application-specific error.
@@ -12,10 +12,10 @@ import { Effect, Data, Either } from 'effect';
  * import { Effect } from 'effect';
  * const program = Effect.fail(error);
  */
-export class AppError extends Data.TaggedError('AppError')<{
-  message: string;
-  statusCode: number;
-  isOperational?: boolean;
+export class AppError extends Data.TaggedError("AppError")<{
+	message: string;
+	statusCode: number;
+	isOperational?: boolean;
 }> {}
 
 /**
@@ -34,18 +34,18 @@ export class AppError extends Data.TaggedError('AppError')<{
  * const failedEffect = tryPromise(() => { throw new Error('Failure!'); }, 400);
  */
 export const tryPromise = <T>(
-  fn: () => Promise<T> | T,
-  statusCode: number = 500,
+	fn: () => Promise<T> | T,
+	statusCode: number = 500,
 ) =>
-  Effect.tryPromise({
-    try: (_signal) => Promise.resolve(fn()),
-    catch: (unknown) =>
-      new AppError({
-        message: String(unknown),
-        statusCode,
-        isOperational: true,
-      }),
-  });
+	Effect.tryPromise({
+		try: (_signal) => Promise.resolve(fn()),
+		catch: (unknown) =>
+			new AppError({
+				message: String(unknown),
+				statusCode,
+				isOperational: true,
+			}),
+	});
 
 /**
  * Maps the error channel of an `Effect` to a new `AppError`.
@@ -59,8 +59,8 @@ export const tryPromise = <T>(
  * const mappedEffect = mapError(originalEffect, (e) => new AppError({ message: `Mapped: ${e.message}`, statusCode: 500 }));
  */
 export const mapError = <A, E>(
-  self: Effect.Effect<A, E>,
-  f: (e: E) => AppError,
+	self: Effect.Effect<A, E>,
+	f: (e: E) => AppError,
 ): Effect.Effect<A, AppError> => Effect.mapError(self, f);
 
 /**
@@ -80,17 +80,17 @@ export const mapError = <A, E>(
  * const effectFromLeft = fromEither(left, 404); // Fails with AppError({ message: 'Failure', statusCode: 404 })
  */
 export const fromEither = <A, E>(
-  either: Either.Either<A, E>,
-  statusCode: number = 500,
+	either: Either.Either<A, E>,
+	statusCode: number = 500,
 ): Effect.Effect<A, AppError> =>
-  Either.match(either, {
-    onLeft: (e) =>
-      Effect.fail(
-        new AppError({
-          message: String(e),
-          statusCode,
-          isOperational: true,
-        }),
-      ),
-    onRight: (a) => Effect.succeed(a),
-  });
+	Either.match(either, {
+		onLeft: (e) =>
+			Effect.fail(
+				new AppError({
+					message: String(e),
+					statusCode,
+					isOperational: true,
+				}),
+			),
+		onRight: (a) => Effect.succeed(a),
+	});

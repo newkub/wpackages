@@ -1,35 +1,30 @@
 {
-    "extends": "./../../tsconfig.json",
-    "compilerOptions": {
-        "outDir": "./dist",
-        "rootDir": "..",
-        "declaration": true,
-        "declarationMap": true,
-        "sourceMap": true,
-        "composite": true,
-        "incremental": true,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "inlineSources": true,
-        "isolatedModules": true,
-        "moduleResolution": "bundler",
-        "noUnusedLocals": false,
-        "noUnusedParameters": false,
-        "preserveWatchOutput": true,
-        "skipLibCheck": true,
-        "strict": true
-    },
-    "include": [
-        "src/**/*",
-        "src",
-        "../data-structure/src/index.ts",
-        "../data-structure/src/modules/**/*",
-        "../data-structure/src/types/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist",
-        "**/*.test.ts",
-        "**/*.usage.ts"
-    ]
+	"extends": "./../../tsconfig.json",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"rootDir": "..",
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"composite": true,
+		"incremental": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"inlineSources": true,
+		"isolatedModules": true,
+		"moduleResolution": "bundler",
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"preserveWatchOutput": true,
+		"skipLibCheck": true,
+		"strict": true
+	},
+	"include": [
+		"src/**/*",
+		"src",
+		"../data-structure/src/index.ts",
+		"../data-structure/src/modules/**/*",
+		"../data-structure/src/types/**/*"
+	],
+	"exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.usage.ts"]
 }

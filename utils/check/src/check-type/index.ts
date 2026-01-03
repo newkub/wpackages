@@ -5,9 +5,9 @@ import cac from "cac";
 import chalk from "chalk";
 import { exec } from "node:child_process";
 import * as shiki from "shiki";
+import { version } from "../package.json";
 import { analyzeProject } from "./app";
 import type { FileInfo } from "./types";
-import { version } from "../package.json";
 
 async function runAnalysis(
 	dir: string | symbol | undefined,
@@ -35,7 +35,7 @@ async function runAnalysis(
 				.map((line) =>
 					line
 						.map((token) => chalk.hex(token.color ?? "#FFFFFF")(token.content))
-						.join(""),
+						.join("")
 				)
 				.join("\n");
 

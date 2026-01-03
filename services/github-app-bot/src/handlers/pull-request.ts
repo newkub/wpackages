@@ -9,7 +9,9 @@ type PullRequestPayload = {
 	pull_request?: { number?: number; base?: { repo?: { owner?: { login?: string }; name?: string } } };
 };
 
-export const handlePullRequestEvent = async (args: { readonly env: AppEnv; readonly payload: unknown }): Promise<void> => {
+export const handlePullRequestEvent = async (
+	args: { readonly env: AppEnv; readonly payload: unknown },
+): Promise<void> => {
 	const payload = args.payload as PullRequestPayload;
 	const action = payload.action;
 	if (action !== "opened" && action !== "synchronize" && action !== "reopened") return;

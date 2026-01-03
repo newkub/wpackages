@@ -36,11 +36,11 @@ export const BoxPropsSchema: Schema.Schema<{
 	readonly flexGrow?: number | undefined;
 	readonly padding?:
 		| {
-				readonly top?: number | undefined;
-				readonly bottom?: number | undefined;
-				readonly left?: number | undefined;
-				readonly right?: number | undefined;
-		  }
+			readonly top?: number | undefined;
+			readonly bottom?: number | undefined;
+			readonly left?: number | undefined;
+			readonly right?: number | undefined;
+		}
 		| undefined;
 	readonly borderStyle?: keyof typeof BORDER_STYLES | undefined;
 	readonly borderColor?: keyof typeof COLORS | undefined;

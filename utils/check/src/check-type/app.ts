@@ -1,13 +1,13 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import {
+	type ClassDeclaration,
+	type FunctionDeclaration,
+	type InterfaceDeclaration,
 	Project,
 	type SourceFile,
-	type FunctionDeclaration,
-	type VariableDeclaration,
 	type TypeAliasDeclaration,
-	type InterfaceDeclaration,
-	type ClassDeclaration,
+	type VariableDeclaration,
 } from "ts-morph";
 import type { FileInfo } from "./types";
 

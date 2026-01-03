@@ -8,8 +8,7 @@ export interface Terminal {
 }
 
 // 2. Create a stable Tag for the service using GenericTag
-export const Terminal: Context.Tag<Terminal, Terminal> =
-	Context.GenericTag<Terminal>("Terminal");
+export const Terminal: Context.Tag<Terminal, Terminal> = Context.GenericTag<Terminal>("Terminal");
 
 // 3. Create the live implementation as a Layer
 export const TerminalLive: Layer.Layer<Terminal> = Layer.succeed(Terminal, {

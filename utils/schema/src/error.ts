@@ -1,5 +1,5 @@
-import type { ParseError } from "./types/schema";
 import type { Issue } from "./types";
+import type { ParseError } from "./types/schema";
 
 export class ValidationError extends Error {
 	public readonly issues: Issue[];

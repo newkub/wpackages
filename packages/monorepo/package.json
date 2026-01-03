@@ -11,12 +11,7 @@
 		"test": "vitest --run",
 		"verify": "bun format && bun lint && bun test && bun audit && run build"
 	},
-	"keywords": [
-		"monorepo",
-		"build-tool",
-		"task-runner",
-		"effect-ts"
-	],
+	"keywords": ["monorepo", "build-tool", "task-runner", "effect-ts"],
 	"author": "wrikka",
 	"license": "MIT",
 	"dependencies": {

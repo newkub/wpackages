@@ -1,8 +1,8 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { readRawBody } from "./read-body";
-import { verifyGitHubSignature } from "./verify";
 import type { AppEnv } from "../config/env";
 import { handlePullRequestEvent } from "../handlers/pull-request";
+import { readRawBody } from "./read-body";
+import { verifyGitHubSignature } from "./verify";
 
 export const handleWebhookRequest = async (args: {
 	readonly env: AppEnv;

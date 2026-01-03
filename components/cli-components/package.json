@@ -21,10 +21,7 @@
 		"functional",
 		"fp-ts"
 	],
-	"files": [
-		"dist",
-		"src"
-	],
+	"files": ["dist", "src"],
 	"dependencies": {
 		"@wpackages/design-pattern": "workspace:*",
 		"@wpackages/error": "workspace:*",

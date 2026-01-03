@@ -24,8 +24,8 @@ This phase focuses on building a more robust virtual environment by simulating c
 - [ ] **File Permissions & Ownership:** Implement a basic permission model (e.g., read, write, execute) for files and directories.
 - [ ] **File Descriptors:** Create a system for managing file descriptors.
 - [ ] **Process Primitives:**
-    - [ ] Design and implement a basic Process Control Block (PCB) struct to represent running processes.
-    - [ ] Create a virtual `stdin`, `stdout`, and `stderr` stream for each process.
+  - [ ] Design and implement a basic Process Control Block (PCB) struct to represent running processes.
+  - [ ] Create a virtual `stdin`, `stdout`, and `stderr` stream for each process.
 
 ---
 
@@ -44,9 +44,9 @@ This phase involves embedding a JavaScript engine to enable script execution.
 This is a significant phase focused on bridging the gap between the JS engine and a full Node.js environment.
 
 - [ ] **Node.js Built-in Modules:**
-    - [ ] **`fs` Module:** Implement the Node.js `fs` module API using our VFS backend.
-    - [ ] **`path` Module:** Implement the Node.js `path` module API.
-    - [ ] **Other Core Modules:** Gradually implement other core modules (`os`, `events`, etc.).
+  - [ ] **`fs` Module:** Implement the Node.js `fs` module API using our VFS backend.
+  - [ ] **`path` Module:** Implement the Node.js `path` module API.
+  - [ ] **Other Core Modules:** Gradually implement other core modules (`os`, `events`, etc.).
 - [ ] **`require()` Mechanism:** Implement a module loading system that can resolve and execute modules from the VFS.
 - [ ] **`process` Object:** Create and manage a global `process` object with properties like `argv`, `env`, and `cwd`.
 - [ ] **Event Loop:** Investigate how to simulate the Node.js event loop within the browser's single-threaded environment.
@@ -60,5 +60,5 @@ The final and most complex phase, enabling external communication and dependency
 - [ ] **Virtualized TCP Network Stack:** Research and implement a virtualized network stack to handle TCP connections within the browser. This is crucial for running servers (e.g., `http.createServer`).
 - [ ] **Package Fetching:** Implement logic to fetch package tarballs from the npm registry (e.g., `registry.npmjs.org`).
 - [ ] **Package Installation:**
-    - [ ] Implement tarball extraction into the VFS.
-    - [ ] Develop the logic for resolving and installing package dependencies, simulating `npm`/`pnpm`/`bun`'s core functionality.
+  - [ ] Implement tarball extraction into the VFS.
+  - [ ] Develop the logic for resolving and installing package dependencies, simulating `npm`/`pnpm`/`bun`'s core functionality.

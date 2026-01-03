@@ -42,5 +42,7 @@ export const makeConsole = (config: ConsoleConfig = {}, baseContext?: string): C
 	};
 };
 
-export const makeConsoleLayer = (ConsoleTag: ReturnType<(typeof import("@wpackages/functional"))['Effect']['tag']>, config: ConsoleConfig = {}) =>
-	Layer.succeed(ConsoleTag, makeConsole(config));
+export const makeConsoleLayer = (
+	ConsoleTag: ReturnType<(typeof import("@wpackages/functional"))["Effect"]["tag"]>,
+	config: ConsoleConfig = {},
+) => Layer.succeed(ConsoleTag, makeConsole(config));

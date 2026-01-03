@@ -49,7 +49,9 @@ export const buildDependencyReviewComment = async (args: {
 		"",
 		"### Policy",
 		policy.engines ? `- engines: ${JSON.stringify(policy.engines)}` : "- engines: (not set)",
-		policy.maxNewDependencies != null ? `- maxNewDependencies: ${policy.maxNewDependencies}` : "- maxNewDependencies: (not set)",
+		policy.maxNewDependencies != null
+			? `- maxNewDependencies: ${policy.maxNewDependencies}`
+			: "- maxNewDependencies: (not set)",
 		foundBlocked ? "- blockedPackages: detected potential blocked changes" : "- blockedPackages: ok",
 	].join("\n");
 

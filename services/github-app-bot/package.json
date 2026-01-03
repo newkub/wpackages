@@ -11,12 +11,7 @@
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
-	"files": [
-		"dist",
-		"README.md",
-		"policy.json",
-		".env.example"
-	],
+	"files": ["dist", "README.md", "policy.json", ".env.example"],
 	"engines": {
 		"bun": ">=1.3.5"
 	},

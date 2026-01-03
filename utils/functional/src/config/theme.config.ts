@@ -1,6 +1,6 @@
-import { THEME } from '../constant';
+import { THEME } from "../constant";
 
 export const AppTheme = Object.freeze({
-  primaryColor: THEME.BLUE,
-  backgroundColor: THEME.WHITE,
+	primaryColor: THEME.BLUE,
+	backgroundColor: THEME.WHITE,
 });

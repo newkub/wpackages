@@ -4,14 +4,6 @@
 		"outDir": "./dist",
 		"rootDir": "./src"
 	},
-	"include": [
-		"src/**/*",
-		"src"
-	],
-	"exclude": [
-		"node_modules",
-		"dist",
-		"coverage",
-		"vitest.config.ts"
-	]
+	"include": ["src/**/*", "src"],
+	"exclude": ["node_modules", "dist", "coverage", "vitest.config.ts"]
 }
