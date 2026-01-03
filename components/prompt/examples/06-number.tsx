@@ -1,9 +1,13 @@
-import React from "react";
-import { NumberPrompt, prompt } from "../src";
+import { prompt } from "../src/context";
+import { number } from "../src/index";
 
 async function main() {
-	const age = await prompt(NumberPrompt, { message: "How old are you?", min: 18 }, 18);
-	console.log(`Your age: ${age}`);
+	const age = await prompt(number({ message: "How old are you?", min: 18 }));
+	if (typeof age === "symbol") {
+		console.log("Prompt cancelled.");
+		return;
+	}
+	console.log(`Your age: ${String(age)}`);
 }
 
-main();
+main().catch(console.error);

@@ -1,6 +1,3 @@
-import { macro } from "bun";
-
-export const log = macro((...args: any[]) => {
-	const { line, path } = import.meta;
-	return `console.log("[${path}:${line}]", ...${JSON.stringify(args)})`;
-});
+export * from './macros/log';
+export * from './macros/env';
+export * from './macros/embed';

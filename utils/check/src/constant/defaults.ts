@@ -20,6 +20,7 @@ export const DEFAULT_MAX_COMPLEXITY = 20;
 export const DEFAULT_MAX_CONCURRENCY = 4;
 
 export const CHECK_NAMES = {
+	responsibility: "Responsibility",
 	circular: "Circular Dependencies",
 	complexity: "Code Complexity",
 	deps: "Dependencies",
@@ -30,7 +31,6 @@ export const CHECK_NAMES = {
 	sideEffect: "Side Effects",
 	size: "File Size",
 	type: "Type Check",
-	typeSafe: "Type Safety",
 	unused: "Unused Code",
 } as const;
 

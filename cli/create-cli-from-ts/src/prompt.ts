@@ -1,7 +1,6 @@
 /**
  * Prompt module re-export
- * TODO: Import from @wts/cli-components when available
+ * @ai: Re-export more prompt components from @wpackages/cli-components as they become available
  */
 
-// Placeholder export to prevent empty file
-export const promptModule = true;
+export * from "@wpackages/cli-components";

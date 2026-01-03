@@ -1,9 +1,13 @@
-import React from "react";
-import { DatePrompt, prompt } from "../src";
+import { prompt } from "../src/context";
+import { date as datePrompt } from "../src/index";
 
 async function main() {
-	const date = await prompt(DatePrompt, { message: "Select a date:" }, new Date());
-	console.log(`Selected date: ${date.toDateString()}`);
+	const selectedDate = await prompt(datePrompt({ message: "Select a date:" }));
+	if (typeof selectedDate === "symbol") {
+		console.log("Prompt cancelled.");
+		return;
+	}
+	console.log(`Selected date: ${selectedDate.toDateString()}`);
 }
 
-main();
+main().catch(console.error);

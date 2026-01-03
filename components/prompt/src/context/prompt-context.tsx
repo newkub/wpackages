@@ -1,6 +1,5 @@
 import { renderer as legacyRenderer } from "@/services"; // Keep legacy for now
-import { Renderer, RendererLive } from "@/services/renderer-effect";
-import { Effect } from "effect";
+import { PromptDescriptor } from "@/types";
 import React, { createContext, PropsWithChildren, useContext, useState } from "react";
 
 export type PromptState = "active" | "submitting" | "submitted" | "cancelled";
@@ -53,11 +52,8 @@ export function PromptProvider<T>(
 	);
 }
 
-// Legacy prompt function
-export function prompt<T, P extends object>(
-	Component: React.FC<P>,
-	props: P,
-	initialValue: T,
+export function prompt<T>(
+	descriptor: PromptDescriptor<T, any>,
 ): Promise<T | symbol> {
 	return new Promise((resolve) => {
 		const onCancel = () => {
@@ -71,52 +67,13 @@ export function prompt<T, P extends object>(
 		};
 
 		legacyRenderer.render(
-			<PromptProvider initialValue={initialValue} onSubmit={onSubmit} onCancel={onCancel}>
-				<Component {...props} />
+			<PromptProvider
+				initialValue={descriptor.initialValue}
+				onSubmit={onSubmit}
+				onCancel={onCancel}
+			>
+				<descriptor.Component {...descriptor.props} />
 			</PromptProvider>,
 		);
 	});
-}
-
-// New Effect-based prompt function
-export function promptEffect<T, P extends object>(
-	Component: React.FC<P>,
-	props: P,
-	initialValue: T,
-): Effect.Effect<T, "cancelled"> {
-	const effectLogic = Effect.gen(function*() {
-		const renderer: Renderer = yield* Renderer;
-
-		const acquire = Effect.gen(function*() {
-			const callbacks = {
-				onSubmit: (_value: T) => {},
-				onCancel: () => {},
-			};
-
-			const ui = (
-				<PromptProvider
-					initialValue={initialValue}
-					onSubmit={(value) => callbacks.onSubmit(value)}
-					onCancel={() => callbacks.onCancel()}
-				>
-					<Component {...props} />
-				</PromptProvider>
-			);
-
-			const instance = yield* renderer.render(ui);
-			return { callbacks, instance };
-		});
-
-		return yield* Effect.acquireUseRelease(
-			acquire,
-			({ callbacks }: { callbacks: { onSubmit: (value: T) => void; onCancel: () => void } }) =>
-				Effect.async<T, "cancelled">(resume => {
-					callbacks.onSubmit = (value: T) => resume(Effect.succeed(value));
-					callbacks.onCancel = () => resume(Effect.fail("cancelled"));
-				}),
-			({ instance }: { instance: any }) => renderer.unmount(instance),
-		);
-	});
-
-	return effectLogic.pipe(Effect.provide(RendererLive)) as unknown as Effect.Effect<T, "cancelled">;
 }

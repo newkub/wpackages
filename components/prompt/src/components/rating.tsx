@@ -1,13 +1,9 @@
 import { usePrompt } from "@/context";
+import { PromptDescriptor, RatingPromptOptions } from "@/types";
 import { Box, Text, useInput } from "ink";
+import React from "react";
 
-interface RatingPromptProps {
-	message: string;
-	max?: number;
-	character?: string;
-}
-
-export function RatingPrompt({ message, max = 5, character = "★" }: RatingPromptProps) {
+export const RatingPromptComponent: React.FC<RatingPromptOptions> = ({ message, max = 5, character = "★" }) => {
 	const { value, setValue, submit } = usePrompt<number>();
 
 	useInput((_, key) => {
@@ -31,4 +27,14 @@ export function RatingPrompt({ message, max = 5, character = "★" }: RatingProm
 			{stars}
 		</Box>
 	);
-}
+};
+
+export const rating = (
+	options: RatingPromptOptions,
+): PromptDescriptor<number, RatingPromptOptions> => {
+	return {
+		Component: RatingPromptComponent,
+		props: options,
+		initialValue: options.initialValue ?? 0,
+	};
+};

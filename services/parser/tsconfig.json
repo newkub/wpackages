@@ -3,9 +3,19 @@
 	"compilerOptions": {
 		"outDir": "./dist",
 		"paths": {
-			"@w/design-pattern": ["../../utils/design-pattern/src/index.ts"]
+			"@w/design-pattern": [
+				"../../utils/design-pattern/src"
+			]
 		}
 	},
-	"include": ["src/**/*", "src"],
-	"exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.usage.ts"]
+	"include": [
+		"src/**/*",
+		"src"
+	],
+	"exclude": [
+		"node_modules",
+		"dist",
+		"**/*.test.ts",
+		"**/*.usage.ts"
+	]
 }

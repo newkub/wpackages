@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "bun --watch src/index.ts",
+		"format": "dprint fmt",
 		"lint": "oxlint --fix --type-aware",
 		"test": "vitest run --passWithNoTests",
 		"build": "tsdown",

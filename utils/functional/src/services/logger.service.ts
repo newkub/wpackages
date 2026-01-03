@@ -1,3 +1,9 @@
-import { Effect } from "effect";
+import { Effect, Layer } from "effect";
+import { Logger } from "./Logger";
 
-export const log = (message: string): Effect.Effect<void, never> => Effect.sync(() => console.log(message));
+export const LoggerLive = Layer.succeed(
+    Logger,
+    {
+        log: (message: string) => Effect.sync(() => console.log(message))
+    }
+);

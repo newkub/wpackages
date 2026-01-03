@@ -1,14 +1,10 @@
 import { usePrompt } from "@/context";
+import { PromptDescriptor, TimePromptOptions } from "@/types";
 import { Box, Text, useInput } from "ink";
-import { useState } from "react";
+import React, { useState } from "react";
 
-interface TimePromptProps {
-	message: string;
-}
-
-export function TimePrompt({ message }: TimePromptProps) {
-	const { submit } = usePrompt<Date>();
-	const [time, setTime] = useState(new Date());
+export const TimePromptComponent: React.FC<TimePromptOptions> = ({ message }) => {
+	const { value: time, setValue: setTime, submit } = usePrompt<Date>();
 	const [activePart, setActivePart] = useState<"h" | "m" | "s">("h");
 
 	useInput((_, key) => {
@@ -45,4 +41,14 @@ export function TimePrompt({ message }: TimePromptProps) {
 			<Text color={activePart === "s" ? "cyan" : "gray"}>{format(time.getSeconds())}</Text>
 		</Box>
 	);
-}
+};
+
+export const time = (
+	options: TimePromptOptions,
+): PromptDescriptor<Date, TimePromptOptions> => {
+	return {
+		Component: TimePromptComponent,
+		props: options,
+		initialValue: options.initialValue ?? new Date(),
+	};
+};

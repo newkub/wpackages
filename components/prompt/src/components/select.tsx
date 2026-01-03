@@ -1,19 +1,10 @@
-import { prompt, usePrompt } from "@/context";
-import { Box, Text, useInput } from "ink";
-import { useState } from "react";
+import { usePrompt } from "@/context";
+import { useInput } from "@/hooks";
+import { PromptDescriptor, SelectPromptOptions } from "@/types";
+import { Box, Text } from "ink";
+import React, { useState } from "react";
 
-interface Option<T> {
-	value: T;
-	label: string;
-	hint?: string;
-}
-
-export interface SelectPromptProps<T> {
-	message: string;
-	options: Option<T>[];
-}
-
-export function SelectPrompt<T>({ message, options }: SelectPromptProps<T>) {
+export const SelectPromptComponent = <T,>({ message, options }: SelectPromptOptions<T>) => {
 	const { submit } = usePrompt<T>();
 	const [activeIndex, setActiveIndex] = useState(0);
 
@@ -42,11 +33,15 @@ export function SelectPrompt<T>({ message, options }: SelectPromptProps<T>) {
 			))}
 		</Box>
 	);
-}
+};
 
-export const select = <T,>(options: SelectPromptProps<T>) => {
-	// The prompt function requires an initial value, even if the component doesn't use it.
-	// We'll use the first option's value as a default.
-	const initialValue = options.options[0]?.value ?? null;
-	return prompt(SelectPrompt<T>, options, initialValue as T);
+export const select = <T,>(
+	options: SelectPromptOptions<T>,
+): PromptDescriptor<T, SelectPromptOptions<T>> => {
+	const initialValue = options.initialValue ?? options.options[0]?.value ?? null;
+	return {
+		Component: SelectPromptComponent as React.FC<SelectPromptOptions<T>>,
+		props: options,
+		initialValue: initialValue as T,
+	};
 };

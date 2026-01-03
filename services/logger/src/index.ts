@@ -1,6 +1,8 @@
-import { Effect as FunctionalEffect } from "@wpackages/functional";
-import { Effect, Layer } from "@wpackages/functional";
-import type { Effect as EffectType } from "@wpackages/functional";
+import { Context, Effect, Layer, type Tag } from "effect";
+
+// --------------------------------------------------------------------------------
+// Models
+// --------------------------------------------------------------------------------
 
 export type LogLevel = "debug" | "info" | "warn" | "error";
 
@@ -16,11 +18,23 @@ export type LoggerConfig = {
 	readonly redactKeys?: ReadonlyArray<string>;
 };
 
-export interface Logger {
-	readonly log: (entry: LogEntry) => EffectType<void, never, never>;
+// --------------------------------------------------------------------------------
+// Services
+// --------------------------------------------------------------------------------
+
+export interface Console {
+	readonly log: (line: string) => Effect.Effect<void>;
+	readonly warn: (line: string) => Effect.Effect<void>;
+	readonly error: (line: string) => Effect.Effect<void>;
 }
 
-export const Logger = FunctionalEffect.tag<Logger>();
+export const Console: Tag<Console> = Context.Tag<Console>("@wpackages/logger/Console");
+
+export interface Logger {
+	readonly log: (entry: LogEntry) => Effect.Effect<void>;
+}
+
+export const Logger: Tag<Logger> = Context.Tag<Logger>("@wpackages/logger/Logger");
 
 const levelRank: Record<LogLevel, number> = {
 	debug: 10,
@@ -42,31 +56,53 @@ const redact = (
 	return out;
 };
 
-export const makeLogger = (config: LoggerConfig = {}): Logger => {
+export const makeLogger = Effect.gen(function*() {
+	const console = yield* Console;
+	const config = yield* LoggerConfigTag;
+
 	const minLevel = config.minLevel ?? "info";
 	const redactKeys = config.redactKeys ?? [];
 
-	return {
-		log: (entry) =>
-			Effect.tap(Effect.succeed(undefined), () => {
-				if (levelRank[entry.level] < levelRank[minLevel]) return;
-				const safe = redact(entry.meta, redactKeys);
-				const payload = safe ? { ...entry, meta: safe } : entry;
-				const line = JSON.stringify(payload);
-				if (entry.level === "error") console.error(line);
-				else if (entry.level === "warn") console.warn(line);
-				else console.log(line);
-			}),
-	};
-};
+	const log = (entry: LogEntry): Effect.Effect<void> => {
+		if (levelRank[entry.level] < levelRank[minLevel]) {
+			return Effect.void;
+		}
+		const safeMeta = redact(entry.meta, redactKeys);
+		const payload = safeMeta ? { ...entry, meta: safeMeta } : entry;
+		const line = JSON.stringify(payload);
 
-export const LoggerLive = Layer.succeed(Logger, makeLogger({ redactKeys: ["token", "password", "secret"] }));
+		switch (entry.level) {
+			case "error":
+				return console.error(line);
+			case "warn":
+				return console.warn(line);
+			default:
+				return console.log(line);
+		}
+	};
+
+	return { log } satisfies Logger;
+});
+
+export const ConsoleLive = Layer.succeed(
+	Console,
+	{
+		log: (line: string) => Effect.sync(() => console.log(line)),
+		warn: (line: string) => Effect.sync(() => console.warn(line)),
+		error: (line: string) => Effect.sync(() => console.error(line)),
+	},
+);
+
+export const LoggerConfigTag: Tag<LoggerConfig> = Context.Tag<LoggerConfig>("@wpackages/logger/LoggerConfig");
+
+export const LoggerLive = Layer.effect(Logger, makeLogger).pipe(
+	Layer.provide(Layer.succeed(LoggerConfigTag, { redactKeys: ["token", "password", "secret"] })),
+);
+
+export const DefaultLoggerLayer = ConsoleLive.pipe(Layer.provide(LoggerLive));
 
 export const log = (level: LogLevel, message: string, meta?: Readonly<Record<string, unknown>>) =>
-	Effect.gen(function*() {
-		const svc = yield Effect.get(Logger);
-		yield svc.log({ level, message, time: Date.now(), ...(meta ? { meta } : {}) });
-	});
+	Effect.flatMap(Logger, (svc) => svc.log({ level, message, time: Date.now(), ...(meta ? { meta } : {}) }));
 
 export const debug = (message: string, meta?: Readonly<Record<string, unknown>>) => log("debug", message, meta);
 export const info = (message: string, meta?: Readonly<Record<string, unknown>>) => log("info", message, meta);

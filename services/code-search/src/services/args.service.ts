@@ -16,106 +16,103 @@ const toLang = (raw: string | undefined): LangKey => {
 	throw new Error(`Unsupported --lang: ${raw}`);
 };
 
+const showHelp = () => {
+	const helpText = [
+		"code-search usage:",
+		"  bun dev -- [paths...] --type <NodeType> [options]",
+		"options:",
+		"  --lang <ts|tsx|js>",
+		"  --pattern <pattern>, -p <pattern>",
+		"  --rule <rule_id>",
+		"  --type <NodeType>",
+		"  --output <text|json>",
+		"  --count",
+		"  --replace <text>",
+		"  --check",
+		"  --write",
+		"  --help, -h",
+	].join("\n");
+	console.log(helpText);
+	process.exit(0);
+};
+
 export const parseArgs = (argv: string[]): CliOptions => {
-	let lang: CliOptions["lang"] = DEFAULT_LANG;
-	let nodeType: string | undefined;
-	const paths: string[] = [];
-	let output: OutputMode = "text";
-	let countOnly = false;
-	let replace: string | undefined;
-	let write = false;
-	let check = false;
+	const options: Partial<CliOptions> & { paths: string[] } = {
+		paths: [],
+		lang: DEFAULT_LANG,
+		output: "text",
+		countOnly: false,
+		write: false,
+		check: false,
+	};
 
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
 		if (!arg) continue;
 
 		if (arg === "--help" || arg === "-h") {
-			throw new Error(
-				[
-					"code-search usage:",
-					"  bun dev -- [paths...] --type <NodeType> [options]",
-					"options:",
-					"  --lang <ts|tsx|js>",
-					"  --type <NodeType>",
-					"  --output <text|json>",
-					"  --count",
-					"  --replace <text>",
-					"  --check",
-					"  --write",
-				].join("\n"),
-			);
+			showHelp();
 		}
 
-		if (arg === "--count") {
-			countOnly = true;
-			continue;
-		}
-		if (arg === "--check") {
-			check = true;
-			continue;
-		}
-		if (arg === "--write") {
-			write = true;
-			continue;
-		}
-		if (arg.startsWith("--lang=")) {
-			lang = toLang(arg.split("=")[1]);
-			continue;
-		}
-		if (arg === "--lang") {
-			lang = toLang(argv[i + 1]);
-			i++;
-			continue;
-		}
-		if (arg.startsWith("--type=")) {
-			nodeType = arg.slice("--type=".length);
-			continue;
-		}
-		if (arg === "--type") {
-			const next = argv[i + 1];
-			if (!next) throw new Error("Missing value for --type");
-			nodeType = next;
-			i++;
-			continue;
-		}
-		if (arg.startsWith("--output=")) {
-			output = toOutput(arg.split("=")[1]);
-			continue;
-		}
-		if (arg === "--output") {
-			output = toOutput(argv[i + 1]);
-			i++;
-			continue;
-		}
-		if (arg.startsWith("--replace=")) {
-			replace = arg.slice("--replace=".length);
-			continue;
-		}
-		if (arg === "--replace") {
-			const next = argv[i + 1];
-			if (!next) throw new Error("Missing value for --replace");
-			replace = next;
-			i++;
-			continue;
-		}
+		if (arg.startsWith("--")) {
+			const [key, value] = arg.includes("=")
+				? arg.slice(2).split("=", 2)
+				: [arg.slice(2), argv[i + 1]];
 
-		if (arg.startsWith("--")) throw new Error(`Unknown option: ${arg}`);
-		paths.push(arg);
+			switch (key) {
+				case "lang":
+					options.lang = toLang(value);
+					if (!arg.includes("=")) i++;
+					break;
+				case "type":
+					options.nodeType = value;
+					if (!arg.includes("=")) i++;
+					break;
+				case "pattern":
+					options.pattern = value;
+					if (!arg.includes("=")) i++;
+					break;
+				case "rule":
+					options.rule = value;
+					if (!arg.includes("=")) i++;
+					break;
+				case "output":
+					options.output = toOutput(value);
+					if (!arg.includes("=")) i++;
+					break;
+				case "replace":
+					options.replace = value;
+					if (!arg.includes("=")) i++;
+					break;
+				case "count":
+					options.countOnly = true;
+					break;
+				case "check":
+					options.check = true;
+					break;
+				case "write":
+					options.write = true;
+					break;
+				default:
+					throw new Error(`Unknown option: ${arg}`);
+			}
+		} else if (arg === "-p") {
+			const next = argv[i + 1];
+			if (!next) throw new Error("Missing value for --pattern");
+			options.pattern = next;
+			i++;
+		} else {
+			options.paths.push(arg);
+		}
 	}
 
-	if (!nodeType || nodeType.trim().length === 0) {
-		throw new Error("Missing required --type");
+	if (!options.nodeType && !options.pattern && !options.rule) {
+		throw new Error("Missing required --type, --pattern, or --rule");
 	}
 
-	return {
-		paths: paths.length === 0 ? ["."] : paths,
-		lang,
-		nodeType,
-		output,
-		countOnly,
-		replace,
-		write,
-		check,
-	};
+	if (options.paths.length === 0) {
+		options.paths.push(".");
+	}
+
+	return options as CliOptions;
 };

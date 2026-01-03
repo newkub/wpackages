@@ -1,13 +1,9 @@
 import { usePrompt } from "@/context";
+import { PromptDescriptor, TogglePromptOptions } from "@/types";
 import { Box, Text, useInput } from "ink";
+import React from "react";
 
-interface TogglePromptProps {
-	message: string;
-	active?: string;
-	inactive?: string;
-}
-
-export function TogglePrompt({ message, active = "On", inactive = "Off" }: TogglePromptProps) {
+export const TogglePromptComponent: React.FC<TogglePromptOptions> = ({ message, active = "On", inactive = "Off" }) => {
 	const { value, setValue, submit } = usePrompt<boolean>();
 
 	useInput((input, key) => {
@@ -28,4 +24,14 @@ export function TogglePrompt({ message, active = "On", inactive = "Off" }: Toggl
 			<Text color={value ? "cyan" : "gray"}>{toggle}</Text>
 		</Box>
 	);
-}
+};
+
+export const toggle = (
+	options: TogglePromptOptions,
+): PromptDescriptor<boolean, TogglePromptOptions> => {
+	return {
+		Component: TogglePromptComponent,
+		props: options,
+		initialValue: options.initialValue ?? false,
+	};
+};

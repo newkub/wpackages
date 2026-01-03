@@ -19,14 +19,21 @@ export type GenericParseResult<T = unknown> = {
 /**
  * Base parser interface that all parsers must implement
  */
-export interface Parser<T = unknown> {
+export interface Parser<T = unknown, O extends ParseOptionsBase = ParseOptionsBase> {
 	readonly name: string;
 	readonly supportedLanguages: readonly Language[];
 	parse: (
 		source: string,
 		filename: string,
-		options?: ParseOptionsBase,
+		options?: O,
 	) => Result.Result<GenericParseResult<T>, string>;
+}
+
+/**
+ * Extended parser interface that includes a stringify method
+ */
+export interface StringifyableParser<T = unknown, O extends ParseOptionsBase = ParseOptionsBase> extends Parser<T, O> {
+	stringify: (ast: T, options?: Record<string, unknown>) => string;
 }
 
 /**

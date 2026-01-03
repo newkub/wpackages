@@ -1,110 +1,49 @@
-# CLI Builder
+# @wpackages/cli-builder
 
-A powerful and type-safe CLI builder that supports both flag-based and prompt-based interactions, built with TypeScript and Effect-TS.
+## Introduction
+
+`@wpackages/cli-builder` is a powerful and type-safe library for building command-line interfaces in TypeScript. It is built with Effect-TS and supports both traditional flag-based execution and modern interactive prompt-based flows out of the box. Its functional design makes it easy to create CLIs that are robust, testable, and maintainable.
 
 ## Features
 
-- **Dual Mode**: Works seamlessly with command-line flags (like `commander`) and interactive prompts (like `@clack/prompts`).
-- **Type-Safe**: Leverages TypeScript and Effect-TS for robust, error-free code.
-- **Functional**: Written with a functional programming approach for clean, testable, and maintainable code.
-- **Configurable**: Easily define commands, options, and actions in a simple configuration object. Supports loading external config files (`<name>.config.ts`).
-- **Nesting**: Supports nested commands for complex CLI structures.
-- **Hooks**: Global and command-specific `before` and `after` hooks for middleware-like functionality.
+- 🎭 **Dual Mode**: Works seamlessly with command-line flags (e.g., `my-cli --name=cascade`) and interactive prompts for a guided experience.
+- 🔒 **Type-Safe**: Leverages `Effect-TS` and `@effect/schema` for robust, compile-time validation of commands, options, and arguments.
+- 🧩 **Functional by Design**: Written with a functional programming approach, promoting clean, composable, and easily testable code.
+- ⚙️ **Highly Configurable**: Define commands, options, and actions through a simple configuration object. Supports loading external config files (e.g., `my-cli.config.ts`).
+- 🌳 **Command Nesting**: Supports deeply nested commands (e.g., `git remote add ...`) for creating complex CLI structures.
+- 훅 **Lifecycle Hooks**: Provides global and command-specific `before` and `after` hooks for implementing middleware-like functionality.
+
+## Goal
+
+- 🎯 **Developer Experience**: To provide a best-in-class, type-safe API for building complex CLIs without boilerplate.
+- 🛡️ **Robustness**: To eliminate runtime errors through a powerful type system and functional constructs.
+- 🤸 **Flexibility**: To allow developers to build both simple scripts and complex, interactive command-line applications with the same tool.
+
+## Design Principles
+
+- **Configuration as Code**: CLIs are defined declaratively using TypeScript objects, making them easy to read, modify, and extend.
+- **Effect-Driven**: All side effects (like file system access or network requests) are managed through the `Effect` system, making the CLI fully interruptible and testable.
+- **Composability**: Commands and options are designed to be composable, allowing for the creation of reusable CLI components.
 
 ## Installation
 
-```bash
-# Clone the repository
-git clone <repository-url>
-cd cli-builder
+This is a workspace package. Ensure you have installed dependencies from the monorepo root:
 
-# Install dependencies
+```bash
 bun install
 ```
 
 ## Usage
 
-There are two ways to use the CLI:
+The CLI builder can be used to create a new CLI application. The core of the application is a configuration file that defines its structure and behavior.
 
-### 1. Flag Mode
+### Configuration
 
-Run commands directly with flags, similar to `commander`.
-
-```bash
-# Run the 'hello' command with a name
-bun src/index.ts hello --name Cascade
-
-# Get help
-bun src/index.ts --help
-
-# Get version
-bun src/index.ts --version
-```
-
-### 2. Prompt Mode
-
-Run the CLI without any arguments to enter an interactive prompt mode, powered by `@clack/prompts`.
-
-```bash
-bun src/index.ts
-```
-
-The CLI will guide you through the available commands and their options.
-
-## Advanced Features
-
-### Command Nesting
-
-You can nest commands by defining a `subCommands` array within a command.
+All commands and options are defined in a configuration object. Here is a basic example:
 
 ```typescript
-// src/config/cli.config.ts
-{
-  name: 'git',
-  description: 'A git-like command',
-  subCommands: [
-    {
-      name: 'remote',
-      description: 'Manage remotes',
-      // ... further nesting
-    },
-  ],
-}
-```
-
-### Hooks (Middleware)
-
-Hooks can be defined globally or on a per-command basis. They are executed in the following order:
-
-1. Global `before`
-2. Command `before`
-3. Command `action`
-4. Command `after`
-5. Global `after`
-
-```typescript
-// src/config/cli.config.ts
-export const config: CliConfig = {
-	name: "my-cli",
-	before: () => console.log("Global before hook"),
-	after: () => console.log("Global after hook"),
-	commands: [
-		{
-			name: "hello",
-			before: () => console.log("Command before hook"),
-			action: () => {/* ... */},
-		},
-	],
-};
-```
-
-## Configuration
-
-All commands and options are defined in `src/config/cli.config.ts`. You can easily add or modify commands by editing this file.
-
-```typescript
-// src/config/cli.config.ts
-import type { CliConfig } from "../types";
+// my-cli.config.ts
+import type { CliConfig } from "@wpackages/cli-builder";
 
 export const config: CliConfig = {
 	name: "my-cli",
@@ -121,26 +60,62 @@ export const config: CliConfig = {
 					defaultValue: "World",
 				},
 			],
-			action: args => {
-				console.log(`Hello, ${args.name}!`);
+			action: ({ options }) => {
+				console.log(`Hello, ${options.name}!`);
 			},
 		},
-		// Add more commands here
 	],
 };
 ```
 
-## Project Structure
+## Examples
 
-The project follows a functional programming structure inspired by Effect-TS best practices:
+### Running in Flag Mode
 
-- `src/app.ts`: Main application entry point.
-- `src/components/`: Pure functions for UI/display logic.
-- `src/config/`: CLI configuration.
-- `src/constant/`: Application-wide constants.
-- `src/lib/`: Wrappers for third-party libraries.
-- `src/services/`: Effect-based services that handle side effects.
-- `src/types/`: Shared type definitions.
-- `src/utils/`: Pure utility functions.
+Execute commands directly from the terminal with flags.
 
-This project was created using `bun init` in bun v1.3.4. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+```bash
+# Run the 'hello' command with a name
+bun my-cli hello --name Cascade
+
+# Get help
+bun my-cli --help
+```
+
+### Running in Prompt Mode
+
+Run the CLI without arguments to enter an interactive prompt mode.
+
+```bash
+bun my-cli
+```
+
+The CLI will guide you through the available commands and their options.
+
+### Advanced Example: Hooks and Nesting
+
+```typescript
+// my-cli.config.ts
+export const config: CliConfig = {
+	name: "git-cli",
+	before: () => console.log("Global before hook"),
+	after: () => console.log("Global after hook"),
+	commands: [
+		{
+			name: "remote",
+			description: "Manage remotes",
+			before: () => console.log("Remote command before hook"),
+			subCommands: [
+				{
+					name: "add",
+					action: () => {/* ... */},
+				},
+			],
+		},
+	],
+};
+```
+
+## License
+
+This project is licensed under the MIT License.

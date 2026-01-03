@@ -19,7 +19,6 @@
 	},
 	"dependencies": {
 		"@effect/schema": "^",
-		"@types/chokidar": "^1.7.5",
 		"chokidar": "^5.0.0",
 		"effect": "^3.19.14"
 	},

@@ -1,8 +1,16 @@
+import { Effect } from "effect";
 import { generateHelp } from "../components";
 import type { CliConfig } from "../types";
 import { parseArguments } from "../utils";
+import { checkForUpdates } from "./update.service";
 
 export const createCli = async (config: CliConfig): Promise<void> => {
+	try {
+		await Effect.runPromise(checkForUpdates({ name: config.name, version: config.version }));
+		// eslint-disable-next-line no-unused-vars
+	} catch (_error) {
+		// Ignore errors from update check to not block the CLI
+	}
 	if (process.argv.length <= 2) {
 		const { Effect } = await import("effect");
 		const { runPromptMode } = await import("./prompt.service");

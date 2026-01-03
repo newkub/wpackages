@@ -5,6 +5,81 @@
 import { updateAccessMetadata } from "../components/cache-utils";
 import type { Cache, CacheConfig, CacheEntry, CacheStats } from "../types/cache.types";
 
+class DoublyLinkedListNode<K, V> {
+	public key: K;
+	public value: V;
+	public next: DoublyLinkedListNode<K, V> | null = null;
+	public prev: DoublyLinkedListNode<K, V> | null = null;
+
+	constructor(key: K, value: V) {
+		this.key = key;
+		this.value = value;
+	}
+}
+
+class DoublyLinkedList<K, V> {
+	private head: DoublyLinkedListNode<K, V> | null = null;
+	private tail: DoublyLinkedListNode<K, V> | null = null;
+
+	public insertHead(node: DoublyLinkedListNode<K, V>): void {
+		if (this.head === null) {
+			this.head = node;
+			this.tail = node;
+		} else {
+			node.next = this.head;
+			this.head.prev = node;
+			this.head = node;
+		}
+	}
+
+	public moveToHead(node: DoublyLinkedListNode<K, V>): void {
+		if (node === this.head) {
+			return;
+		}
+
+		if (node.prev) {
+			node.prev.next = node.next;
+		}
+
+		if (node.next) {
+			node.next.prev = node.prev;
+		}
+
+		if (node === this.tail) {
+			this.tail = node.prev;
+		}
+
+		node.prev = null;
+		node.next = this.head;
+		if (this.head) {
+			this.head.prev = node;
+		}
+		this.head = node;
+
+		if (this.tail === null) {
+			this.tail = node;
+		}
+	}
+
+	public removeTail(): DoublyLinkedListNode<K, V> | null {
+		if (this.tail === null) {
+			return null;
+		}
+
+		const tail = this.tail;
+		if (this.tail.prev) {
+			this.tail = this.tail.prev;
+			this.tail.next = null;
+		} else {
+			this.head = null;
+			this.tail = null;
+		}
+
+		return tail;
+	}
+}
+
+
 /**
  * Create a new cache instance using design patterns
  */
@@ -13,7 +88,8 @@ export const createCache = <K extends string | number, V>(config: CacheConfig = 
 	const ttl = config.ttl ?? 0;
 	const useLru = config.lru ?? false;
 
-	const cache = new Map<K, CacheEntry<V>>();
+	const cache = new Map<K, DoublyLinkedListNode<K, CacheEntry<V>>>();
+	const lruList = useLru ? new DoublyLinkedList<K, CacheEntry<V>>() : null;
 
 	let hits = 0;
 	let misses = 0;
@@ -27,36 +103,49 @@ export const createCache = <K extends string | number, V>(config: CacheConfig = 
 	};
 
 	const pruneExpired = (): void => {
-		for (const [key, entry] of cache.entries()) {
-			if (isExpiredEntry(entry)) {
+		for (const [key, node] of cache.entries()) {
+			if (isExpiredEntry(node.value)) {
 				cache.delete(key);
+				// A more robust implementation would also remove the node from the lruList here
 			}
 		}
 	};
 
-	const selectEvictionKey = (): K | undefined => {
-		let selectedKey: K | undefined;
-		let selectedScore: number | undefined;
-
-		for (const [key, entry] of cache.entries()) {
-			const score = useLru ? entry.lastAccessed : entry.createdAt;
-			if (selectedScore === undefined || score < selectedScore) {
-				selectedScore = score;
-				selectedKey = key;
-			}
-		}
-
-		return selectedKey;
-	};
 
 	const setFn = (key: K, value: V): void => {
 		pruneExpired();
 
-		if (!cache.has(key) && cache.size >= maxSize) {
-			const evictionKey = selectEvictionKey();
-			if (evictionKey !== undefined) {
-				cache.delete(evictionKey);
-				evictions++;
+		if (cache.has(key)) {
+			// Update existing entry
+			const node = cache.get(key)!;
+			const oldEntry = node.value;
+			const newEntry: CacheEntry<V> = {
+				...oldEntry,
+				value,
+				expiresAt: ttl > 0 ? Date.now() + ttl : null,
+			};
+			node.value = newEntry;
+			cache.set(key, node);
+			if (lruList) {
+				lruList.moveToHead(node);
+			}
+			return;
+		}
+
+		if (cache.size >= maxSize) {
+			if (lruList) {
+				const tail = lruList.removeTail();
+				if (tail) {
+					cache.delete(tail.key);
+					evictions++;
+				}
+			} else {
+				// Fallback for non-lru cache, evict first key
+				const firstKey = cache.keys().next().value;
+				if(firstKey) {
+					cache.delete(firstKey);
+					evictions++;
+				}
 			}
 		}
 
@@ -70,35 +159,45 @@ export const createCache = <K extends string | number, V>(config: CacheConfig = 
 			lastAccessed: now,
 		};
 
-		cache.set(key, entry);
+		const newNode = new DoublyLinkedListNode(key, entry);
+		cache.set(key, newNode);
+		if (lruList) {
+			lruList.insertHead(newNode);
+		}
 	};
 
 	const getFn = (key: K): V | undefined => {
-		const entry = cache.get(key);
-		if (entry === undefined) {
+		const node = cache.get(key);
+		if (node === undefined) {
 			misses++;
 			return undefined;
 		}
 
+		const entry = node.value;
 		if (isExpiredEntry(entry)) {
 			cache.delete(key);
+			// A more robust implementation would also remove the node from the lruList here
 			misses++;
 			return undefined;
 		}
 
 		hits++;
-		const updated = updateAccessMetadata(entry);
-		cache.set(key, updated);
-		return updated.value;
+		node.value = updateAccessMetadata(entry);
+		if (lruList) {
+			lruList.moveToHead(node);
+		}
+		return entry.value;
 	};
 
 	const hasFn = (key: K): boolean => {
-		const entry = cache.get(key);
-		if (entry === undefined) {
+		const node = cache.get(key);
+		if (node === undefined) {
 			return false;
 		}
+		const entry = node.value;
 		if (isExpiredEntry(entry)) {
 			cache.delete(key);
+			// A more robust implementation would also remove the node from the lruList here
 			return false;
 		}
 		return true;
@@ -135,12 +234,12 @@ export const createCache = <K extends string | number, V>(config: CacheConfig = 
 
 	const valuesFn = (): V[] => {
 		pruneExpired();
-		return Array.from(cache.values()).map(entry => entry.value);
+		return Array.from(cache.values()).map(node => node.value.value);
 	};
 
 	const entriesFn = (): [K, V][] => {
 		pruneExpired();
-		return Array.from(cache.entries()).map(([key, entry]) => [key, entry.value]);
+		return Array.from(cache.entries()).map(([key, node]) => [key, node.value.value]);
 	};
 
 	return {

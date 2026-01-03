@@ -1,52 +1,55 @@
-# open-in-web
+# @wpackages/open-in-web
 
-A tool to open Markdown files in web browser using Bun
+## Introduction
+
+`@wpackages/open-in-web` is a command-line tool that renders a local Markdown file and opens it in your default web browser for a live preview. It's built with Bun and serves the rendered HTML on a local server. It supports rich Markdown features, including syntax highlighting, diagrams, and mathematical formulas.
+
+## Features
+
+-   🚀 **Fast Local Server**: Powered by Bun for high-performance file serving.
+-   💅 **Rich Markdown Rendering**: Uses `markdown-it` with plugins for:
+    -   Syntax highlighting via `shiki`.
+    -   Diagrams via `markdown-it-mermaid`.
+    -   Math formulas via `markdown-it-mathjax3`.
+    -   Table of contents and anchors.
+-   ✨ **Simple CLI**: A single command to preview any Markdown file.
+-   🔧 **Customizable Port**: Specify a custom port for the local server.
+
+## Goal
+
+-   🎯 **Quick Previews**: To provide a fast and easy way to preview Markdown files with rich formatting that might not be available in a standard editor preview.
+-   🧑‍💻 **Simple Tooling**: To offer a simple, zero-config tool for a common development task.
 
 ## Design Principles
 
-- **Simple**: Easy to use with single command
-- **Fast**: Powered by Bun for high performance
-- **Modern**: Renders Markdown with marked.js
+-   **Simplicity**: The tool is designed to be as simple as possible, with a single command and minimal options.
+-   **High Fidelity**: Aims to render Markdown with a rich feature set, closely resembling how it might look on a documentation site or blog.
 
 ## Installation
 
-| Package Manager | Command                   |
-| --------------- | ------------------------- |
-| npm             | `npm install open-in-web` |
-| pnpm            | `pnpm add open-in-web`    |
-| yarn            | `yarn add open-in-web`    |
-| bun             | `bun add open-in-web`     |
+This is an internal workspace package. Ensure you have installed dependencies from the monorepo root:
+
+```bash
+bun install
+```
 
 ## Usage
 
-```bash
-open-in-web <file.md> [--port 3000]
-```
-
-## Examples
-
-### Preview Markdown File
+The tool provides the `ow` (Open Web) command.
 
 ```bash
-open-in-web README.md
-# Opens at http://localhost:3000
+# Preview a Markdown file on the default port (3000)
+bun ow README.md
+
+# Preview a file on a custom port
+bun ow docs/guide.md --port 8080
 ```
 
-### Preview with Custom Port
+### Options
 
-```bash
-open-in-web docs/getting-started.md --port 8080
-# Opens at http://localhost:8080
-```
-
-### Error Cases
-
-```bash
-open-in-web # Shows "Please specify a markdown file"
-open-in-web example.txt # Shows "Please provide a .md file"
-open-in-web missing.md # Shows "File not found"
-```
+-   `<file>`: (Required) The path to the Markdown file to preview.
+-   `--port`: (Optional) The port to use for the local server. Defaults to `3000`.
 
 ## License
 
-MIT
+This project is licensed under the MIT License.

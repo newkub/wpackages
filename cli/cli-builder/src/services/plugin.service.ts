@@ -27,5 +27,5 @@ export const loadPlugins = (config: CliConfig): Effect.Effect<CliConfig, Error> 
 					commands: [...currentConfig.commands, ...plugin.commands],
 				};
 			},
-			catch: (error: unknown) => new Error(`Failed to load plugin ${pluginName}: ${error}`),
+			catch: (error: unknown) => new Error(`Failed to load plugin ${pluginName}: ${String(error)}`),
 		}));

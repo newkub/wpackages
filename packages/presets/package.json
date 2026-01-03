@@ -10,11 +10,11 @@
 		"test": "bun test"
 	},
 	"dependencies": {
-		"effect": "^3.4.4"
+		"effect": "^3.19.14"
 	},
 	"devDependencies": {
-		"typescript": "^5.4.5",
-		"@types/bun": "latest"
+		"@types/bun": "latest",
+		"typescript": "^5.9.3"
 	},
 	"peerDependencies": {
 		"typescript": "^5.0.0"

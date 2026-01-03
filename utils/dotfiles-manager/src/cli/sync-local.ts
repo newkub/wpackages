@@ -4,7 +4,7 @@ import { join } from "node:path";
 import pc from "picocolors";
 import { ensureDirectoryExists } from "../lib/clack-prompt";
 import { ConfigService } from "../lib/config";
-import { ScriptRunnerService, SystemInfoService, TemplateService } from "../services";
+import { ScriptRunnerService, TemplateService } from "../services";
 
 export const syncToLocal = async (options: { dryRun?: boolean }) => {
 	intro(pc.bgCyan(pc.black(" 📥 Sync to Local ")));
@@ -44,11 +44,9 @@ export const syncToLocal = async (options: { dryRun?: boolean }) => {
 			symlinkSync(file.target, file.source);
 		} else {
 			const templateContent = readFileSync(file.target, "utf-8");
-			const systemInfo = SystemInfoService.getSystemInfo();
-			const templateData = { ...systemInfo, ...config.templateData };
 			const renderedContent = TemplateService.render(
 				templateContent,
-				templateData,
+				config.templateData ?? {},
 			);
 			writeFileSync(file.source, renderedContent);
 		}

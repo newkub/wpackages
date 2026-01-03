@@ -1,19 +1,10 @@
 import { usePrompt } from "@/context";
-import { Box, Text, useInput } from "ink";
-import { useState } from "react";
+import { useInput } from "@/hooks";
+import { MultiSelectPromptOptions, PromptDescriptor } from "@/types";
+import { Box, Text } from "ink";
+import React, { useState } from "react";
 
-interface Option<T> {
-	value: T;
-	label: string;
-	hint?: string;
-}
-
-interface MultiSelectPromptProps<T> {
-	message: string;
-	options: Option<T>[];
-}
-
-export function MultiSelectPrompt<T>({ message, options }: MultiSelectPromptProps<T>) {
+export const MultiSelectPromptComponent = <T,>({ message, options }: MultiSelectPromptOptions<T>) => {
 	const { submit } = usePrompt<T[]>();
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [selectedValues, setSelectedValues] = useState<T[]>([]);
@@ -53,4 +44,14 @@ export function MultiSelectPrompt<T>({ message, options }: MultiSelectPromptProp
 			})}
 		</Box>
 	);
-}
+};
+
+export const multiselect = <T,>(
+	options: MultiSelectPromptOptions<T>,
+): PromptDescriptor<T[], MultiSelectPromptOptions<T>> => {
+	return {
+		Component: MultiSelectPromptComponent as React.FC<MultiSelectPromptOptions<T>>,
+		props: options,
+		initialValue: options.initialValue ?? [],
+	};
+};

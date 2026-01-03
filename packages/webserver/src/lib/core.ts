@@ -19,21 +19,22 @@ export interface Plugin {
 }
 
 // --- W-Server Core ---
-export class WServer {
+export class WServer<R = never> {
 	readonly router = new Router();
 	private beforeHandleHooks: BeforeHandleHook[] = [];
 	private afterHandleHooks: AfterHandleHook[] = [];
-	// TODO: Improve the layer type to avoid `any`
-	private effectLayer: Layer.Layer<any, any, any> = Layer.empty as any;
+	private effectLayer: Layer.Layer<R> = Layer.empty as Layer.Layer<R>;
 
-	use(plugin: Plugin) {
-		plugin.setup(this);
+	use(plugin: Plugin): WServer<R> {
+		// biome-ignore lint/suspicious/noExplicitAny: Plugin setup modifies the server instance
+		plugin.setup(this as any);
 		return this;
 	}
 
-	setEffectLayer<R, E, A>(layer: Layer.Layer<R, E, A>) {
-		this.effectLayer = layer as Layer.Layer<any, any, any>;
-		return this;
+	setEffectLayer<R2, E, A>(layer: Layer.Layer<R2, E, A>): WServer<R | R2> {
+		const self = this as WServer<R | R2>;
+		self.effectLayer = Layer.merge(self.effectLayer, layer as Layer.Layer<R2>);
+		return self;
 	}
 
 	// --- Hook Registration ---
@@ -91,11 +92,7 @@ export class WServer {
 		);
 
 		const runnable = handleEffect.pipe(Effect.provide(this.effectLayer));
-		// TODO: This `as` cast is necessary because the type system can't infer
-		// that the provided layer satisfies all requirements of the handler.
-		let response = (await Effect.runPromise(
-			runnable as Effect.Effect<Response>,
-		)) as Response;
+		let response = await Effect.runPromise(runnable);
 
 		for (const hook of this.afterHandleHooks) {
 			const modifiedResponse = await hook({ ...context, req }, response);

@@ -1,198 +1,84 @@
-# concurrency
+# @wpackages/concurrency
 
-> Functional concurrency utilities for async operations and parallel processing
+## Introduction
 
-Production-grade async operations and parallel processing following functional programming principles.
+`@wpackages/concurrency` is a collection of functional, type-safe utilities for managing asynchronous operations and parallel processing in TypeScript. It provides production-grade helpers for common concurrency patterns like retries, rate limiting, debouncing, throttling, and mutual exclusion.
 
 ## Features
 
-- ✅ **Async Utilities** - Retry, sleep, timeout functions
-- ✅ **Rate Limiting** - Control the rate of async operations
-- ✅ **Debouncing** - Limit the rate of function calls
-- ✅ **Throttling** - Control the frequency of function calls
-- ✅ **Mutex** - Mutual exclusion for async operations
-- ✅ **Functional** - Pure functions, immutable data structures
-- ✅ **Type-safe** - Full TypeScript support with comprehensive type definitions
+-   🔁 **Retry Logic**: A powerful `retry` function with configurable strategies like exponential backoff.
+-   🚦 **Rate Limiting**: Control the rate of asynchronous operations to avoid overwhelming APIs.
+-    debounce **Debouncing**: A `debounce` utility to delay function execution until after a certain period of inactivity.
+-   ⏳ **Throttling**: A `throttle` utility to ensure a function is executed at most once per specified time window.
+-   🔒 **Mutex**: A mutual exclusion primitive to ensure that only one async operation can access a critical section at a time.
+-   🧩 **Functional and Type-Safe**: Designed with pure functions and full TypeScript support for robust, predictable code.
+
+## Goal
+
+-   🎯 **Simplify Concurrency**: To provide simple, declarative APIs for complex asynchronous and concurrent operations.
+-   💪 **Increase Robustness**: To make it easy to build resilient applications that can gracefully handle failures and manage load.
+-   🧑‍💻 **Improve Readability**: To offer clear, expressive utilities that make asynchronous code easier to read and reason about.
+
+## Design Principles
+
+-   **Functional**: Built with pure functions and immutable data structures where possible.
+-   **Composability**: Utilities are designed to be easily composed with each other and with standard Promises or `Effect`s.
+-   **Minimalism**: Each utility is small, focused, and does one thing well.
 
 ## Installation
 
-```sh
-# Using npm
-npm install concurrency
+This is a workspace package. Ensure you have installed dependencies from the monorepo root:
 
-# Using yarn
-yarn add concurrency
-
-# Using pnpm
-pnpm add concurrency
-
-# Using bun
-bun add concurrency
+```bash
+bun install
 ```
 
-## Quick Start
+## Usage
 
-### 1. Async Utilities
+Import the desired utilities from the package.
 
-```typescript
-import { retry, sleep, timeout } from "concurrency";
-
-// Retry a function with exponential backoff
-const result = await retry(
-	async () => {
-		// Some operation that might fail
-		return await fetch("https://api.example.com/data");
-	},
-	{
-		maxAttempts: 3,
-		strategy: "exponential",
-		baseDelay: 1000,
-	},
-);
-
-// Sleep for a specified time
-await sleep(1000); // Sleep for 1 second
-
-// Add timeout to a function
-const timeoutResult = await timeout(
-	async () => {
-		return await longRunningOperation();
-	},
-	5000, // 5 second timeout
-);
-```
-
-### 2. Rate Limiting
+### Retrying an Operation
 
 ```typescript
-import { createRateLimiter } from "concurrency";
+import { retry } from '@wpackages/concurrency';
 
-const limiter = createRateLimiter({
-	maxRequests: 10,
-	timeWindow: 1000, // 10 requests per second
+const fetchWithRetry = () => retry(() => fetch('https://api.example.com/data'), {
+    maxAttempts: 3,
+    strategy: 'exponential',
+    baseDelay: 1000, // 1 second
 });
 
-const result = await limiter.execute(async () => {
-	return await apiCall();
-});
+const response = await fetchWithRetry();
 ```
 
-### 3. Debouncing
+### Rate Limiting API Calls
 
 ```typescript
-import { debounce } from "concurrency";
+import { createRateLimiter } from '@wpackages/concurrency';
 
-const debouncedSearch = debounce(
-	async (query: string) => {
-		return await searchApi(query);
-	},
-	300, // 300ms delay
-);
+// Allow 10 requests per second
+const limiter = createRateLimiter({ maxRequests: 10, timeWindow: 1000 });
 
-// This will only execute after 300ms of no calls
-await debouncedSearch("search term");
-```
-
-### 4. Throttling
-
-```typescript
-import { throttle } from "concurrency";
-
-const throttledFunction = throttle(
-	async (data: any) => {
-		return await processData(data);
-	},
-	1000, // Execute at most once per second
-);
-
-// This will execute immediately, then at most once per second
-await throttledFunction(data);
-```
-
-### 5. Mutex
-
-```typescript
-import { createMutex } from "concurrency";
-
-const mutex = createMutex();
-
-// Only one of these operations will execute at a time
-const result1 = await mutex.acquire(async () => {
-	return await criticalOperation();
-});
-
-const result2 = await mutex.acquire(async () => {
-	return await anotherCriticalOperation();
-});
-```
-
-## API Reference
-
-### Async Utilities
-
-```typescript
-// Retry
-retry(fn, options);
-interface RetryOptions {
-	maxAttempts?: number;
-	strategy?: "fixed" | "linear" | "exponential";
-	baseDelay?: number;
-	maxDelay?: number;
-	shouldRetry?: (error: Error) => boolean;
+async function makeApiCall() {
+    return limiter.execute(() => fetch('...'));
 }
-
-// Sleep
-sleep(ms);
-
-// Timeout
-timeout(fn, ms);
 ```
 
-### Rate Limiting
+### Debouncing User Input
 
 ```typescript
-// Rate limiter
-createRateLimiter(config);
-interface RateLimiterConfig {
-	maxRequests: number;
-	timeWindow: number; // milliseconds
-}
+import { debounce } from '@wpackages/concurrency';
 
-rateLimiter.execute(fn);
+const handleSearchInput = debounce((query: string) => {
+    console.log(`Searching for: ${query}`);
+}, 300);
+
+// User types 'h', 'e', 'l', 'l', 'o'
+handleSearchInput('h');
+handleSearchInput('he');
+handleSearchInput('hel'); // The console.log will only fire once, 300ms after this call.
 ```
-
-### Debouncing
-
-```typescript
-// Debounce
-debounce(fn, delay);
-```
-
-### Throttling
-
-```typescript
-// Throttle
-throttle(fn, delay);
-```
-
-### Mutex
-
-```typescript
-// Mutex
-createMutex();
-mutex.acquire(fn);
-```
-
-## Contributing
-
-Contributions are welcome! Please read our [contributing guidelines](CONTRIBUTING.md) before submitting pull requests.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a pull request
 
 ## License
 
-MIT © [WTS Framework](LICENSE)
+This project is licensed under the MIT License.

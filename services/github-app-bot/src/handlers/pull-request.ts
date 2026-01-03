@@ -6,7 +6,11 @@ import { buildDependencyReviewComment } from "../review/dependency-review";
 type PullRequestPayload = {
 	action?: string;
 	repository?: { owner?: { login?: string }; name?: string };
-	pull_request?: { number?: number; base?: { repo?: { owner?: { login?: string }; name?: string } } };
+	pull_request?: {
+		number?: number;
+		base?: { repo?: { owner?: { login?: string }; name?: string }; sha?: string };
+		head?: { sha?: string };
+	};
 };
 
 export const handlePullRequestEvent = async (
@@ -19,7 +23,9 @@ export const handlePullRequestEvent = async (
 	const owner = payload.repository?.owner?.login;
 	const repo = payload.repository?.name;
 	const pullNumber = payload.pull_request?.number;
-	if (!owner || !repo || !pullNumber) return;
+	const baseSha = payload.pull_request?.base?.sha;
+	const headSha = payload.pull_request?.head?.sha;
+	if (!owner || !repo || !pullNumber || !baseSha || !headSha) return;
 
 	const token = await getInstallationToken({
 		appId: args.env.githubAppId,
@@ -33,10 +39,13 @@ export const handlePullRequestEvent = async (
 	});
 
 	const comment = await buildDependencyReviewComment({
+		token,
 		env: args.env,
 		owner,
 		repo,
 		pullNumber,
+		baseSha,
+		headSha,
 		changedFiles: files,
 	});
 

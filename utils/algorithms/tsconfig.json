@@ -2,7 +2,7 @@
 	"extends": "./../../tsconfig.json",
 	"compilerOptions": {
 		"outDir": "./dist",
-		"rootDir": "..",
+		"rootDir": "./src",
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": true,
@@ -20,11 +20,18 @@
 		"strict": true
 	},
 	"include": [
-		"src/**/*",
 		"src",
-		"../data-structure/src/index.ts",
-		"../data-structure/src/modules/**/*",
-		"../data-structure/src/types/**/*"
+		"src/utils/topological-sort.ts"
 	],
-	"exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.usage.ts"]
+	"exclude": [
+		"node_modules",
+		"dist",
+		"**/*.test.ts",
+		"**/*.usage.ts"
+	],
+	"references": [
+		{
+			"path": "../data-structure"
+		}
+	]
 }

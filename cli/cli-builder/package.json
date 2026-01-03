@@ -4,6 +4,9 @@
 	"bin": "./bin/cli.ts",
 	"type": "module",
 	"private": true,
+	"engines": {
+		"bun": "^1.3.5"
+	},
 	"types": "./src/index.ts",
 	"exports": {
 		".": {
@@ -13,25 +16,30 @@
 		"./package.json": "./package.json"
 	},
 	"scripts": {
-		"watch": "bun lint && bun watch && bun test",
+		"watch": "bun --watch verify",
 		"start": "bun --watch dev && vitest:ui",
 		"dev": "bun run src/app.ts",
 		"lint": "oxlint --fix --type-aware",
 		"build": "tsdown src/index.ts --entry-points bin/cli.ts",
 		"format": "dprint fmt",
 		"test": "vitest --run",
-		"verify": "bun format && bun lint && bun test && bun audit && bun build"
+		"test:coverage": "vitest --run --coverage",
+		"verify": "bun format && bun lint && bun test && bun run build"
 	},
 	"devDependencies": {
-		"@effect/schema": "^0.67.22",
+		"@effect/schema": "^0.67.24",
 		"@types/bun": "latest",
+		"@vitest/coverage-v8": "latest",
+		"boxen": "^8.0.1",
+		"compare-versions": "^6.1.1",
+		"latest-version": "^9.0.0",
 		"oxlint": "latest",
 		"oxlint-tsgolint": "latest",
 		"tsdown": "^0.18.4",
 		"vitest": "latest"
 	},
 	"peerDependencies": {
-		"typescript": "^5"
+		"typescript": "^5.9.3"
 	},
 	"dependencies": {
 		"@effect/platform-bun": "^0.87.0",
@@ -44,6 +52,5 @@
 		"fastest-levenshtein": "^1.0.16",
 		"find-up": "^8.0.0",
 		"picocolors": "^1.1.1"
-	},
-	"packageManager": "bun@1.3.5"
+	}
 }

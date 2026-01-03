@@ -1,8 +1,9 @@
+import { Effect } from "effect";
 import { AppTheme } from "../config";
 
 interface ButtonProps {
 	label: string;
-	onClick: () => void; // Side effect is managed by the caller
+	onClick: Effect.Effect<void, any, any>;
 }
 
 export const Button = (props: ButtonProps): string => {

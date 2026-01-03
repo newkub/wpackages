@@ -1,6 +1,7 @@
 import {
 	JsonToMarkdownTransformer,
 	JsonToTomlTransformer,
+	JsonToTypeScriptTransformer,
 	MarkdownToJsonTransformer,
 	TomlToJsonTransformer,
 	TomlToMarkdownTransformer,
@@ -16,4 +17,5 @@ export const transformerMap = new Map([
 	["typescript->json", TypeScriptToJsonTransformer],
 	["typescript->markdown", TypeScriptToMarkdownTransformer],
 	["toml->markdown", TomlToMarkdownTransformer],
+	["json->typescript", JsonToTypeScriptTransformer],
 ]);

@@ -1,8 +1,8 @@
 import { Console, Effect, Layer } from "effect";
 import { runApp } from "./components";
-import { AppStateLive, FzfStateLive, loadAllTasks, TerminalLive } from "./services";
+import { AppStateLive, FzfStateLive, loadAllTasks, TaskRunnerLive, TerminalLive } from "./services";
 
-const MainLive = Layer.mergeAll(AppStateLive, FzfStateLive, TerminalLive);
+const MainLive = Layer.mergeAll(AppStateLive, FzfStateLive, TerminalLive, TaskRunnerLive);
 
 export const main = Effect.gen(function*() {
 	const taskSources = yield* loadAllTasks;

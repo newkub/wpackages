@@ -28,6 +28,7 @@ Universal document transformer - Convert between MD, TS, TOML, JSON formats usin
 | TypeScript | JSON (AST) | ✅     |
 | TypeScript | Markdown   | ✅     |
 | TOML       | Markdown   | ✅     |
+| JSON       | TypeScript | ✅     |
 
 ## Installation
 
@@ -151,6 +152,33 @@ Output:
     "age": "25"
   }
 ]
+```
+
+### JSON to TypeScript Type
+
+```typescript
+import { transform } from 'transform';
+
+const json = `{
+  "user": {
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "roles": ["admin", "user"]
+  }
+}`;
+
+const tsType = transform(json, 'json', 'typescript');
+```
+
+Output:
+```typescript
+export type GeneratedType = {
+  user: {
+    name: string;
+    email: string;
+    roles: string[];
+  };
+};
 ```
 
 ### Using Parsers Directly

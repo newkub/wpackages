@@ -5,7 +5,9 @@ export type LangKey = "typescript" | "tsx" | "javascript";
 export type CliOptions = {
 	paths: string[];
 	lang: LangKey;
-	nodeType: string;
+	nodeType?: string;
+	pattern?: string;
+	rule?: string;
 	output: OutputMode;
 	countOnly: boolean;
 	replace: string | undefined;

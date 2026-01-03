@@ -9,8 +9,8 @@ export type CheckType =
 	| "complexity"
 	| "duplicates"
 	| "security"
-	| "typeSafe"
-	| "sideEffect";
+	| "sideEffect"
+	| "responsibility";
 
 export type CheckerOptions = {
 	types: CheckType[];

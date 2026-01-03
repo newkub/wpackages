@@ -18,3 +18,8 @@ export { parseCliArgs } from "./utils/cli-parser";
  * Display components
  */
 export * from "./components/display";
+
+/**
+ * Input components
+ */
+export * from "./components/input";

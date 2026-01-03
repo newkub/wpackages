@@ -1,29 +1,24 @@
-import { parseSource } from "parser";
+import { javascriptParser } from "@wpackages/parser";
 import type { Parser } from "../types";
+import type { JavaScriptAST } from "@wpackages/parser";
 
-interface TypeScriptAST {
-	type: "Program";
-	body: unknown[];
-	sourceType: string;
-}
 
 /**
  * TypeScript/JavaScript Parser implementation using OXC
  * Note: Can be upgraded to use parser once workspace dependencies are configured
  */
-export const TypeScriptParser: Parser<TypeScriptAST> = {
+export const TypeScriptParser: Parser<JavaScriptAST> = {
 	format: "typescript",
 
-	parse: (content: string): TypeScriptAST => {
-		const result = parseSource(content, "input.ts", { jsx: false, typescript: true });
-		if (result.ok === false) {
+	parse: (content: string): JavaScriptAST => {
+		const result = javascriptParser.parse(content, "input.ts", { typescript: true });
+		if (result.isErr()) {
 			throw new Error(`Failed to parse TypeScript: ${result.error}`);
 		}
-		return result.value.ast as unknown as TypeScriptAST;
+		return result.value.data;
 	},
 
-	stringify: (_ast: TypeScriptAST, _options = {}): string => {
-		// Code generation not yet implemented
-		throw new Error("TypeScript code generation not yet implemented");
+	stringify: (ast: JavaScriptAST, options = {}): string => {
+		return javascriptParser.stringify(ast, options);
 	},
 };

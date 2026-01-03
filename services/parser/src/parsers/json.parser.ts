@@ -15,7 +15,7 @@ export type JSONParseOptions = ParseOptionsBase;
 export const jsonParser: Parser<unknown> = createParser(
 	"json",
 	["json"] as const,
-	(source: string): unknown => JSON.parse(source),
+	(source: string, _filename: string, _options: ParseOptionsBase): unknown => JSON.parse(source),
 );
 
 /**

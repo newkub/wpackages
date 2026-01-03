@@ -27,14 +27,14 @@ export const createAsyncSelector = <T, U>(
 		for (const pair of conditions) {
 			if (await Promise.resolve(pair.condition(input))) {
 				const result = pair.result;
-				if (typeof result === 'function') {
+				if (typeof result === "function") {
 					return Promise.resolve((result as (input: T) => U | Promise<U>)(input));
 				}
 				return Promise.resolve(result);
 			}
 		}
 
-		if (typeof defaultValue === 'function') {
+		if (typeof defaultValue === "function") {
 			return Promise.resolve((defaultValue as (input: T) => U | Promise<U>)(input));
 		}
 		return Promise.resolve(defaultValue);

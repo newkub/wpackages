@@ -13,19 +13,19 @@ This package provides implementations of common design patterns and related util
 
 ### `createSelector`
 
-A utility function to select a value based on a series of conditions. It's like a `switch` statement but more powerful, allowing conditions to be functions and results to be values *or* functions that compute a value.
+A utility function to select a value based on a series of conditions. It's like a `switch` statement but more powerful, allowing conditions to be functions and results to be values _or_ functions that compute a value.
 
 #### Usage
 
 ```typescript
-import { createSelector } from '@wpackages/design-pattern';
+import { createSelector } from "@wpackages/design-pattern";
 
 const classifyNumber = createSelector(
-  [
-    { condition: (n: number) => n > 0, result: 'Positive' },
-    { condition: (n: number) => n < 0, result: 'Negative' },
-  ],
-  'Zero'
+	[
+		{ condition: (n: number) => n > 0, result: "Positive" },
+		{ condition: (n: number) => n < 0, result: "Negative" },
+	],
+	"Zero",
 );
 
 console.log(classifyNumber(10)); // 'Positive'
@@ -40,17 +40,17 @@ Handles asynchronous conditions and results seamlessly. Perfect for when your lo
 #### Usage
 
 ```typescript
-import { createAsyncSelector } from '@wpackages/design-pattern';
+import { createAsyncSelector } from "@wpackages/design-pattern";
 
 const checkPermissions = async (userId: number) => userId === 1;
-const fetchUserName = async (userId: number) => 'Alice';
+const fetchUserName = async (userId: number) => "Alice";
 
 const getDashboard = createAsyncSelector(
-  [{
-    condition: checkPermissions,
-    result: async (id) => `Welcome, Admin ${(await fetchUserName(id))}!`
-  }],
-  'Access Denied'
+	[{
+		condition: checkPermissions,
+		result: async (id) => `Welcome, Admin ${(await fetchUserName(id))}!`,
+	}],
+	"Access Denied",
 );
 
 console.log(await getDashboard(1)); // 'Welcome, Admin Alice!'
@@ -67,7 +67,7 @@ Adds a cache to a selector, preventing re-computation for the same input. This i
 #### Usage
 
 ```typescript
-import { createSelector, withMemoization } from '@wpackages/design-pattern';
+import { createSelector, withMemoization } from "@wpackages/design-pattern";
 
 const expensiveSelector = createSelector([/* ... */]);
 const fastSelector = withMemoization(expensiveSelector);
@@ -83,10 +83,10 @@ Wraps a selector to log its input and output to the console. Invaluable for trac
 #### Usage
 
 ```typescript
-import { createSelector, withDebugging } from '@wpackages/design-pattern';
+import { createSelector, withDebugging } from "@wpackages/design-pattern";
 
 const mySelector = createSelector([/* ... */]);
-const debuggedSelector = withDebugging(mySelector, 'MySelectorName');
+const debuggedSelector = withDebugging(mySelector, "MySelectorName");
 
 debuggedSelector(input);
 // Logs:
@@ -103,12 +103,12 @@ Creates a powerful data transformation pipeline by chaining multiple selectors t
 #### Usage
 
 ```typescript
-import { chainSelectors } from '@wpackages/design-pattern';
+import { chainSelectors } from "@wpackages/design-pattern";
 
 const getName = (user: { name: string }) => user.name;
 const toUpperCase = (s: string) => s.toUpperCase();
 
 const getUpperName = chainSelectors(getName, toUpperCase);
 
-console.log(getUpperName({ name: 'Alice' })); // 'ALICE'
+console.log(getUpperName({ name: "Alice" })); // 'ALICE'
 ```

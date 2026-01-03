@@ -31,7 +31,7 @@ const getProjectName = Effect.tryPromise({
 		const name = projectName.split("/").pop();
 		return name || defaultConfig.name;
 	},
-	catch: (error: unknown) => new Error(`Failed to get project name: ${error}`),
+	catch: (error: unknown) => new Error(`Failed to get project name: ${String(error)}`),
 });
 
 export const loadCliConfig = (): Effect.Effect<CliConfig, Error> =>
@@ -45,7 +45,7 @@ export const loadCliConfig = (): Effect.Effect<CliConfig, Error> =>
 					});
 					return loadedConfig;
 				},
-				catch: (error: unknown) => new Error(`Failed to load configuration file: ${error}`),
+				catch: (error: unknown) => new Error(`Failed to load configuration file: ${String(error)}`),
 			})
 		),
 		Effect.flatMap(mergedConfig =>

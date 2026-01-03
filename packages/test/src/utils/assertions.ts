@@ -92,7 +92,9 @@ class NotAssertion<T> extends Assertion<T> {
 	override toEqual(expected: T, options?: AssertionOptions): void {
 		try {
 			super.toEqual(expected, options);
-		} catch (_) {
+		} catch (error: unknown) {
+			// Intentionally unused
+			const _unusedError = error;
 			return; // Expected to fail
 		}
 		throw new AssertionError(options?.message || "Expected values to not be equal", expected, this._value);
@@ -101,7 +103,9 @@ class NotAssertion<T> extends Assertion<T> {
 	override toBe(expected: T, options?: AssertionOptions): void {
 		try {
 			super.toBe(expected, options);
-		} catch (_) {
+		} catch (error: unknown) {
+			// Intentionally unused
+			const _unusedError = error;
 			return; // Expected to fail
 		}
 		throw new AssertionError(options?.message || "Expected values to not be strictly equal", expected, this._value);
@@ -110,7 +114,9 @@ class NotAssertion<T> extends Assertion<T> {
 	override toBeTruthy(options?: AssertionOptions): void {
 		try {
 			super.toBeTruthy(options);
-		} catch (_) {
+		} catch (error: unknown) {
+			// Intentionally unused
+			const _unusedError = error;
 			return; // Expected to fail
 		}
 		throw new AssertionError(options?.message || "Expected value to not be truthy", false, this._value);
@@ -119,7 +125,9 @@ class NotAssertion<T> extends Assertion<T> {
 	override toBeFalsy(options?: AssertionOptions): void {
 		try {
 			super.toBeFalsy(options);
-		} catch (_) {
+		} catch (error: unknown) {
+			// Intentionally unused
+			const _unusedError = error;
 			return; // Expected to fail
 		}
 		throw new AssertionError(options?.message || "Expected value to not be falsy", true, this._value);
@@ -128,7 +136,9 @@ class NotAssertion<T> extends Assertion<T> {
 	override toContain(item: unknown, options?: AssertionOptions): void {
 		try {
 			super.toContain(item, options);
-		} catch (_) {
+		} catch (error: unknown) {
+			// Intentionally unused
+			const _unusedError = error;
 			return; // Expected to fail
 		}
 		throw new AssertionError(options?.message || "Expected array to not contain item", item, this._value);

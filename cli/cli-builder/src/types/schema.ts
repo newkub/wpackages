@@ -12,6 +12,7 @@ export const OptionSchema = Schema.Struct({
 // Define a self-referencing interface for the Command type
 export interface Command {
 	readonly name: string;
+	readonly aliases?: ReadonlyArray<string> | undefined;
 	readonly description?: string | undefined;
 	readonly options?: ReadonlyArray<Schema.Schema.Type<typeof OptionSchema>> | undefined;
 	readonly action?: ((args: Record<string, any>) => void) | undefined;
@@ -23,6 +24,7 @@ export interface Command {
 export const CommandSchema: Schema.Schema<Command> = Schema.suspend(() =>
 	Schema.Struct({
 		name: Schema.String,
+		aliases: Schema.optional(Schema.Array(Schema.String)),
 		description: Schema.optional(Schema.String),
 		options: Schema.optional(Schema.Array(OptionSchema)),
 		// Action and hooks are functions, so we use Any

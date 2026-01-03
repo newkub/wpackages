@@ -6,11 +6,11 @@ import {
 	DepsUpdateCheckerService,
 	DuplicatesCheckerService,
 	ImportsCheckerService,
+	ResponsibilityCheckerService,
 	SecurityCheckerService,
 	SideEffectCheckerService,
 	SizeCheckerService,
 	TypeCheckerService,
-	TypeSafeCheckerService,
 	UnusedCheckerService,
 } from "../services/index";
 import type { CheckerOptions, CheckResult, CheckResults, CheckType } from "../types/index";
@@ -30,8 +30,8 @@ export const runChecks = (
 	| SizeCheckerService
 	| DuplicatesCheckerService
 	| SecurityCheckerService
-	| TypeSafeCheckerService
 	| SideEffectCheckerService
+	| ResponsibilityCheckerService
 > =>
 	Effect.gen(function*() {
 		const startTime = Date.now();
@@ -74,8 +74,8 @@ const runSingleCheck = (
 	| SizeCheckerService
 	| DuplicatesCheckerService
 	| SecurityCheckerService
-	| TypeSafeCheckerService
 	| SideEffectCheckerService
+	| ResponsibilityCheckerService
 > =>
 	Effect.gen(function*() {
 		const patterns = options.include || [];
@@ -121,8 +121,8 @@ const runSingleCheck = (
 				const service = yield* DepsUpdateCheckerService;
 				return yield* service.check();
 			}
-			case "typeSafe": {
-				const service = yield* TypeSafeCheckerService;
+			case "responsibility": {
+				const service = yield* ResponsibilityCheckerService;
 				return yield* service.check(patterns);
 			}
 			case "sideEffect": {

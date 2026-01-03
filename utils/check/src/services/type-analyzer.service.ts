@@ -9,30 +9,31 @@ export class TypeAnalyzerService extends Context.Tag("TypeAnalyzerService")<Type
 export const TypeAnalyzerLive = Layer.succeed(
 	TypeAnalyzerService,
 	TypeAnalyzerService.of({
-		analyze: (dir: string) => Effect.tryPromise({
-			try: async () => {
-				const startTime = Date.now();
-				const fileInfos = await analyzeProject(dir);
-				const duration = Date.now() - startTime;
+		analyze: (dir: string) =>
+			Effect.tryPromise({
+				try: async () => {
+					const startTime = Date.now();
+					const fileInfos = await analyzeProject(dir);
+					const duration = Date.now() - startTime;
 
-				const issues = fileInfos.flatMap(info =>
-					info.variables.map(variable => ({
-						severity: "info" as const,
-						message: `${variable.kind} '${variable.name}' has type: ${variable.type}`,
-						file: info.path,
-						line: variable.line,
-					}))
-				);
+					const issues = fileInfos.flatMap(info =>
+						info.variables.map(variable => ({
+							severity: "info" as const,
+							message: `${variable.kind} '${variable.name}' has type: ${variable.type}`,
+							file: info.path,
+							line: variable.line,
+						}))
+					);
 
-				return {
-					name: "Type Analysis",
-					status: "passed" as const,
-					duration,
-					issues,
-					summary: `Analyzed ${fileInfos.length} files and found ${issues.length} typed declarations.`,
-				} as CheckResult;
-			},
-			catch: (unknown) => new Error(`Type analysis failed: ${String(unknown)}`),
-		}),
+					return {
+						name: "Type Analysis",
+						status: "passed" as const,
+						duration,
+						issues,
+						summary: `Analyzed ${fileInfos.length} files and found ${issues.length} typed declarations.`,
+					} as CheckResult;
+				},
+				catch: (unknown) => new Error(`Type analysis failed: ${String(unknown)}`),
+			}),
 	}),
 );

@@ -1,56 +1,19 @@
-import * as p from "@clack/prompts";
-import axios from "axios";
-import { createWriteStream } from "node:fs";
-import { pipeline } from "node:stream/promises";
-import { GithubOptionsSchema } from "../types";
+import { parseGitHubUrl } from "../utils/github";
 
-function parseGitHubUrl(url: string) {
-	const match = url.match(/github\.com\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+)/);
-	if (!match) return null;
-
-	const [, owner, repo, branch, path] = match;
-	return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`;
-}
-
-export async function downloadFromGithub() {
-	const options = await p.group(
-		{
-			url: () => p.text({ message: "Enter the GitHub file URL:" }),
-			output: () => p.text({ message: "Enter the output filename:" }),
-		},
-		{
-			onCancel: () => {
-				p.cancel("Operation cancelled.");
-				process.exit(0);
-			},
-		},
-	);
-
-	const parsedOptions = GithubOptionsSchema.safeParse(options);
-
-	if (!parsedOptions.success) {
-		p.cancel("Invalid input. Please enter a valid URL and filename.");
-		return;
-	}
-
-	const rawUrl = parseGitHubUrl(parsedOptions.data.url);
-
+export async function downloadGithubFile(url: string, output: string) {
+	const rawUrl = parseGitHubUrl(url);
 	if (!rawUrl) {
-		p.cancel("Invalid GitHub URL format.");
-		return;
+		return { success: false, error: "Invalid GitHub URL format." };
 	}
-
-	const s = p.spinner();
-	s.start("Downloading file from GitHub...");
 
 	try {
-		const response = await axios.get(rawUrl, { responseType: "stream" });
-		await pipeline(response.data, createWriteStream(parsedOptions.data.output));
-		s.stop(`File saved as ${parsedOptions.data.output}`);
+		const response = await fetch(rawUrl);
+		if (!response.ok) {
+			throw new Error(`Failed to download file: ${response.status} ${response.statusText}`);
+		}
+		await Bun.write(output, response);
+		return { success: true };
 	} catch (error) {
-		s.stop("Failed to download file.", 500);
-		p.note(
-			error instanceof Error ? error.message : "An unknown error occurred.",
-		);
+		return { success: false, error: error instanceof Error ? error.message : "An unknown error occurred." };
 	}
 }

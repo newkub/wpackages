@@ -1,9 +1,13 @@
-import React from "react";
-import { prompt, RatingPrompt } from "../src";
+import { prompt } from "../src/context";
+import { rating } from "../src/index";
 
 async function main() {
-	const rating = await prompt(RatingPrompt, { message: "Rate this library:" }, 3);
-	console.log(`Your rating: ${rating}`);
+	const ratingValue = await prompt(rating({ message: "Rate this library:" }));
+	if (typeof ratingValue === "symbol") {
+		console.log("Prompt cancelled.");
+		return;
+	}
+	console.log(`Your rating: ${String(ratingValue)}`);
 }
 
-main();
+main().catch(console.error);

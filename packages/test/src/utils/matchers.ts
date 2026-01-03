@@ -37,7 +37,7 @@ export const deepEqualMatcher: CustomMatcher<unknown> = (actual, expected) => ({
  */
 export const typeMatcher: CustomMatcher<unknown> = (actual, expected) => ({
 	pass: typeof actual === (expected as string),
-	message: () => `Expected ${typeof actual} to be type ${expected}`,
+	message: () => `Expected ${typeof actual} to be type ${String(expected)}`,
 });
 
 /**

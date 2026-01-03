@@ -18,4 +18,6 @@ pub enum Commands {
         #[arg(short, long)]
         scope: Option<String>,
     },
+    /// Initialize a new wmo-repo configuration
+    Init,
 }

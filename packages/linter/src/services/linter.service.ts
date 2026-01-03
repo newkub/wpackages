@@ -1,14 +1,18 @@
-import type { LinterOptions, LintReport, LintResult, Rule } from "../types";
+import { Effect } from "effect";
+import { createMessage } from "../components";
+import { runSemanticLinter } from "../semantic/semantic.service";
+import type { LinterOptions, LintReport, LintResult, Rule, FileSystemError, SemanticLinterError } from "../types";
 import { Arr } from "../utils";
+import { FileSystemService } from "./file-system.service";
+import { parseSource } from "./parser.service";
 
-export const lintFile = async (
+export const lintFile = (
 	filePath: string,
 	rules: readonly Rule[],
 	options: LinterOptions,
-): Promise<LintResult> => {
-	// Simulate reading file
-	const source = `// File: ${filePath}`;
-	const ast = {};
+): Effect.Effect<LintResult, FileSystemError> => Effect.gen(function* (_) {
+	const source = yield* _(FileSystemService.readFile(filePath));
+	const ast = parseSource(source);
 
 	const allMessages = Arr.flatMap(rules, (rule) => {
 		const ruleOption = options.rules[rule.meta.name];
@@ -37,38 +41,76 @@ export const lintFile = async (
 		fixableWarningCount: Arr.filter(warnings, (m) => !!m.fix).length,
 		source,
 	};
-};
+});
 
-export const lintFiles = async (
+export const lintFiles = (
 	filePaths: readonly string[],
 	rules: readonly Rule[],
 	options: LinterOptions,
-): Promise<LintReport> => {
-	const results = await Promise.all(
-		filePaths.map((path) => lintFile(path, rules, options)),
-	);
+): Effect.Effect<LintReport, FileSystemError | SemanticLinterError> => Effect.gen(function* (_) {
+    // 1. Run syntactic linter
+    const syntacticResults = yield* _(Effect.all(
+        filePaths.map((path) => lintFile(path, rules, options)),
+        { concurrency: "inherit" }
+    ));
 
-	const initialReport: Omit<LintReport, "results" | "filesLinted"> = {
-		errorCount: 0,
-		warningCount: 0,
-		fixableErrorCount: 0,
-		fixableWarningCount: 0,
-	};
+    // 2. Run semantic linter
+        const semanticErrors = yield* _(runSemanticLinter('.'));
+
+    // 3. Merge results
+    const finalResultsMap = new Map<string, LintResult>();
+
+	// Add syntactic results to map
+	syntacticResults.forEach(res => finalResultsMap.set(res.filePath, res));
+
+	// Add semantic results to map
+	for (const error of semanticErrors) {
+		const message = createMessage(
+			'semantic-error', // ruleName
+			error.message,
+			'error', // severity
+			error.line,
+			error.character,
+		);
+
+		const existingResult = finalResultsMap.get(error.fileName);
+
+		if (existingResult) {
+			const updatedMessages = [...existingResult.messages, message];
+			finalResultsMap.set(error.fileName, {
+				...existingResult,
+				messages: updatedMessages,
+				errorCount: existingResult.errorCount + 1,
+			});
+		} else {
+			// Create a new result if none exists for this file
+			finalResultsMap.set(error.fileName, {
+				filePath: error.fileName,
+				messages: [message],
+				errorCount: 1,
+				warningCount: 0,
+				fixableErrorCount: 0,
+				fixableWarningCount: 0,
+			});
+		}
+	}
+
+	const finalResults = Array.from(finalResultsMap.values());
 
 	const summary = Arr.reduce(
-		results,
+		finalResults,
 		(acc, r) => ({
 			errorCount: acc.errorCount + r.errorCount,
 			warningCount: acc.warningCount + r.warningCount,
 			fixableErrorCount: acc.fixableErrorCount + r.fixableErrorCount,
 			fixableWarningCount: acc.fixableWarningCount + r.fixableWarningCount,
 		}),
-		initialReport,
+		{ errorCount: 0, warningCount: 0, fixableErrorCount: 0, fixableWarningCount: 0 },
 	);
 
 	return {
 		...summary,
-		results,
-		filesLinted: results.length,
+		results: finalResults,
+		filesLinted: finalResults.length,
 	};
-};
+});

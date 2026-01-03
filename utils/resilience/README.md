@@ -1,102 +1,67 @@
 # @wpackages/resilience
 
-An Effect-TS native library for building resilient applications with functional programming.
+## Introduction
 
-## Installation
-
-```bash
-bun add @wpackages/resilience
-```
+`@wpackages/resilience` is an `Effect-TS` native library for building fault-tolerant and resilient applications. It provides a collection of composable, functional utilities for implementing common resilience patterns such as retries, timeouts, and circuit breakers, allowing you to make your application more robust in the face of transient failures.
 
 ## Features
 
-- 🚀 **Type-safe and purely functional API** built on Effect-TS
-- 🧩 **Composable resilience patterns** (Retry, Timeout, Circuit Breaker, etc.)
-- 📦 **Zero dependencies** except for Effect-TS
-- ✅ **Fully tested** with comprehensive test coverage
+-   💪 **Common Resilience Patterns**: Includes implementations for Retry, Timeout, and Circuit Breaker.
+-   🧩 **Fully Composable**: Resilience policies are applied as functions that wrap your `Effect`s, allowing them to be easily composed and reused.
+-   🚀 **`Effect-TS` Native**: Built entirely on top of `Effect-TS` for a purely functional, type-safe, and declarative API.
+-   📦 **Zero Dependencies**: The only dependency is `effect` itself.
+
+## Goal
+
+-   🎯 **Increase Application Stability**: To make it easy to build applications that can gracefully handle and recover from transient errors.
+-   🧑‍💻 **Declarative Policies**: To allow developers to declaratively define resilience policies rather than writing complex, imperative error-handling logic.
+-   🧩 **Maintain Composability**: To ensure that adding resilience does not break the composability and purity of a functional codebase.
+
+## Design Principles
+
+-   **Functional**: All patterns are implemented as higher-order functions that take an `Effect` and return a new, more resilient `Effect`.
+-   **Type-Safe**: Leverages `Effect-TS`'s powerful type system to ensure all operations are type-safe.
+-   **Layered**: Resilience patterns can be layered on top of each other to create sophisticated fault-tolerance strategies.
+
+## Installation
+
+This is a workspace package. Ensure you have installed dependencies from the monorepo root:
+
+```bash
+bun install
+```
 
 ## Usage
 
-The primary way to use this library is through the `run` function, which takes an operation (a function returning a Promise) and a configuration object.
+The library provides helpers for applying resilience patterns directly to `Effect`s.
 
-```typescript
-import { run } from "@wpackages/resilience";
-
-const myApiCall = () => fetch("/api/data");
-
-const result = await run(myApiCall, {
-	retryAttempts: 3,
-	timeout: 5000,
-});
-
-if (result.success) {
-	console.log("Data:", result.data);
-} else {
-	console.error("Error:", result.error);
-}
-```
-
-## Advanced Usage with Effect-TS
-
-If you are already working within an Effect context, you can use `createResilientEffect` to apply resilience patterns directly to your effects.
+### Example: Applying Retry and Timeout to an Effect
 
 ```typescript
 import { createResilientEffect } from "@wpackages/resilience";
 import { Effect } from "effect";
 
-const myEffect = Effect.tryPromise({
-	try: () => fetch("/api/data"),
+// An effect that might fail or take too long
+const myApiCallEffect = Effect.tryPromise({
+	try: () => fetch("/api/unreliable-data"),
 	catch: (error) => new Error(String(error)),
 });
 
-const resilientEffect = createResilientEffect(myEffect, {
-	retryAttempts: 3,
-	timeout: 5000,
+// Create a new, more resilient effect by wrapping the original
+const resilientEffect = createResilientEffect(myApiCallEffect, {
+	retry: { 
+        attempts: 3, 
+        delay: "100 millis"
+    },
+	timeout: { 
+        duration: "5 seconds"
+    },
 });
 
+// Run the resilient effect
 const result = await Effect.runPromise(resilientEffect);
 ```
 
-## API Reference
-
-### Core Functions
-
-- `run(operation, config)`: Executes a promise-returning function with resilience patterns.
-- `createResilientEffect(effect, config)`: Applies resilience patterns to an existing `Effect`.
-
-### Core Types
-
-- `ResilienceConfig`: Configuration object for all resilience patterns.
-- `ResilienceResult<T>`: The result of a resilient operation.
-
-### Resilience Effects
-
-These functions can be used individually for more granular control.
-
-- `retryEffect(effect, config)`
-- `timeoutEffect(effect, duration)`
-- `circuitBreakerEffect(config)(effect)`
-
-## Development
-
-```bash
-# Install dependencies
-bun install
-
-# Run tests
-bun test
-
-# Build
-bun run build
-
-# Review (format, lint, test, build)
-bun run review
-```
-
-## Contributing
-
-Contributions are welcome! Please read our contributing guidelines.
-
 ## License
 
-MIT © Wrikka Team
+This project is licensed under the MIT License.

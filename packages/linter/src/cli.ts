@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-import { runBenchmark } from "bench";
-import type { BenchmarkOptions } from "bench";
+import { runBenchmark } from "@wpackages/bench";
+import type { BenchmarkOptions } from "@wpackages/bench";
+import { Effect } from "effect";
 import pc from "picocolors";
 import { lint } from "./app";
 
@@ -179,25 +180,21 @@ const main = async () => {
 			process.exit(1);
 		}
 
-		const result = await lint({
+		const program = lint({
 			paths,
 			fix: args.includes("--fix"),
 			silent: args.includes("--silent"),
 		});
 
-		if (result.isErr()) {
-			console.error(pc.red("Fatal error:"), result.unwrapErr());
-			process.exit(2);
-		}
+		const report = await Effect.runPromise(program);
 
-		const report = result.unwrap();
 		if (report.errorCount > 0) {
 			process.exit(1);
 		}
 	}
 };
 
-main().catch((error) => {
-	console.error(pc.red("Fatal error:"), error);
-	process.exit(2);
-});
+Effect.runPromise(Effect.catchAllCause(main(), (cause) => {
+    console.error(pc.red("Fatal error:"), cause);
+    process.exit(2);
+}));

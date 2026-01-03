@@ -1,7 +1,6 @@
 import pc from "picocolors";
-import React from "react";
-import { AutocompletePrompt } from "../src/components";
 import { prompt } from "../src/context";
+import { autocomplete } from "../src/index";
 
 const frameworks = [
 	{ value: "next", label: "Next.js", hint: "React framework" },
@@ -16,13 +15,11 @@ async function main() {
 	console.log(pc.cyan("Autocomplete Prompt Example"));
 
 	const framework = await prompt(
-		AutocompletePrompt,
-		{
+		autocomplete({
 			message: "Search for a framework",
 			options: frameworks,
 			placeholder: "Type to search...",
-		},
-		"",
+		}),
 	);
 
 	if (typeof framework === "symbol") {
@@ -30,7 +27,7 @@ async function main() {
 		return;
 	}
 
-	console.log(pc.green(`You selected: ${framework}`));
+	console.log(pc.green(`You selected: ${String(framework)}`));
 }
 
-main();
+main().catch(console.error);

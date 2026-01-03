@@ -115,14 +115,14 @@ export class Router {
 				route.paramNames,
 				route.schemas?.params,
 			);
-			// TODO: Add query parsing
+			const query = yield* parseQueryEffect(req, route.schemas?.query);
 
 			const result = yield* route.handler({
 				...context,
 				req,
 				body,
 				params,
-				query: {},
+				query,
 			});
 
 			if (result instanceof Response) {
@@ -204,5 +204,27 @@ function validateResponseEffect(data: unknown, schema?: ZodSchema) {
 			error instanceof HttpError
 				? error
 				: new HttpError(500, "Internal error during response validation"),
+	});
+}
+
+function parseQueryEffect(req: Request, schema?: ZodSchema) {
+	return Effect.try({
+		try: () => {
+			const url = new URL(req.url);
+			const query = Object.fromEntries(url.searchParams.entries());
+
+			if (schema) {
+				const parsed = schema.safeParse(query);
+				if (!parsed.success) {
+					throw new HttpError(400, `Invalid query: ${parsed.error.message}`);
+				}
+				return parsed.data;
+			}
+			return query;
+		},
+		catch: (error) =>
+			error instanceof HttpError
+				? error
+				: new HttpError(500, "Internal error during query parsing"),
 	});
 }

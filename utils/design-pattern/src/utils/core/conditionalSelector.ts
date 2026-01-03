@@ -28,13 +28,13 @@ export const createSelector = <T, U>(
 	return (input: T): U => {
 		for (const pair of conditions) {
 			if (pair.condition(input)) {
-				if (typeof pair.result === 'function') {
+				if (typeof pair.result === "function") {
 					return (pair.result as (input: T) => U)(input);
 				}
 				return pair.result;
 			}
 		}
-		if (typeof defaultValue === 'function') {
+		if (typeof defaultValue === "function") {
 			return (defaultValue as (input: T) => U)(input);
 		}
 		return defaultValue;

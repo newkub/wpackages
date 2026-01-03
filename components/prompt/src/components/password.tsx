@@ -1,11 +1,10 @@
 import { usePrompt } from "@/context";
-import { Box, Text, useInput } from "ink";
+import { useInput } from "@/hooks";
+import { PasswordPromptOptions, PromptDescriptor } from "@/types";
+import { Box, Text } from "ink";
+import React from "react";
 
-interface PasswordPromptProps {
-	message: string;
-}
-
-export function PasswordPrompt({ message }: PasswordPromptProps) {
+export const PasswordPromptComponent: React.FC<PasswordPromptOptions> = ({ message }) => {
 	const { value, setValue, submit, state } = usePrompt<string>();
 
 	useInput((input, key) => {
@@ -26,4 +25,14 @@ export function PasswordPrompt({ message }: PasswordPromptProps) {
 				: <Text color="gray">{"*".repeat(value.length)}</Text>}
 		</Box>
 	);
-}
+};
+
+export const password = (
+	options: PasswordPromptOptions,
+): PromptDescriptor<string, PasswordPromptOptions> => {
+	return {
+		Component: PasswordPromptComponent,
+		props: options,
+		initialValue: options.initialValue ?? "",
+	};
+};

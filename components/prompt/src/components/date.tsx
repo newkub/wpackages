@@ -1,17 +1,13 @@
 import { usePrompt } from "@/context";
+import { DatePromptOptions, PromptDescriptor } from "@/types";
 import { Box, Text, useInput } from "ink";
-import { useState } from "react";
-
-interface DatePromptProps {
-	message: string;
-}
+import React from "react";
 
 const daysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
 const getDay = (year: number, month: number, day: number) => new Date(year, month, day).getDay();
 
-export function DatePrompt({ message }: DatePromptProps) {
-	const { submit } = usePrompt<Date>();
-	const [currentDate, setCurrentDate] = useState(new Date());
+export const DatePromptComponent: React.FC<DatePromptOptions> = ({ message }) => {
+	const { value: currentDate, setValue: setCurrentDate, submit } = usePrompt<Date>();
 
 	useInput((_, key) => {
 		if (key.return) {
@@ -66,4 +62,14 @@ export function DatePrompt({ message }: DatePromptProps) {
 			</Box>
 		</Box>
 	);
-}
+};
+
+export const date = (
+	options: DatePromptOptions,
+): PromptDescriptor<Date, DatePromptOptions> => {
+	return {
+		Component: DatePromptComponent,
+		props: options,
+		initialValue: options.initialValue ?? new Date(),
+	};
+};

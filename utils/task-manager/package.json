@@ -12,11 +12,13 @@
 		"build": "tsdown --exports --dts --minify",
 		"dev": "bun run --watch src/index.ts",
 		"lint": "oxlint --fix --type-aware",
+		"format": "dprint fmt",
 		"release": "release-it"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
 		"@types/node": "^24.10.4",
+		"dprint": "^0.51.1",
 		"effect": "^3.19.14",
 		"release-it": "^19.2.2",
 		"tsdown": "^0.15.12",
@@ -30,6 +32,7 @@
 	"dependencies": {
 		"@clack/prompts": "^0.11.0",
 		"@types/ini": "^4.1.1",
+		"@wpackages/task-runner": "workspace:*",
 		"ini": "^6.0.0",
 		"picocolors": "^1.1.1",
 		"toml": "^3.0.0"

@@ -216,11 +216,26 @@ export const isValidMergeStrategy = (strategy: string): boolean => {
 
 // Ensure value is string
 export const ensureString = (value: unknown): string => {
-	if (typeof value === "string") return value;
-	if (value === null || value === undefined) return "";
-	if (Buffer.isBuffer(value)) return value.toString("utf-8");
-	if (typeof value === "object") return JSON.stringify(value);
-	return String(value);
+	if (value === null) {
+		return "";
+	}
+	switch (typeof value) {
+		case "string":
+			return value;
+		case "number":
+		case "boolean":
+		case "bigint":
+		case "symbol":
+		case "function":
+			return value.toString();
+		case "object":
+			return JSON.stringify(value);
+		case "undefined":
+			return "";
+		default:
+			// This case should be unreachable for known JS types
+			return "";
+	}
 };
 
 // Check if value is string

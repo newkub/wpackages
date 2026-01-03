@@ -1,19 +1,19 @@
 const toError = (e: unknown) => (e instanceof Error ? e : new Error(String(e)));
 
-export const githubRequestJson = async (args: {
+export const githubRequestJson = async <T>(args: {
 	readonly token: string;
 	readonly path: string;
 	readonly init?: RequestInit;
-}): Promise<unknown> => {
+}): Promise<T> => {
 	try {
 		const res = await fetch(new URL(args.path, "https://api.github.com"), {
 			...args.init,
-			headers: {
+			headers: new Headers({
 				Accept: "application/vnd.github+json",
 				"User-Agent": "@wpackages/github-app-bot",
 				Authorization: `Bearer ${args.token}`,
-				...(typeof args.init?.headers === "object" ? args.init.headers : {}),
-			},
+				...(args.init?.headers as Record<string, string>),
+			}),
 		});
 
 		if (!res.ok) {

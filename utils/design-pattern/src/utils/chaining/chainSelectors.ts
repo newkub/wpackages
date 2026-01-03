@@ -8,14 +8,16 @@ type Selector<T, U> = (input: T) => U;
  * @returns {Selector<any, any>} A new selector function that represents the entire chain.
  * @throws {Error} If no selectors are provided.
  */
-export const chainSelectors = <T, U>(...selectors: [Selector<T, any>, ...Selector<any, any>[], Selector<any, U>]): Selector<T, U> => {
-    if (selectors.length === 0) {
-        throw new Error('chainSelectors requires at least one selector.');
-    }
+export const chainSelectors = <T, U>(
+	...selectors: [Selector<T, any>, ...Selector<any, any>[], Selector<any, U>]
+): Selector<T, U> => {
+	if (selectors.length === 0) {
+		throw new Error("chainSelectors requires at least one selector.");
+	}
 
-    return (initialInput: T): U => {
-        return selectors.reduce((currentInput, selector) => {
-            return selector(currentInput);
-        }, initialInput as any);
-    };
+	return (initialInput: T): U => {
+		return selectors.reduce((currentInput, selector) => {
+			return selector(currentInput);
+		}, initialInput as any);
+	};
 };

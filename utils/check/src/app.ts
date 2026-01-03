@@ -10,15 +10,15 @@ import {
 	DepsUpdateCheckerLive,
 	DuplicatesCheckerLive,
 	ImportsCheckerLive,
+	ResponsibilityCheckerLive,
 	SecurityCheckerLive,
 	SideEffectCheckerLive,
 	SizeCheckerLive,
+	TypeAnalyzerLive,
 	TypeCheckerLive,
-	TypeSafeCheckerLive,
 	UnusedCheckerLive,
-    TypeAnalyzerLive
 } from "./services/index";
-import type { CheckType, CheckerOptions, CheckResults } from "./types/index";
+import type { CheckerOptions, CheckResults, CheckType } from "./types/index";
 import { runChecks } from "./utils/index";
 
 const AllCheckerServicesLive = Layer.mergeAll(
@@ -32,9 +32,9 @@ const AllCheckerServicesLive = Layer.mergeAll(
 	SizeCheckerLive,
 	DuplicatesCheckerLive,
 	SecurityCheckerLive,
-	TypeSafeCheckerLive,
 	SideEffectCheckerLive,
-    TypeAnalyzerLive
+	ResponsibilityCheckerLive,
+	TypeAnalyzerLive,
 );
 
 export const runChecker = (
@@ -71,9 +71,9 @@ async function main() {
 			{ value: "size", label: "Check File Sizes" },
 			{ value: "duplicates", label: "Find Duplicate Code" },
 			{ value: "security", label: "Security Checks" },
-			{ value: "typeSafe", label: "Check Type Safety Settings" },
 			{ value: "sideEffect", label: "Detect Side Effects" },
-            { value: "type-analysis", label: "Analyze Type Declarations" },
+			{ value: "responsibility", label: "Check Single Responsibility" },
+			{ value: "type-analysis", label: "Analyze Type Declarations" },
 		],
 		initialValues: ["type", "unused", "deps"],
 	});

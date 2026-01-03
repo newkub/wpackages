@@ -1,13 +1,12 @@
 import { usePrompt } from "@/context";
-import { Box, Text, useInput } from "ink";
+import { useInput } from "@/hooks";
+import { ConfirmPromptOptions, PromptDescriptor } from "@/types";
+import { Box, Text } from "ink";
+import React from "react";
 
-interface ConfirmPromptProps {
-	message: string;
-	positive?: string;
-	negative?: string;
-}
-
-export function ConfirmPrompt({ message, positive = "Yes", negative = "No" }: ConfirmPromptProps) {
+export const ConfirmPromptComponent: React.FC<ConfirmPromptOptions> = (
+	{ message, positive = "Yes", negative = "No" },
+) => {
 	const { value, setValue, submit } = usePrompt<boolean>();
 
 	useInput((_, key) => {
@@ -26,4 +25,14 @@ export function ConfirmPrompt({ message, positive = "Yes", negative = "No" }: Co
 			<Text color={!value ? "cyan" : "gray"}>{negative}</Text>
 		</Box>
 	);
-}
+};
+
+export const confirm = (
+	options: ConfirmPromptOptions,
+): PromptDescriptor<boolean, ConfirmPromptOptions> => {
+	return {
+		Component: ConfirmPromptComponent,
+		props: options,
+		initialValue: options.initialValue ?? false,
+	};
+};

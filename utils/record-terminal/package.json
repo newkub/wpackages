@@ -18,7 +18,13 @@
 		"lint": "oxlint .",
 		"test": "vitest"
 	},
-	"keywords": ["terminal", "recorder", "gif", "mp4", "cli"],
+	"keywords": [
+		"terminal",
+		"recorder",
+		"gif",
+		"mp4",
+		"cli"
+	],
 	"author": "",
 	"license": "MIT",
 	"dependencies": {

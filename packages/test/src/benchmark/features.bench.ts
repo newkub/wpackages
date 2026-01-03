@@ -8,10 +8,5 @@ describe("Features Performance", () => {
 			mockFn.mockReturnValue(100);
 		});
 
-		bench("baseline function creation", () => {
-			const baselineFn = () => 42;
-			// This doesn't have a direct equivalent to mockReturnValue,
-			// so we're primarily measuring the creation overhead.
-		});
 	});
 });

@@ -1,6 +1,7 @@
 export * from "./autocomplete";
 export * from "./confirm";
 export * from "./date";
+export * from "./group";
 export * from "./multiselect";
 export * from "./note";
 export * from "./number";

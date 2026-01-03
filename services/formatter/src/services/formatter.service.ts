@@ -1,6 +1,5 @@
-import { spawn } from "node:child_process";
-import { existsSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { resolve } from "node:path";
+import { ProcessError, findUp, spawnAsync } from "../utils";
 
 export type FormatterEngine = "auto" | "dprint" | "biome";
 
@@ -11,54 +10,6 @@ export type FormatOptions = {
 	configPath?: string;
 };
 
-type SpawnResult = { stdout: string; stderr: string; exitCode: number };
-
-const spawnAsync = (
-	command: string,
-	args: string[],
-	opts: { cwd?: string } = {},
-): Promise<SpawnResult> =>
-	new Promise((resolvePromise, rejectPromise) => {
-		const child = spawn(command, args, {
-			cwd: opts.cwd,
-			stdio: ["ignore", "pipe", "pipe"],
-			windowsHide: true,
-		});
-
-		let stdout = "";
-		let stderr = "";
-
-		child.stdout?.on("data", (buf: Buffer) => {
-			stdout += buf.toString("utf8");
-		});
-		child.stderr?.on("data", (buf: Buffer) => {
-			stderr += buf.toString("utf8");
-		});
-
-		child.on("error", rejectPromise);
-		child.on("close", (exitCode) => {
-			resolvePromise({
-				stdout,
-				stderr,
-				exitCode: exitCode ?? 0,
-			});
-		});
-	});
-
-const findUp = (startDir: string, fileNames: string[]): string | null => {
-	let current = resolve(startDir);
-
-	while (true) {
-		for (const fileName of fileNames) {
-			const candidate = join(current, fileName);
-			if (existsSync(candidate)) return candidate;
-		}
-
-		const parent = dirname(current);
-		if (parent === current) return null;
-		current = parent;
-	}
-};
 
 const detectEngine = (cwd: string): Exclude<FormatterEngine, "auto"> => {
 	const biomeConfig = findUp(cwd, ["biome.json", "biome.jsonc"]);
@@ -117,8 +68,11 @@ export const format = async (
 	const res = await spawnAsync(command, args, { cwd });
 	if (res.exitCode !== 0) {
 		const tool = engine === "biome" ? "biome" : "dprint";
-		throw new Error(
-			`${tool} failed with exit code ${res.exitCode}. ${res.stderr || res.stdout}`.trim(),
+		throw new ProcessError(
+			`${tool} failed with exit code ${res.exitCode}`,
+			res.stdout,
+			res.stderr,
+			res.exitCode,
 		);
 	}
 

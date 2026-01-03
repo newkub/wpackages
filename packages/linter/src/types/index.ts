@@ -17,4 +17,7 @@ export type { LinterOptions, LintReport, LintResult } from "./linter";
 // Config
 export type { Config } from "./config";
 
+// Error
+export { FileSystemError } from "./error";
+
 // Parser types are defined locally in rule.ts

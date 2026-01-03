@@ -1,10 +1,7 @@
+import { usePrompt } from "@/context";
+import { NotePromptOptions, PromptDescriptor } from "@/types";
 import { Box, Text } from "ink";
-
-interface NoteProps {
-	title?: string;
-	message: string;
-	type?: "info" | "success" | "warning" | "error";
-}
+import React, { useEffect } from "react";
 
 const typeConfig = {
 	info: { color: "blue", symbol: "ℹ" },
@@ -13,7 +10,14 @@ const typeConfig = {
 	error: { color: "red", symbol: "✖" },
 };
 
-export function Note({ title, message, type = "info" }: NoteProps) {
+export const NoteComponent: React.FC<NotePromptOptions> = ({ title, message, type = "info" }) => {
+	const { submit } = usePrompt<void>();
+
+	useEffect(() => {
+		// Notes are display-only, so we submit immediately.
+		submit();
+	}, [submit]);
+
 	const { color, symbol } = typeConfig[type];
 
 	return (
@@ -25,4 +29,14 @@ export function Note({ title, message, type = "info" }: NoteProps) {
 			<Text>{message}</Text>
 		</Box>
 	);
-}
+};
+
+export const note = (
+	options: NotePromptOptions,
+): PromptDescriptor<void, NotePromptOptions> => {
+	return {
+		Component: NoteComponent,
+		props: options,
+		initialValue: undefined,
+	};
+};

@@ -29,9 +29,11 @@
 			"dependsOn": ["^format"],
 			"cache": false
 		},
-		"test": {
+		"typecheck": {
 			"dependsOn": ["^lint"]
 		},
+		"test": {},
+
 		"test:coverage": {
 			"dependsOn": ["^lint"]
 		},

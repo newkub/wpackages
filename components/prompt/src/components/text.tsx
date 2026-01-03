@@ -1,11 +1,11 @@
-import { prompt, usePrompt } from "@/context";
+import { usePrompt } from "@/context";
 import { useInput } from "@/hooks";
 import { theme } from "@/services";
-import { TextPromptOptions } from "@/types";
+import { PromptDescriptor, TextPromptOptions } from "@/types";
 import { Box, Text } from "ink";
 import React from "react";
 
-const TextPromptComponent: React.FC<TextPromptOptions> = ({ message, placeholder }) => {
+export const TextPromptComponent: React.FC<TextPromptOptions> = ({ message, placeholder }) => {
 	const { value, setValue, state, submit } = usePrompt<string>();
 
 	useInput((input, key) => {
@@ -38,6 +38,10 @@ const TextPromptComponent: React.FC<TextPromptOptions> = ({ message, placeholder
 	);
 };
 
-export const text = (options: TextPromptOptions) => {
-	return prompt(TextPromptComponent, options, options.initialValue ?? "");
+export const text = (options: TextPromptOptions): PromptDescriptor<string, TextPromptOptions> => {
+	return {
+		Component: TextPromptComponent,
+		props: options,
+		initialValue: options.initialValue ?? "",
+	};
 };

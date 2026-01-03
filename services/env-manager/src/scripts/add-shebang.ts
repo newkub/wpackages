@@ -2,7 +2,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 
 const SHEBANG = "#!/usr/bin/env node\n";
-const DIST_CANDIDATES = ["dist/bin/cli.mjs", "dist/bin/cli.js", "dist/cli.mjs", "dist/cli.js"] as const;
+const DIST_CANDIDATES = ["dist/app.mjs", "dist/app.js"] as const;
 
 const main = () => {
 	const distFile = DIST_CANDIDATES

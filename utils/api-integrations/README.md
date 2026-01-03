@@ -1,57 +1,74 @@
-# api-integrations
+# @wpackages/utils-api-integrations
 
-This package provides a collection of utilities designed to streamline the development of API integrations. It includes robust error handling, configurable retry mechanisms, caching strategies, and other helpers to build resilient and efficient API clients.
+## Introduction
+
+`@wpackages/utils-api-integrations` is a utility library designed to streamline the development of robust and resilient API integrations. It provides a collection of functional, `Effect-TS`-based tools for handling common challenges like error handling, retry logic, caching, and configuration management.
 
 ## Features
 
-- **Effect-TS Based**: Built on top of `Effect-TS` for fully-typed, functional, and composable code.
-- **Structured Error Handling**: A set of predefined, typed errors (`IntegrationError`) for common API issues like authentication, rate limiting, network problems, etc.
-- **Retry Logic**: Pure, configurable functions for exponential backoff and jitter (`calculateRetryDelay`).
-- **Caching Utilities**: Helpers for building, managing, and checking cache entries (`createCacheEntry`, `isCacheExpired`).
-- **Request/Response Helpers**: Utilities for handling headers, query parameters, and response parsing.
-- **Circuit Breaker**: A simple circuit breaker implementation to prevent repeated calls to a failing service.
+-   💪 **Resilient by Design**: Built-in utilities for retries (with exponential backoff and jitter), caching, and circuit breakers.
+-   🚨 **Structured Error Handling**: A set of predefined, typed errors (`IntegrationError`) for common API issues like authentication, rate limiting, and network problems.
+-   🧩 **Functional and Composable**: Built entirely with `Effect-TS` for fully-typed, composable, and testable code.
+-   ⚙️ **Configuration Management**: Helpers for safely loading and validating API credentials and settings.
+-   🧰 **Common Helpers**: Includes utilities for handling headers, query parameters, and response parsing.
+
+## Goal
+
+-   🎯 **Standardize Integrations**: To provide a standard, reliable toolkit for building all API integrations within the monorepo.
+-   🛡️ **Increase Resilience**: To make it easy to build API clients that are resilient to common failures like network issues and rate limiting.
+-   🧑‍💻 **Improve DX**: To abstract away the boilerplate associated with building robust API clients, allowing developers to focus on business logic.
+
+## Design Principles
+
+-   **Declarative**: Policies like retries and caching are defined declaratively and composed with the core API request logic.
+-   **Type-Safe**: Leverages TypeScript and `Effect-TS` to ensure that all parts of an integration, from config to error handling, are type-safe.
+-   **Modular**: Provides a set of small, focused utilities that can be composed together as needed.
 
 ## Installation
 
-Install the package using your preferred package manager:
+This is a workspace package. Ensure you have installed dependencies from the monorepo root:
 
 ```bash
-bun add api-integrations
+bun install
 ```
 
 ## Usage
 
-### Creating an Integration Config
+The library provides helpers for various aspects of building an API client.
 
-Use `createIntegrationConfig` to safely create a configuration object from a `ConfigManager`.
+### Example: Structured Error Handling
 
-```typescript
-import { createIntegrationConfig } from "api-integrations";
-import { Effect } from "effect";
-import { configManager } from "./config"; // Your config manager instance
-
-const myApiConfig = createIntegrationConfig(
-	configManager,
-	"MY_API",
-	{ timeout: 15000 },
-);
-
-Effect.runPromise(myApiConfig).then(console.log);
-```
-
-### Handling Integration Errors
-
-The package provides a set of error creation helpers and a type guard.
+Catch and handle specific, typed integration errors.
 
 ```typescript
-import { createNetworkError, isIntegrationError } from "api-integrations";
+import { createNetworkError, isIntegrationError } from '@wpackages/utils-api-integrations';
+import { Effect } from 'effect';
 
-const myEffect = Effect.fail(createNetworkError("Service unavailable", 503));
+const apiCall = Effect.fail(createNetworkError({ message: 'Service Unavailable', statusCode: 503 }));
 
-Effect.runPromise(Effect.catchAll(myEffect, (error) => {
-	if (isIntegrationError(error) && error.type === "network") {
-		console.error(`Network error with status: ${error.statusCode}`);
-	}
-	return Effect.succeed(null);
-}));
+const handledCall = Effect.catchAll(apiCall, (error) => {
+    if (isIntegrationError(error) && error.type === 'network') {
+        console.error(`Caught a network error with status: ${error.statusCode}`);
+    }
+    return Effect.succeed('default-value');
+});
+
+Effect.runPromise(handledCall);
 ```
+
+### Example: Retry Logic
+
+Use helpers to calculate retry delays with exponential backoff and jitter.
+
+```typescript
+import { calculateRetryDelay } from '@wpackages/utils-api-integrations';
+
+const firstDelay = calculateRetryDelay({ attempt: 1 }); // e.g., 100ms
+const secondDelay = calculateRetryDelay({ attempt: 2 }); // e.g., 200ms + jitter
+
+console.log(`First retry in ${firstDelay}ms, second in ${secondDelay}ms`);
+```
+
+## License
+
+This project is licensed under the MIT License.

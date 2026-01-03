@@ -12,14 +12,14 @@ type Selector<T, U> = (input: T) => U;
  * @returns {Selector<T, U>} A new selector function with debugging logs.
  */
 export const withDebugging = <T, U>(
-  selector: Selector<T, U>,
-  selectorName: string = 'selector',
-  logger: (message: string) => void = console.log
+	selector: Selector<T, U>,
+	selectorName: string = "selector",
+	logger: (message: string) => void = console.log,
 ): Selector<T, U> => {
-  return (input: T): U => {
-    logger(`[${selectorName}] Input: ${JSON.stringify(input, null, 2)}`);
-    const result = selector(input);
-    logger(`[${selectorName}] Output: ${JSON.stringify(result, null, 2)}`);
-    return result;
-  };
+	return (input: T): U => {
+		logger(`[${selectorName}] Input: ${JSON.stringify(input, null, 2)}`);
+		const result = selector(input);
+		logger(`[${selectorName}] Output: ${JSON.stringify(result, null, 2)}`);
+		return result;
+	};
 };

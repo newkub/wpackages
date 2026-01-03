@@ -1,9 +1,13 @@
-import React from "react";
-import { prompt, TextPrompt } from "../src";
+import { prompt } from "../src/context";
+import { text } from "../src/index";
 
 async function main() {
-	const name = await prompt(TextPrompt, { message: "What is your name?" }, "");
-	console.log(`Hello, ${name}!`);
+	const name = await prompt(text({ message: "What is your name?" }));
+	if (typeof name === "symbol") {
+		console.log("Prompt cancelled.");
+		return;
+	}
+	console.log(`Hello, ${String(name)}!`);
 }
 
-main();
+main().catch(console.error);

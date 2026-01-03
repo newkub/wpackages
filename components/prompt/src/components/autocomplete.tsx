@@ -1,27 +1,20 @@
-import { usePrompt } from "@/context";
 import { Box, Text, useInput } from "ink";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { usePrompt } from "../context";
+import { AutocompletePromptOptions, Option, PromptDescriptor } from "../types";
 
-interface Option<T> {
-	value: T;
-	label: string;
-	hint?: string;
-}
-
-interface AutocompletePromptProps<T> {
-	message: string;
-	options: Option<T>[];
-	placeholder?: string;
-}
-
-export function AutocompletePrompt<T>({ message, options, placeholder = "" }: AutocompletePromptProps<T>) {
+export const AutocompletePromptComponent = <T,>(
+	{ message, options, placeholder = "" }: AutocompletePromptOptions<T>,
+) => {
 	const { submit } = usePrompt<T>();
 	const [inputValue, setInputValue] = useState("");
 	const [filteredOptions, setFilteredOptions] = useState(options);
 	const [activeIndex, setActiveIndex] = useState(0);
 
 	useEffect(() => {
-		const newFilteredOptions = options.filter(option => option.label.toLowerCase().includes(inputValue.toLowerCase()));
+		const newFilteredOptions = options.filter((option: Option<T>) =>
+			option.label.toLowerCase().includes(inputValue.toLowerCase())
+		);
 		setFilteredOptions(newFilteredOptions);
 		setActiveIndex(0); // Reset index when filter changes
 	}, [inputValue, options]);
@@ -61,7 +54,7 @@ export function AutocompletePrompt<T>({ message, options, placeholder = "" }: Au
 			</Box>
 
 			<Box flexDirection="column" marginTop={1}>
-				{filteredOptions.slice(0, 5).map((option, index) => (
+				{filteredOptions.slice(0, 5).map((option: Option<T>, index: number) => (
 					<Box key={option.label}>
 						<Text color={activeIndex === index ? "cyan" : "gray"}>
 							{activeIndex === index ? "●" : "○"} {option.label}
@@ -72,4 +65,15 @@ export function AutocompletePrompt<T>({ message, options, placeholder = "" }: Au
 			</Box>
 		</Box>
 	);
-}
+};
+
+export const autocomplete = <T,>(
+	options: AutocompletePromptOptions<T>,
+): PromptDescriptor<T, AutocompletePromptOptions<T>> => {
+	const initialValue = options.initialValue ?? options.options[0]?.value ?? null;
+	return {
+		Component: AutocompletePromptComponent as React.FC<AutocompletePromptOptions<T>>,
+		props: options,
+		initialValue: initialValue as T,
+	};
+};

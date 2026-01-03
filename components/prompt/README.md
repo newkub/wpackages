@@ -1,13 +1,60 @@
-# @wrikka/prompt
+# @wpackages/prompt
 
-An elegant and feature-rich command-line prompt library, built with Ink.js and React, inspired by `@clack/prompts` but with 3x more components and a focus on superior UX/UI.
+## Introduction
+
+`@wpackages/prompt` is an elegant and feature-rich command-line prompt library for creating beautiful and intuitive interactive experiences. It is built with **Ink.js** and **React**, allowing for a declarative, component-based approach to terminal UI. Inspired by the simplicity of `@clack/prompts`, this library expands on its foundation with a significantly larger component library and a strong focus on superior user experience.
 
 ## Features
 
-- **Modern Stack**: Built with Ink.js and React for a declarative, component-based UI.
-- **Rich Component Library**: Over 10 interactive components out-of-the-box.
-- **Themable**: Easily customize colors and styles (coming soon).
-- **Developer Friendly**: Simple, promise-based API.
+- ⚛️ **Modern Stack**: Built with Ink.js and React for a declarative, component-based UI.
+- 🧩 **Extensive Component Library**: Offers a wide range of interactive components, from simple text inputs to complex date pickers.
+- 💅 **Beautifully Designed**: A focus on aesthetics and usability to provide a polished user experience.
+- 🧑‍💻 **Developer Friendly**: A simple, promise-based API that is easy to integrate into any CLI application.
+- 🎨 **Themable**: (Coming Soon) Easily customize colors and styles to match your brand.
+
+## Goal
+
+- 🎯 **Best-in-Class UX**: To provide the best possible user experience for interactive command-line prompts.
+- ✨ **Rich Interactivity**: To empower developers to build CLIs that are as intuitive and easy to use as graphical applications.
+- 🧩 **Comprehensive Solution**: To be the go-to library for any type of user input required in a CLI.
+
+## Design Principles
+
+- **Declarative UI**: Leverages React's component model to define terminal UIs in a clear and predictable way.
+- **Component-Based**: Every prompt is a reusable component, promoting consistency and code reuse.
+- **User-Centric**: Components are designed with the end-user in mind, prioritizing clarity, feedback, and ease of use.
+
+## Installation
+
+This is a workspace package. Ensure you have installed dependencies from the monorepo root:
+
+```bash
+bun install
+```
+
+## Usage
+
+The library exposes a `prompt` function that takes a React component and its props, and returns a promise that resolves with the user's input.
+
+```tsx
+import { prompt, TextPrompt } from "@wpackages/prompt";
+
+async function main() {
+	const name = await prompt(
+		TextPrompt,
+		{
+			message: "What is your name?",
+			placeholder: "Type here...",
+		},
+	);
+
+	if (name) {
+		console.log(`Hello, ${name}!`);
+	}
+}
+
+main();
+```
 
 ## Components
 
@@ -25,29 +72,17 @@ An elegant and feature-rich command-line prompt library, built with Ink.js and R
 - `Note`: For displaying styled informational messages.
 - `LoadingSpinner`: An animated spinner for long-running tasks.
 
-## Usage
+## Examples
 
-```tsx
-import { prompt } from "@wrikka/prompt";
-import { TextPrompt } from "@wrikka/prompt";
-import React from "react";
+### Run the Component Showcase
 
-async function main() {
-	const name = await prompt(
-		TextPrompt,
-		{ message: "What is your name?", placeholder: "Type here..." },
-		"",
-	);
-	console.log(`Hello, ${name}!`);
-}
-
-main();
-```
-
-## Run the Showcase
-
-To see all components in action, run:
+To see all available components in action, run the showcase from this workspace:
 
 ```bash
-bun run showcase
+# Run from the monorepo root
+turbo showcase --filter=@wpackages/prompt
 ```
+
+## License
+
+This project is licensed under the MIT License.

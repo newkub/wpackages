@@ -1,54 +1,62 @@
-# program
-
-A small example program demonstrating dependency injection and functional effect composition using `@wpackages/functional`.
+# @wpackages/program
 
 ## Introduction
 
-This package runs a simple `program` effect that:
+`@wpackages/program` is a small example application that demonstrates how to build a type-safe, testable, and composable program using a functional approach with dependency injection. It showcases the integration of the `@wpackages/config-manager` and `@wpackages/observability` packages to handle configuration and logging.
 
-- Pulls `Random` and `Console` services from the Effect environment
-- Generates a random number
-- Logs it via the provided `Console` service
+## Features
 
-It is designed to be tiny, readable, and easy to test.
+-   ✨ **Functional Core**: Built using functional programming principles for clarity and correctness.
+-   💉 **Dependency Injection**: Leverages dependency injection to provide services like logging and configuration.
+-   🔧 **Configuration Management**: Uses `@wpackages/config-manager` to load and access configuration variables.
+-   📜 **Structured Logging**: Integrates with `@wpackages/observability` for structured and context-aware logging.
+-   🧪 **Testable by Design**: The separation of concerns makes the core logic easy to test in isolation.
+
+## Goal
+
+-   🎯 **Demonstrate Best Practices**: Serve as a clear example of how to structure an application within the `wpackages` monorepo.
+-   🧩 **Showcase Package Integration**: Illustrate how different packages (`config-manager`, `observability`) can be composed together.
+-   ✅ **Promote Testability**: Encourage writing code that is inherently testable by decoupling side effects.
 
 ## Design Principles
 
-- **Type safety first**: services and effects are fully typed.
-- **Separation of concerns**: side effects (console, randomness) live behind services.
-- **Dependency injection**: services are provided via `Layer`.
-- **Testability**: production services can be swapped with deterministic mocks.
+-   **Type Safety First**: All services, effects, and configurations are fully typed to catch errors at compile time.
+-   **Separation of Concerns**: Side effects (like console output) are managed through dedicated services, keeping the core logic pure.
+-   **Explicit Dependencies**: Services are explicitly provided to the program, making the dependency graph clear and manageable.
+-   **Mockability**: Production services can be easily swapped with mock implementations for deterministic testing.
 
 ## Installation
 
-From the repo root:
-
-```bash
-bun install
-```
+Dependencies are managed at the root of the monorepo. Ensure you have run `bun install` in the root directory.
 
 ## Usage
 
-Run the program:
+To run the program, execute the `dev` script from this workspace using Turborepo:
 
 ```bash
-bun run dev
+turbo dev --filter=@wpackages/program
 ```
 
 ## Examples
 
-- Run once:
+### Running the Program
+
+This command will execute the main entry point of the application.
 
 ```bash
-bun run dev
+# Run from the monorepo root
+turbo dev --filter=@wpackages/program
 ```
 
-- Run tests:
+### Running Tests
+
+To run the test suite for this package:
 
 ```bash
-bun run test
+# Run from the monorepo root
+turbo test --filter=@wpackages/program
 ```
 
 ## License
 
-Private / internal workspace package.
+This is an internal package and is not intended for separate distribution. It is licensed under the MIT License.

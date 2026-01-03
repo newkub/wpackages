@@ -1,16 +1,13 @@
 import pc from "picocolors";
-import React from "react";
-import { TextPrompt } from "../src/components";
 import { prompt } from "../src/context";
+import { text } from "../src/index";
 
 async function main() {
 	console.clear();
 	console.log(pc.blue("Welcome to @wrikka/prompt with Ink.js!"));
 
 	const name = await prompt(
-		TextPrompt,
-		{ message: "What is your name?", placeholder: "Type here..." },
-		"",
+		text({ message: "What is your name?", placeholder: "Type here..." }),
 	);
 
 	if (typeof name === "symbol") {
@@ -18,7 +15,7 @@ async function main() {
 		return;
 	}
 
-	console.log(pc.green(`Hello, ${name}!`));
+	console.log(pc.green(`Hello, ${String(name)}!`));
 }
 
-main();
+main().catch(console.error);

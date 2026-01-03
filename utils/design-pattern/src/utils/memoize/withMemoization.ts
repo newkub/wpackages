@@ -12,25 +12,25 @@ type Selector<T, U> = (input: T) => U;
  * @returns {Selector<T, U> & { clearCache: () => void }} A new selector function with memoization capabilities, plus a `clearCache` method to reset the cache.
  */
 export const withMemoization = <T, U>(
-  selector: Selector<T, U>,
-  cacheKeyResolver?: (input: T) => any
+	selector: Selector<T, U>,
+	cacheKeyResolver?: (input: T) => any,
 ): Selector<T, U> & { clearCache: () => void } => {
-  const cache = new Map<any, U>();
+	const cache = new Map<any, U>();
 
-  const memoizedSelector = (input: T): U => {
-    const key = cacheKeyResolver ? cacheKeyResolver(input) : input;
-    if (cache.has(key)) {
-      return cache.get(key)!;
-    }
+	const memoizedSelector = (input: T): U => {
+		const key = cacheKeyResolver ? cacheKeyResolver(input) : input;
+		if (cache.has(key)) {
+			return cache.get(key)!;
+		}
 
-    const result = selector(input);
-    cache.set(key, result);
-    return result;
-  };
+		const result = selector(input);
+		cache.set(key, result);
+		return result;
+	};
 
-  memoizedSelector.clearCache = () => {
-    cache.clear();
-  };
+	memoizedSelector.clearCache = () => {
+		cache.clear();
+	};
 
-  return memoizedSelector;
+	return memoizedSelector;
 };

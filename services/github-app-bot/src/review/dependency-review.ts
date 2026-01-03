@@ -14,6 +14,8 @@ export const buildDependencyReviewComment = async (args: {
 	readonly owner: string;
 	readonly repo: string;
 	readonly pullNumber: number;
+	readonly baseSha: string;
+	readonly headSha: string;
 	readonly changedFiles: unknown;
 }): Promise<string | null> => {
 	const files = Array.isArray((args.changedFiles as { files?: unknown }).files)

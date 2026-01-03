@@ -6,7 +6,7 @@ export default defineConfig({
 		vue: false,
 	},
 	exports: true,
-	entry: ["./src/index.ts", "./src/bin/wdgithub.ts"],
+	entry: ["./src/index.ts", "./src/cli.ts"],
 	format: "esm",
 	clean: true,
 	minify: true,

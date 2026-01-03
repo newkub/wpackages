@@ -19,6 +19,7 @@
 	},
 	"dependencies": {
 		"@ast-grep/napi": "^0.40.3",
+		"find-up": "^8.0.0",
 		"oxc-parser": "0.105.0"
 	},
 	"devDependencies": {

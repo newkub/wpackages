@@ -9,7 +9,11 @@ export function loadSpec(command: string): CompletionSpec | undefined {
 			name: "git",
 			description: "The stupid content tracker",
 			subcommands: [
-				{ name: "add", description: "Add file contents to the index" },
+				{
+					name: "add",
+					description: "Add file contents to the index",
+					args: [{ name: "path", isVariadic: true, generators: { template: "filepaths" } }],
+				},
 				{ name: "commit", description: "Record changes to the repository" },
 				{
 					name: "push",

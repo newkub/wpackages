@@ -1,21 +1,15 @@
 import { usePrompt } from "@/context";
+import { PromptDescriptor, SliderPromptOptions } from "@/types";
 import { Box, Text, useInput } from "ink";
+import React from "react";
 
-interface SliderPromptProps {
-	message: string;
-	min?: number;
-	max?: number;
-	step?: number;
-	barWidth?: number;
-}
-
-export function SliderPrompt({
+export const SliderPromptComponent: React.FC<SliderPromptOptions> = ({
 	message,
 	min = 0,
 	max = 100,
 	step = 1,
 	barWidth = 20,
-}: SliderPromptProps) {
+}) => {
 	const { value, setValue, submit } = usePrompt<number>();
 
 	useInput((_, key) => {
@@ -45,4 +39,14 @@ export function SliderPrompt({
 			<Text color="cyan">{value}</Text>
 		</Box>
 	);
-}
+};
+
+export const slider = (
+	options: SliderPromptOptions,
+): PromptDescriptor<number, SliderPromptOptions> => {
+	return {
+		Component: SliderPromptComponent,
+		props: options,
+		initialValue: options.initialValue ?? options.min ?? 0,
+	};
+};

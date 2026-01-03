@@ -1,14 +1,10 @@
 import { usePrompt } from "@/context";
-import { Box, Text, useInput } from "ink";
+import { useInput } from "@/hooks";
+import { NumberPromptOptions, PromptDescriptor } from "@/types";
+import { Box, Text } from "ink";
+import React from "react";
 
-interface NumberPromptProps {
-	message: string;
-	min?: number;
-	max?: number;
-	step?: number;
-}
-
-export function NumberPrompt({ message, min, max, step = 1 }: NumberPromptProps) {
+export const NumberPromptComponent: React.FC<NumberPromptOptions> = ({ message, min, max, step = 1 }) => {
 	const { value, setValue, submit } = usePrompt<number>();
 
 	useInput((input, key) => {
@@ -41,4 +37,14 @@ export function NumberPrompt({ message, min, max, step = 1 }: NumberPromptProps)
 			<Text color="cyan">{value}</Text>
 		</Box>
 	);
-}
+};
+
+export const number = (
+	options: NumberPromptOptions,
+): PromptDescriptor<number, NumberPromptOptions> => {
+	return {
+		Component: NumberPromptComponent,
+		props: options,
+		initialValue: options.initialValue ?? 0,
+	};
+};

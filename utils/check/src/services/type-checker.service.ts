@@ -48,6 +48,51 @@ export const makeTypeCheckerService = () => {
 					parsedConfig.options,
 				);
 
+				// Check for strict mode settings
+				const strictSettings = [
+					{ key: "strict", value: parsedConfig.options.strict },
+					{ key: "noImplicitAny", value: parsedConfig.options.noImplicitAny },
+					{ key: "noImplicitThis", value: parsedConfig.options.noImplicitThis },
+					{ key: "strictNullChecks", value: parsedConfig.options.strictNullChecks },
+					{ key: "strictFunctionTypes", value: parsedConfig.options.strictFunctionTypes },
+					{ key: "strictBindCallApply", value: parsedConfig.options.strictBindCallApply },
+					{ key: "strictPropertyInitialization", value: parsedConfig.options.strictPropertyInitialization },
+					{ key: "noImplicitReturns", value: parsedConfig.options.noImplicitReturns },
+					{ key: "noFallthroughCasesInSwitch", value: parsedConfig.options.noFallthroughCasesInSwitch },
+				];
+
+				for (const setting of strictSettings) {
+					if (!setting.value) {
+						issues.push({
+							message: `TypeScript strict mode setting "${setting.key}" is not enabled`,
+							severity: "warning",
+							suggestion: `Enable "${setting.key}" in tsconfig.json for better type safety`,
+							code: "TYPE_SAFE_DISABLED",
+						});
+					}
+				}
+
+				// Check for any type usage in source files
+				let anyTypeCount = 0;
+				for (const sourceFile of program.getSourceFiles()) {
+					if (sourceFile.isDeclarationFile) continue;
+
+					const content = sourceFile.text;
+					const anyMatches = content.match(/:\s*any\b|as\s+any\b/g);
+					if (anyMatches) {
+						anyTypeCount += anyMatches.length;
+					}
+				}
+
+				if (anyTypeCount > 0) {
+					issues.push({
+						message: `Found ${anyTypeCount} uses of 'any' type`,
+						severity: "warning",
+						suggestion: "Replace 'any' with specific types for better type safety",
+						code: "TYPE_SAFE_ANY_USAGE",
+					});
+				}
+
 				// Get diagnostics
 				const diagnostics = [
 					...program.getSemanticDiagnostics(),

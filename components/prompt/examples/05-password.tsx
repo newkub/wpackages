@@ -1,9 +1,13 @@
-import React from "react";
-import { PasswordPrompt, prompt } from "../src";
+import { prompt } from "../src/context";
+import { password } from "../src/index";
 
 async function main() {
-	await prompt(PasswordPrompt, { message: "Enter your password:" }, "");
+	const result = await prompt(password({ message: "Enter your password:" }));
+	if (typeof result === "symbol") {
+		console.log("Prompt cancelled.");
+		return;
+	}
 	console.log("Password received.");
 }
 
-main();
+main().catch(console.error);

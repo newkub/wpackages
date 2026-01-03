@@ -5,6 +5,9 @@ const getAllCommandNames = (commands: ReadonlyArray<Command>): string[] => {
 	const names: string[] = [];
 	for (const cmd of commands) {
 		names.push(cmd.name);
+		if (cmd.aliases) {
+			names.push(...cmd.aliases);
+		}
 		if (cmd.subCommands) {
 			names.push(...getAllCommandNames(cmd.subCommands as Command[]));
 		}
@@ -43,7 +46,9 @@ export const parseArguments = (
 		if (currentArg.startsWith("-")) {
 			break; // Stop parsing commands when options start
 		}
-		const foundCommand = commands.find(c => c.name === currentArg);
+		const foundCommand = commands.find(
+			c => c.name === currentArg || (c.aliases && c.aliases.includes(currentArg)),
+		);
 
 		if (foundCommand) {
 			command = foundCommand;

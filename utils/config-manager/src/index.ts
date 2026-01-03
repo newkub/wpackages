@@ -1,7 +1,6 @@
+// Explicitly export the function causing issues
+export { createConfigManager } from "./services/config-manager.service";
+
+// Re-export other necessary modules
 export * from "./app";
-export * from "./components";
-export * from "./config";
-export * from "./constant";
-export * from "./services";
 export * from "./types";
-export * from "./utils";

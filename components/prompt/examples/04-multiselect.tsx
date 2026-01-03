@@ -1,19 +1,23 @@
-import React from "react";
-import { MultiSelectPrompt, prompt } from "../src";
+import { prompt } from "../src/context";
+import { multiselect } from "../src/index";
 
 async function main() {
 	const features = await prompt(
-		MultiSelectPrompt,
-		{
+		multiselect({
 			message: "Select features to improve:",
 			options: [
 				{ value: "theming", label: "Theming" },
 				{ value: "performance", label: "Performance" },
 			],
-		},
-		[],
+		}),
 	);
-	console.log(`You selected: ${features.join(", ")}`);
+	if (typeof features === "symbol") {
+		console.log("Prompt cancelled.");
+		return;
+	}
+	if (Array.isArray(features)) {
+		console.log(`You selected: ${features.join(", ")}`);
+	}
 }
 
-main();
+main().catch(console.error);

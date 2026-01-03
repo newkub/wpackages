@@ -1,9 +1,13 @@
-import React from "react";
-import { prompt, SliderPrompt } from "../src";
+import { prompt } from "../src/context";
+import { slider } from "../src/index";
 
 async function main() {
-	const value = await prompt(SliderPrompt, { message: "Select a value:" }, 50);
-	console.log(`Value: ${value}`);
+	const value = await prompt(slider({ message: "Select a value:" }));
+	if (typeof value === "symbol") {
+		console.log("Prompt cancelled.");
+		return;
+	}
+	console.log(`Value: ${String(value)}`);
 }
 
-main();
+main().catch(console.error);

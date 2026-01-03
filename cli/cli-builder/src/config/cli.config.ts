@@ -20,7 +20,7 @@ export const config: CliConfig = {
 				},
 			],
 			action: (args: Record<string, any>) => {
-				Effect.runPromise(Console.log(`Hello, ${args.name}!`));
+				Effect.runPromise(Console.log(`Hello, ${args.name}!`)).catch(console.error);
 			},
 			before: () => Effect.runPromise(Console.log("Running Command-Specific Before Hook for hello...")),
 			after: () => Effect.runPromise(Console.log("Running Command-Specific After Hook for hello...")),
@@ -41,7 +41,7 @@ export const config: CliConfig = {
 								{ name: "--url", required: true },
 							],
 							action: (args: { name: string; url: string }) => {
-								Effect.runPromise(Console.log(`Adding remote ${args.name} with url ${args.url}`));
+								Effect.runPromise(Console.log(`Adding remote ${args.name} with url ${args.url}`)).catch(console.error);
 							},
 						},
 					],

@@ -16,6 +16,7 @@
 		"example": "bun run examples/basic.tsx",
 		"example:autocomplete": "bun run examples/autocomplete.tsx",
 		"showcase": "bun run examples/showcase.tsx",
+		"example:group": "bun run src/examples/group.tsx",
 		"test": "vitest --run",
 		"format": "dprint fmt",
 		"verify": "bun format && bun lint && bun test && bun audit && bun build"

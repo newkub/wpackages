@@ -36,6 +36,7 @@ vi.mock("@clack/prompts", () => ({
 describe("syncToLocal", () => {
 	beforeEach(() => {
 		vi.resetAllMocks();
+		vi.spyOn(process, "exit").mockImplementation((() => {}) as (code?: number) => never);
 	});
 
 	it("should sync files in copy mode", async () => {
@@ -46,11 +47,20 @@ describe("syncToLocal", () => {
 		};
 		(ConfigService.load as vi.Mock).mockResolvedValue(mockConfig as any);
 		(fs.existsSync as vi.Mock).mockReturnValue(true);
-		(fs.readFileSync as vi.Mock).mockReturnValue("Hello {{user}}");
-		(TemplateService.render as vi.Mock).mockReturnValue("Hello test");
+		(fs.readFileSync as vi.Mock).mockReturnValue("Hello <%= it.user %>");
+		(TemplateService.render as vi.Mock).mockImplementation((content, data) => {
+			if (data.user === "test") {
+				return "Hello test";
+			}
+			return "";
+		});
 
 		await syncToLocal({});
 
+		expect(TemplateService.render).toHaveBeenCalledWith(
+			"Hello <%= it.user %>",
+			{ user: "test" },
+		);
 		expect(fs.writeFileSync).toHaveBeenCalledWith("/home/user/.bashrc", "Hello test");
 	});
 

@@ -1,181 +1,77 @@
-# caching
+# @wpackages/cache
 
-A comprehensive functional caching library for TypeScript applications with memoization, TTL, LRU eviction, and lazy evaluation.
+## Introduction
+
+`@wpackages/cache` is a comprehensive, functional caching library for TypeScript applications. It provides a rich set of tools for improving performance, including memoization, time-to-live (TTL) expiration, Least Recently Used (LRU) eviction policies, and lazy evaluation, all wrapped in a type-safe, functional API.
 
 ## Features
 
-- **Functional Design**: Built with pure functions and immutable data structures
-- **Memoization**: Automatic caching of function results
-- **TTL Support**: Time-to-live expiration for cache entries
-- **LRU Eviction**: Least Recently Used entry removal
-- **Lazy Evaluation**: Deferred computation with caching
-- **Result Types**: Integration with functional Result types
-- **Type Safety**: Full TypeScript support with comprehensive type definitions
+-   🧠 **Memoization**: Automatically cache the results of expensive function calls.
+-   ⏱️ **TTL Support**: Set time-to-live expirations for cache entries to manage data freshness.
+-   🗑️ **LRU Eviction**: Automatically remove the least recently used entries when the cache reaches its maximum size.
+-   😴 **Lazy Evaluation**: Defer expensive computations until their results are actually needed, with the result being cached for subsequent access.
+-   🧩 **Functional Design**: Built with pure functions and immutable data structures for predictable and testable code.
+-   🔒 **Type-Safe**: Full TypeScript support ensures that all cache interactions are type-safe.
+
+## Goal
+
+-   🎯 **High Performance**: To provide a suite of powerful tools for optimizing application performance by reducing redundant computations.
+-   🧑‍💻 **Excellent DX**: To offer a simple, intuitive, and functional API for common caching patterns.
+-   💪 **Robust and Reliable**: To create a caching solution that is predictable, well-tested, and easy to reason about.
+
+## Design Principles
+
+-   **Purity**: The core logic is implemented with pure functions, making it easy to test and compose.
+-   **Immutability**: The library is designed to work with immutable data, avoiding unexpected side effects.
+-   **Composability**: Caching utilities are designed to be easily composed with other functional constructs.
 
 ## Installation
 
+This is a workspace package. Ensure you have installed dependencies from the monorepo root:
+
 ```bash
-bun add caching
+bun install
 ```
 
 ## Usage
 
-### Basic Cache
+The library offers several high-level utilities for different caching strategies.
+
+### Example: Basic Caching
+
+Create a cache instance with a specific configuration.
 
 ```typescript
-import { createCache } from "caching";
+import { createCache } from "@wpackages/cache";
 
 const cache = createCache<string, number>({
-	maxSize: 100,
-	ttl: 5000,
-	lru: true,
+	maxSize: 100, // Max 100 items
+	ttl: 5 * 60 * 1000, // 5-minute TTL
+	lru: true, // Enable LRU eviction
 });
 
-cache.set("key", 42);
-const value = cache.get("key"); // 42
+cache.set("my-key", 123);
+const value = cache.get("my-key"); // Returns 123
 ```
 
-### Memoization
+### Example: Memoization
+
+Automatically cache the return values of a function.
 
 ```typescript
-import { memoize } from "caching";
+import { memoize } from "@wpackages/cache";
 
-const expensiveFunction = (x: number, y: number) => {
-	// Expensive computation
-	return x * y;
+const expensiveCalculation = (x: number, y: number) => {
+	console.log("Performing calculation...");
+	return x + y;
 };
 
-const memoizedFunction = memoize(expensiveFunction, { maxSize: 10 });
+const memoizedCalc = memoize(expensiveCalculation, { maxSize: 10 });
 
-// First call computes and caches the result
-const result1 = memoizedFunction(5, 3);
-
-// Second call returns cached result
-const result2 = memoizedFunction(5, 3);
-```
-
-### Lazy Evaluation
-
-```typescript
-import { lazy } from "caching";
-
-const expensiveComputation = () => {
-	// Expensive operation
-	return "computed result";
-};
-
-const lazyValue = lazy(expensiveComputation, { maxSize: 1 });
-
-// Computation happens only on first access
-const result = lazyValue.get();
-```
-
-## Advanced Features
-
-### Auto Key Cache
-
-```typescript
-import { createAutoKeyCache } from "caching";
-
-const autoKeyCachedFunction = createAutoKeyCache(expensiveFunction);
-```
-
-### TTL Cache
-
-```typescript
-import { createTTLCache } from "caching";
-
-const ttlCachedFunction = createTTLCache(
-	expensiveFunction,
-	(result) => result * 1000, // TTL based on result
-);
-```
-
-### Retry Cache
-
-```typescript
-import { createRetryCache } from "caching";
-
-const retryCachedFunction = createRetryCache(unreliableFunction, 3);
-```
-
-### Cache Service
-
-```typescript
-import { CacheService } from "caching";
-
-const cacheService = new CacheService<string, number>();
-const result = cacheService.get("key");
-```
-
-## API
-
-### Core Types
-
-- `Cache<K, V>`: Main cache interface
-- `CacheEntry<T>`: Cache entry with metadata
-- `CacheConfig`: Configuration options
-- `CacheStats`: Cache statistics
-
-### Core Functions
-
-- `createCache<K, V>(config?)`: Create a new cache instance
-
-### Utilities
-
-- `memoize(fn, config?)`: Memoize a function
-- `memoizeAsync(fn, config?)`: Memoize an async function
-- `memoizeWith(fn, keyFn, config?)`: Memoize with custom key function
-- `memoizeWeak(fn)`: Memoize with WeakMap for object arguments
-- `lazy(computation, config?)`: Create a lazy value with caching
-- `asyncLazy(computation, config?)`: Create an async lazy value with caching
-- `createAutoKeyCache(fn, config?)`: Create cache with automatic key generation
-- `createTTLCache(fn, ttlFn, config?)`: Create cache with result-based TTL
-- `createRetryCache(fn, maxRetries, config?)`: Create cache with retry mechanism
-
-### Services
-
-- `CacheService<K, V>`: Service class with Result-based API
-
-### Lib Wrappers
-
-- `createLocalStorageCache<T>(key)`: localStorage wrapper
-- `createSessionStorageCache<T>(key)`: sessionStorage wrapper
-
-## Configuration
-
-```typescript
-interface CacheConfig {
-	maxSize?: number; // Maximum cache size (default: Infinity)
-	ttl?: number; // Time to live in ms (default: 0 - no expiration)
-	lru?: boolean; // Use LRU eviction (default: false - FIFO)
-}
-```
-
-## Examples
-
-See the usage examples in the test files for comprehensive usage patterns.
-
-## Testing
-
-```bash
-# Run tests
-bun test
-
-# Run tests with coverage
-bun run test:coverage
-```
-
-## Building
-
-```bash
-# Build the library
-bun run build
-
-# Development mode with watch
-bun run dev
+memoizedCalc(2, 3); // "Performing calculation..." is logged
+memoizedCalc(2, 3); // The result is returned from cache; no log
 ```
 
 ## License
 
-MIT
+This project is licensed under the MIT License.

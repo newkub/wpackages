@@ -4,6 +4,8 @@ import * as findUp from "find-up";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { loadCliConfig } from "./config.service";
 
+vi.spyOn(globalThis, "Bun", "get").mockReturnValue({ file: vi.fn() } as any);
+
 // Mock dependencies
 vi.mock("@wpackages/config-manager", () => ({
 	loadConfig: vi.fn(),

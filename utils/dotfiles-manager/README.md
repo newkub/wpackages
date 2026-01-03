@@ -1,52 +1,58 @@
-# wdotfiles
+# @wpackages/dotfiles-manager
 
-A simple dotfiles manager inspired by chezmoi, but easier to use.
+## Introduction
+
+`@wpackages/dotfiles-manager` is a simple, modern, and interactive dotfiles manager inspired by `chezmoi`. It provides an easy-to-use command-line interface, powered by `@clack/prompts`, to help you manage, track, and synchronize your configuration files (dotfiles) across multiple machines.
 
 ## Features
 
-| Feature                | Description                                             |
-| ---------------------- | ------------------------------------------------------- |
-| 🎯 **Easy to Use**     | Simple CLI with beautiful clack prompts                 |
-| 📦 **File Management** | Add/remove configuration files easily                   |
-| 🔄 **Sync**            | Synchronize files between local and remote repositories |
-| ✨ **Type-safe**       | Zod schemas for validation and type safety              |
-| 🎨 **Modern UI**       | Beautiful terminal UI with picocolors                   |
+-   ✨ **Interactive CLI**: A beautiful and intuitive user interface for all commands.
+-   📦 **Simple File Management**: Easily `add` and `remove` configuration files to be tracked.
+-   🔄 **Synchronization**: Supports two-way synchronization: apply tracked files to your local system (`sync-local`) and push changes to a remote Git repository (`sync-remote`).
+-   🔒 **Type-Safe**: Uses `Zod` for validating the configuration file, ensuring its integrity.
+-   🎨 **Modern UI**: A clean and colorful terminal experience using `picocolors`.
+
+## Goal
+
+-   🎯 **Simplicity**: To offer a simpler, more user-friendly alternative to powerful but complex tools like `chezmoi`.
+-   🧑‍💻 **Great DX**: To provide a delightful and intuitive experience for managing dotfiles.
+-   ✅ **Reliability**: To be a reliable tool for keeping your development environment consistent across different machines.
+
+## Design Principles
+
+-   **Interactive First**: The primary interface is an interactive prompt, making the tool accessible and easy to learn.
+-   **Single Config File**: All state is managed in a single JSON file (`~/.dotfile-manager.json`), making it easy to inspect and edit.
+-   **Convention over Configuration**: Makes sensible assumptions about your setup (e.g., storing dotfiles in `~/.dotfiles`) to minimize configuration.
 
 ## Installation
 
-Install the CLI globally using your preferred package manager:
-
-| Package Manager | Command                          |
-| --------------- | -------------------------------- |
-| `bun`           | `bun add -g dotfile-manager`     |
-| `npm`           | `npm install -g dotfile-manager` |
-| `pnpm`          | `pnpm add -g dotfile-manager`    |
-
-## Commands
+This is an internal workspace package. Ensure you have installed dependencies from the monorepo root:
 
 ```bash
-$ wdotfiles --help
-Usage: wdotfiles [options] [command]
-
-Simple dotfiles manager
-
-Options:
-  -V, --version  output the version number
-  -h, --help     display help for command
-
-Commands:
-  init           Initialize dotfiles manager
-  add <file>     Add file to dotfiles
-  remove <file>  Remove file from dotfiles
-  sync-local     Sync dotfiles to local system
-  sync-remote    Sync dotfiles to remote repository
-  open           List managed dotfiles
-  help [command] display help for command
+bun install
 ```
 
-## Configuration
+## Usage
 
-Configuration file is stored at `~/.dotfile-manager.json`
+The tool is run via the `wdotfiles` command.
+
+```bash
+# Run from the monorepo root
+bun wdotfiles
+```
+
+### Commands
+
+-   `init`: Initialize the dotfiles manager and create the configuration file.
+-   `add <file>`: Add a file to be tracked.
+-   `remove <file>`: Stop tracking a file.
+-   `sync-local`: Apply changes from your dotfiles directory to your local system.
+-   `sync-remote`: Push changes to your remote Git repository.
+-   `open`: List all currently managed dotfiles.
+
+### Configuration File
+
+The configuration and state are stored in `~/.dotfile-manager.json`.
 
 ```json
 {

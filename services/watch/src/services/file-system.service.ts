@@ -1,4 +1,5 @@
-import * as chokidar from "chokidar";
+import type { WatchOptions } from "chokidar";
+import chokidar from "chokidar";
 import { Chunk, Effect, Option, Stream } from "effect";
 
 export type WatchEvent =
@@ -8,11 +9,15 @@ export type WatchEvent =
 	| { type: "unlink"; path: string }
 	| { type: "unlinkDir"; path: string };
 
-export const watch = (path: string): Stream.Stream<WatchEvent, Error> =>
+export const watch = (
+	path: string,
+			options?: WatchOptions,
+): Stream.Stream<WatchEvent, Error> =>
 	Stream.async<WatchEvent, Error>((emit) => {
 		const watcher = chokidar.watch(path, {
 			persistent: true,
 			ignoreInitial: true,
+			...options,
 		});
 
 		watcher

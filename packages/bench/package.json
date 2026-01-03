@@ -21,7 +21,10 @@
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
-	"files": ["dist", "README.md"],
+	"files": [
+		"dist",
+		"README.md"
+	],
 	"scripts": {
 		"watch": "bun lint && bun --watch src/bin/cli.ts && bun test",
 		"start": "bun --watch src/bin/cli.ts && bun run test:ui",

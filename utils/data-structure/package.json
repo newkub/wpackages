@@ -9,12 +9,16 @@
 		".": "./dist/index.mjs",
 		"./package.json": "./package.json"
 	},
-	"files": ["dist", "src"],
+	"files": [
+		"dist",
+		"src"
+	],
 	"scripts": {
 		"dev": "tsdown --watch",
 		"build": "tsdown --exports --dts --minify",
 		"test": "vitest run",
 		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage",
 		"typecheck": "tsc --noEmit",
 		"lint": "oxlint --fix --type-aware"
 	},

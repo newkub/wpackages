@@ -1,73 +1,50 @@
-import { Effect } from "@wpackages/functional";
-import { afterEach, describe, expect, test, vi } from "vitest";
-import { Console, ConsoleLive, log, logSpan } from "./index";
+import { Console, Effect, Layer } from "effect";
+import { describe, expect, it } from "vitest";
+import { JsonLoggerLive, PrettyLoggerLive } from ".";
 
-describe("@wts/console", () => {
-	afterEach(() => {
-		vi.restoreAllMocks();
+// Mock Console Service to capture output
+const makeTestConsole = (messages: string[]) =>
+	Console.make({
+		log: (...args) => Effect.sync(() => messages.push(args.join(" "))),
+		error: (...args) => Effect.sync(() => messages.push(args.join(" "))),
+		warn: (...args) => Effect.sync(() => messages.push(args.join(" "))),
+		info: (...args) => Effect.sync(() => messages.push(args.join(" "))),
+		debug: (...args) => Effect.sync(() => messages.push(args.join(" "))),
 	});
 
-	test("ConsoleLive should call underlying console methods with primitives", async () => {
-		const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-		const infoSpy = vi.spyOn(console, "info").mockImplementation(() => {});
-		const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-		const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
+describe("Logger Layers", () => {
+	it("PrettyLoggerLive should be configurable and filter logs below minLevel", async () => {
+		const messages: string[] = [];
+		const TestConsoleLive = Layer.succeed(Console.Console, makeTestConsole(messages));
 
-		const program = Effect.gen(function*() {
-			const svc = yield Effect.get(Console);
-			yield svc.log("l");
-			yield svc.info("i");
-			yield svc.warn("w");
-			yield svc.error("e");
-			yield svc.debug("d");
-			yield svc.fatal("f");
+		const program = Effect.gen(function*($) {
+			yield* $(Effect.logDebug("this is a debug message"));
+			yield* $(Effect.logInfo("this is an info message"));
 		});
 
-		await Effect.runPromise(Effect.provideLayer(program, ConsoleLive));
+		const loggerLayer = PrettyLoggerLive({ minLevel: "Info" });
 
-		expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("[LOG] l"));
-		expect(infoSpy).toHaveBeenCalledWith(expect.stringContaining("[INFO] i"));
-		expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("[WARN] w"));
-		expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("[ERROR] e"));
-		expect(debugSpy).toHaveBeenCalledWith(expect.stringContaining("[DEBUG] d"));
-		expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("[FATAL] f"));
+		const runnable = program.pipe(Effect.provide(loggerLayer.pipe(Layer.provide(TestConsoleLive))));
+
+		await Effect.runPromise(runnable);
+
+		expect(messages.some((m) => m.includes("this is a debug message"))).toBe(false);
+		expect(messages.some((m) => m.includes("this is an info message"))).toBe(true);
 	});
 
-	test("ConsoleLive should call underlying console methods with objects", async () => {
-		const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+	it("JsonLoggerLive should output logs in JSON format", async () => {
+		const messages: string[] = [];
+		const TestConsoleLive = Layer.succeed(Console.Console, makeTestConsole(messages));
 
-		const program = log({ a: 1 });
+		const program = Effect.logWarning("this is a warning");
 
-		await Effect.runPromise(Effect.provideLayer(program, ConsoleLive));
+		const runnable = program.pipe(Effect.provide(JsonLoggerLive.pipe(Layer.provide(TestConsoleLive))));
 
-		expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("[LOG]"), { a: 1 });
-	});
+		await Effect.runPromise(runnable);
 
-	test("withContext should add context to log messages", async () => {
-		const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-
-		const program = Effect.gen(function*() {
-			const svc = yield Effect.get(Console);
-			const scopedSvc = svc.withContext("Auth");
-			yield scopedSvc.log("User login");
-		});
-
-		await Effect.runPromise(Effect.provideLayer(program, ConsoleLive));
-
-		expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("[LOG] [Auth] User login"));
-	});
-
-	test("logSpan should provide a scoped logger", async () => {
-		const infoSpy = vi.spyOn(console, "info").mockImplementation(() => {});
-
-		const program = Effect.gen(function*() {
-			const scopedSvc = yield logSpan("Payment");
-			yield scopedSvc.info("Processing payment");
-		});
-
-		await Effect.runPromise(Effect.provideLayer(program, ConsoleLive));
-
-		expect(infoSpy).toHaveBeenCalledWith(expect.stringContaining("[INFO] [Payment] Processing payment"));
+		expect(messages.length).toBe(1);
+		const log = JSON.parse(messages[0]);
+		expect(log.message).toBe("this is a warning");
+		expect(log.logLevel).toBe("Warning");
 	});
 });

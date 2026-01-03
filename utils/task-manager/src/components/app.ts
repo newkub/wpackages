@@ -1,7 +1,7 @@
 import { Effect, Option, Ref } from "effect";
 import { MESSAGES } from "../constant";
 import { pc } from "../lib";
-import { AppState, type Key, Terminal } from "../services";
+import { AppState, type Key, TaskRunnerService, Terminal } from "../services";
 import type { TaskSource } from "../types";
 import { runFzf } from "./fzf";
 
@@ -71,10 +71,9 @@ export const runApp = (taskSources: TaskSource[]) =>
 			const selectedTask = yield* runFzf(currentTasks);
 
 			if (Option.isSome(selectedTask)) {
-				// Handle selected task
-				yield* terminal.clearScreen;
-				yield* Effect.log(`Running task: ${selectedTask.value.name}`);
-				// Here you would execute the task command
+				const taskRunner = yield* TaskRunnerService;
+				yield* terminal.cleanup;
+				yield* taskRunner.runTask(selectedTask.value);
 				return;
 			} else {
 				// Handle escape, check for tab switch keys

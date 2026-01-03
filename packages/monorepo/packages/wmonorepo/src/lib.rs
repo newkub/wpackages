@@ -142,6 +142,27 @@ pub async fn run_app() -> AppResult<()> {
                 }
             }
         }
+        Commands::Init => {
+            const CONFIG_FILE: &str = "wmo.config.json";
+            if std::path::Path::new(CONFIG_FILE).exists() {
+                println!("'{}' already exists.", CONFIG_FILE);
+            } else {
+                let default_config = serde_json::json!({
+                    "workspaces": [
+                        "apps/*",
+                        "packages/*"
+                    ],
+                    "pipeline": {
+                        "build": {
+                            "outputs": ["dist/**"]
+                        }
+                    }
+                });
+                let content = serde_json::to_string_pretty(&default_config)?;
+                std::fs::write(CONFIG_FILE, content)?;
+                println!("Created a new '{}' file.", CONFIG_FILE);
+            }
+        }
     }
     Ok(())
 }

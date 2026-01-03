@@ -1,1 +1,1 @@
-export * from './withMemoization';
+export * from "./withMemoization";

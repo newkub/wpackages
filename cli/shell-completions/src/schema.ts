@@ -25,7 +25,7 @@ export interface Arg {
 	isOptional?: boolean;
 	isVariadic?: boolean;
 	suggestions?: Suggestion[];
-	// Add generators, templates, etc. later
+	generators?: Generator | Generator[];
 }
 
 export interface CompletionSpec {
@@ -34,4 +34,9 @@ export interface CompletionSpec {
 	subcommands?: Subcommand[];
 	options?: Option[];
 	args?: Arg[];
+	generators?: Generator | Generator[];
+}
+
+export interface Generator {
+	template: "filepaths" | "folders";
 }

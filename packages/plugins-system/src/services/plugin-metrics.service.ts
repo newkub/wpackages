@@ -11,24 +11,26 @@ export interface MetricsCollector {
 	readonly clear: () => void;
 }
 
+const calculateAverage = <T>(items: readonly T[], accessor: (item: T) => number): number => {
+	const total = items.reduce((sum, item) => sum + accessor(item), 0);
+	return items.length > 0 ? total / items.length : 0;
+};
+
 export const createMetricsCollector = (): MetricsCollector => {
 	const metrics = new Map<string, PluginMetrics>();
 	const enabledTimestamps = new Map<string, Date>();
 
 	const recordLoad = (pluginId: string, duration: number): void => {
 		const current = metrics.get(pluginId);
-		const metric: PluginMetrics = {
-			callCount: (current?.callCount ?? 0) + 1,
+		metrics.set(pluginId, {
+			...current,
+			pluginId,
+			loadTime: duration,
+			initTime: current?.initTime ?? 0,
 			enabledDuration: current?.enabledDuration ?? 0,
 			errorCount: current?.errorCount ?? 0,
-			initTime: current?.initTime ?? 0,
-			loadTime: duration,
-			pluginId,
-		};
-		if (current?.lastError) {
-			(metric as { lastError: Date }).lastError = current.lastError;
-		}
-		metrics.set(pluginId, metric);
+			callCount: (current?.callCount ?? 0) + 1,
+		});
 	};
 
 	const recordInit = (pluginId: string, duration: number): void => {
@@ -69,26 +71,21 @@ export const createMetricsCollector = (): MetricsCollector => {
 	};
 
 	const getAllMetrics = (): readonly PluginMetrics[] => {
-		return Object.freeze(
-			Array.from(metrics.keys()).map((id) => getMetrics(id)!),
-		);
+		const allMetrics = Array.from(metrics.keys())
+			.map(getMetrics)
+			.filter((metric): metric is PluginMetrics => metric !== undefined);
+		return Object.freeze(allMetrics);
 	};
 
 	const getStats = (): PluginPerformanceStats => {
 		const allMetrics = getAllMetrics();
-
 		const totalPlugins = allMetrics.length;
-		const enabledPlugins = Array.from(enabledTimestamps.keys()).length;
-		const errorPlugins = allMetrics.filter((m) => m.errorCount > 0).length;
-
-		const avgLoadTime = allMetrics.reduce((sum, m) => sum + m.loadTime, 0) / totalPlugins || 0;
-		const avgInitTime = allMetrics.reduce((sum, m) => sum + m.initTime, 0) / totalPlugins || 0;
 
 		return Object.freeze({
-			averageInitTime: avgInitTime,
-			averageLoadTime: avgLoadTime,
-			enabledPlugins,
-			errorPlugins,
+			averageInitTime: calculateAverage(allMetrics, (m) => m.initTime),
+			averageLoadTime: calculateAverage(allMetrics, (m) => m.loadTime),
+			enabledPlugins: Array.from(enabledTimestamps.keys()).length,
+			errorPlugins: allMetrics.filter((m) => m.errorCount > 0).length,
 			totalPlugins,
 		});
 	};
@@ -140,22 +137,18 @@ export const analyzeRegistry = (
 	registry: PluginRegistry,
 ): PluginPerformanceStats => {
 	const states = Object.values(registry);
-	const totalPlugins = states.length;
-
-	const totalLoadTime = states.reduce(
-		(sum, s) => sum + (s.metrics?.loadTime ?? 0),
-		0,
-	);
-	const totalInitTime = states.reduce(
-		(sum, s) => sum + (s.metrics?.initTime ?? 0),
-		0,
-	);
 
 	return Object.freeze({
-		averageInitTime: totalPlugins > 0 ? totalInitTime / totalPlugins : 0,
-		averageLoadTime: totalPlugins > 0 ? totalLoadTime / totalPlugins : 0,
+		averageInitTime: calculateAverage(
+			states,
+			(s) => s.metrics?.initTime ?? 0,
+		),
+		averageLoadTime: calculateAverage(
+			states,
+			(s) => s.metrics?.loadTime ?? 0,
+		),
 		enabledPlugins: states.filter((s) => s.status === "enabled").length,
 		errorPlugins: states.filter((s) => s.status === "error").length,
-		totalPlugins,
+		totalPlugins: states.length,
 	});
 };
