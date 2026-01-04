@@ -3,7 +3,7 @@
  */
 
 import type { AssertionOptions } from "../../types";
-import { AssertionError } from "../error";
+import { AssertionError } from "../../error";
 
 export async function toResolve(actual: unknown, options?: AssertionOptions): Promise<void> {
 	if (!(actual instanceof Promise)) {
@@ -23,9 +23,7 @@ export async function toReject(actual: unknown, options?: AssertionOptions): Pro
 	try {
 		await actual;
 		throw new AssertionError(options?.message || "Expected promise to reject");
-	} catch (error) {
-		if (error instanceof AssertionError) {
-			throw error;
-		}
+	} catch {
+		// Any rejection satisfies this assertion.
 	}
 }

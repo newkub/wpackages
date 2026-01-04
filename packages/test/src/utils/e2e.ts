@@ -1,4 +1,4 @@
-import { AssertionError } from "./error";
+import { AssertionError } from "../error";
 
 export interface WaitForElementOptions {
 	timeout?: number;

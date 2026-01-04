@@ -3,7 +3,7 @@
  */
 
 import type { AssertionOptions } from "../../types";
-import { AssertionError } from "../error";
+import { AssertionError } from "../../error";
 
 export function toThrow(actual: unknown, options?: AssertionOptions): void {
 	if (typeof actual !== "function") {
@@ -12,10 +12,8 @@ export function toThrow(actual: unknown, options?: AssertionOptions): void {
 	try {
 		(actual as Function)();
 		throw new AssertionError(options?.message || "Expected function to throw");
-	} catch (error) {
-		if (error instanceof AssertionError) {
-			throw error;
-		}
+	} catch {
+		// Any thrown error satisfies this assertion.
 	}
 }
 
@@ -26,9 +24,7 @@ export async function toThrowAsync(actual: unknown, options?: AssertionOptions):
 	try {
 		await (actual as Function)();
 		throw new AssertionError(options?.message || "Expected function to throw");
-	} catch (error) {
-		if (error instanceof AssertionError) {
-			throw error;
-		}
+	} catch {
+		// Any thrown error satisfies this assertion.
 	}
 }

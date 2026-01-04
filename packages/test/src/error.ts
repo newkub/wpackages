@@ -2,7 +2,7 @@
  * Assertion error and helpers
  */
 
-import { createDiff } from "./diff";
+import { createDiff } from "./utils/diff";
 
 /**
  * Assertion error

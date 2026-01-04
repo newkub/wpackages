@@ -3,7 +3,7 @@
  */
 
 // Core test functions and hooks
-export { afterAll, beforeAll, describe, it, test } from "./core/globals";
+export { afterAll, afterEach, beforeAll, beforeEach, describe, it, test } from "./core/globals";
 
 // Mocking and spying utilities
 export { w } from "./core/w";

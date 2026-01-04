@@ -33,5 +33,12 @@ describe("Example Suite", () => {
 			console.log("    - Nested Test executed");
 			expect("hello").toBe("hello");
 		});
+
+		it("should handle object matching", () => {
+			const user = { id: 1, name: "wtest", details: { admin: true } };
+			expect(user).toMatchObject({ name: "wtest" });
+			expect(user).toMatchObject({ details: { admin: true } });
+			expect(user).not.toMatchObject({ name: "vitest" });
+		});
 	});
 });

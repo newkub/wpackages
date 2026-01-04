@@ -1,4 +1,4 @@
-import type { TestCase, TestSuite } from "./types";
+import type { TestSuite } from "../types";
 
 const testSuites: TestSuite[] = [];
 

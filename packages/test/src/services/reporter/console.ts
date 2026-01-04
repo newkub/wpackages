@@ -1,4 +1,4 @@
-import type { TestResult } from "./types";
+import type { TestResult } from "../../types";
 
 // Basic color functions for console output
 const red = (str: string) => `\x1b[31m${str}\x1b[0m`;
@@ -10,6 +10,10 @@ export class ConsoleReporter {
 
 	addResult(result: TestResult): void {
 		this.results.push(result);
+	}
+
+	getResults(): TestResult[] {
+		return this.results;
 	}
 
 	printSummary(): void {

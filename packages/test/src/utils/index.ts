@@ -14,7 +14,7 @@ export * from "./assertions/truthiness";
 export * from "./assertions/types";
 
 // Error
-export { AssertionError } from "./error";
+export { AssertionError } from "../error";
 
 // Snapshots
 export { clearSnapshots, getAllSnapshots, getSnapshot, matchSnapshot, storeSnapshot } from "./snapshot";
