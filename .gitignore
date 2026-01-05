@@ -147,3 +147,4 @@ templates/*/.env
 
 
 .qoder
+.wtest-coverage

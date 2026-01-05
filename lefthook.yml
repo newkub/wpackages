@@ -9,6 +9,8 @@ pre-push:
   jobs:
     - name: build
       run: bun run build
+    - name: lint-docs
+      run: turbo run lint --filter=docs-wrikka-com
 
 pre-rebase:
   jobs:
