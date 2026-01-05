@@ -10,9 +10,10 @@ import {
 } from "./components/index";
 import { createBenchmarkConfig } from "./config/index";
 import { calculateStats, compareResults } from "./lib/benchmark";
-import { runCommand, type RunResult } from "./lib/runner";
+import { type CommandInput, formatCommandInput, runCommandInput, type RunResult } from "./lib/runner";
 import { ConsoleService } from "./services/index";
 import type { PluginManager } from "./services/plugin.service";
+import { generateReport } from "./services/report";
 import type { BenchmarkOptions, BenchmarkResult, ComparisonResult } from "./types/index";
 
 const handleOutput = async (
@@ -66,6 +67,10 @@ const handleOutput = async (
 
 		await Bun.write(filePath, outputContent);
 		await ConsoleService.success(`\n✓ Results exported to ${filePath}`);
+	}
+
+	if (options.htmlReport) {
+		await generateReport(result, options.htmlReport);
 	}
 };
 
@@ -124,17 +129,19 @@ export const runBenchmark = async (
 };
 
 export const runAbBenchmark = async (
-	commands: [string, string],
+	commands: [CommandInput, CommandInput],
 	partialOptions: Partial<BenchmarkOptions> = {},
 	pluginManager: PluginManager,
 ): Promise<ComparisonResult> => {
 	const options = createBenchmarkConfig(partialOptions);
 	const [commandA, commandB] = commands;
+	const commandALabel = formatCommandInput(commandA);
+	const commandBLabel = formatCommandInput(commandB);
 
 	if (!options.silent) {
 		await ConsoleService.log(`🔥 A/B Benchmarking:`);
-		await ConsoleService.log(`  A: ${commandA}`);
-		await ConsoleService.log(`  B: ${commandB}\n`);
+		await ConsoleService.log(`  A: ${commandALabel}`);
+		await ConsoleService.log(`  B: ${commandBLabel}\n`);
 	}
 
 	if (options.warmup && options.warmup > 0) {
@@ -142,8 +149,8 @@ export const runAbBenchmark = async (
 			await ConsoleService.log(`Running ${options.warmup} warmup iterations (interleaved)...`);
 		}
 		for (let i = 0; i < options.warmup; i++) {
-			await executeBenchmark(commandA, { ...options, runs: 1, warmup: 0, silent: true });
-			await executeBenchmark(commandB, { ...options, runs: 1, warmup: 0, silent: true });
+			await runCommandInput(commandA, options.shell ?? "bash");
+			await runCommandInput(commandB, options.shell ?? "bash");
 		}
 	}
 
@@ -155,12 +162,12 @@ export const runAbBenchmark = async (
 
 	for (let i = 0; i < totalRuns; i++) {
 		try {
-			resultsA.push(await runCommand(commandA, options.shell ?? "bash"));
+			resultsA.push(await runCommandInput(commandA, options.shell ?? "bash"));
 		} catch {
 			errorCountA++;
 		}
 		try {
-			resultsB.push(await runCommand(commandB, options.shell ?? "bash"));
+			resultsB.push(await runCommandInput(commandB, options.shell ?? "bash"));
 		} catch {
 			errorCountB++;
 		}
@@ -178,8 +185,8 @@ export const runAbBenchmark = async (
 		return stats;
 	};
 
-	const finalResultA = createFinalResult(commandA, resultsA, errorCountA);
-	const finalResultB = createFinalResult(commandB, resultsB, errorCountB);
+	const finalResultA = createFinalResult(commandALabel, resultsA, errorCountA);
+	const finalResultB = createFinalResult(commandBLabel, resultsB, errorCountB);
 
 	const comparison = compareResults([finalResultA, finalResultB]);
 	await pluginManager.runHook("onComparisonComplete", comparison);

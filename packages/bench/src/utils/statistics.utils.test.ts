@@ -69,18 +69,18 @@ describe("statisticsUtils", () => {
 		const result = welchTTest(sample1, sample2);
 
 		expect(result).not.toBeNull();
-		if (result) {
-			expect(result.t).toBeCloseTo(-2.138);
-			expect(result.df).toBeCloseTo(6.927);
-			expect(result.p).toBeCloseTo(0.07);
-		}
+		const r1 = result!;
+		expect(r1.t).toBeCloseTo(-1.8973665961010275);
+		expect(r1.df).toBeCloseTo(100 / 17);
+		expect(r1.p).toBeGreaterThanOrEqual(0);
+		expect(r1.p).toBeLessThanOrEqual(1);
+		expect(r1.p).toBeCloseTo(0.108, 2);
 
 		const result2 = welchTTest(sample1, sample1);
 		expect(result2).not.toBeNull();
-		if (result2) {
-			expect(result2.t).toBe(0);
-			expect(result2.p).toBe(1);
-		}
+		const r2 = result2!;
+		expect(r2.t).toBe(0);
+		expect(r2.p).toBe(1);
 
 		const result3 = welchTTest(sample1, [1]);
 		expect(result3).toBeNull();

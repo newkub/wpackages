@@ -51,6 +51,11 @@ export const formatComparisonResult = (
 	return formatter(comparison);
 };
 
+// Backward compatible aliases
+export const formatComparison = formatComparisonCli;
+export const formatBenchmarkResult = formatBenchmarkResultCli;
+export const formatJson = (data: unknown): string => formatJSON(data, true);
+
 /**
  * Format benchmark result (bench-lib version)
  */

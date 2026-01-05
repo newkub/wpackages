@@ -38,8 +38,7 @@ export class PluginManager {
 			const hook = plugin[hookName];
 			if (typeof hook === "function") {
 				try {
-					// @ts-expect-error - TS can't infer the type of `args` here correctly
-					await hook(...args);
+					await (hook as (...args: any[]) => void | Promise<void>)(...args);
 				} catch (error) {
 					if (error instanceof Error) {
 						await ConsoleService.error(`Error in plugin '${plugin.name}' during hook '${hookName}': ${error.message}`);

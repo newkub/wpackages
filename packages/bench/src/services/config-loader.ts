@@ -37,9 +37,9 @@ export const loadConfig = async (configPath?: string): Promise<Partial<BenchConf
 
 		if (!result.success) {
 			await ConsoleService.warn(`Warning: Invalid configuration in ${filePath}`);
-			result.issues.forEach(issue => {
-				ConsoleService.warn(`  - ${issue.path.join(".")}: ${issue.message}`);
-			});
+			for (const issue of result.issues) {
+				await ConsoleService.warn(`  - ${issue.path.join(".")}: ${issue.message}`);
+			}
 			return {};
 		}
 

@@ -1,9 +1,17 @@
-import { ProgressBar } from "@wpackages/cli-components";
 import { execa } from "execa";
 import { calculateStats } from "../lib/benchmark";
 import { runCommand, type RunResult } from "../lib/runner";
 import { LiveConsole } from "../services/live-console.service";
 import type { BenchmarkOptions, BenchmarkResult } from "../types/index";
+
+const renderProgressBar = (value: number, max: number, color?: "red"): string => {
+	const width = 30;
+	const ratio = max > 0 ? Math.min(1, Math.max(0, value / max)) : 0;
+	const filled = Math.round(width * ratio);
+	const bar = `${"█".repeat(filled)}${"░".repeat(Math.max(0, width - filled))}`;
+	const prefix = color === "red" ? "✗" : "";
+	return `${prefix}[${bar}] ${value}/${max}`;
+};
 
 /**
  * Execute warmup runs to reduce cold start bias
@@ -70,10 +78,11 @@ export const executeBenchmarkRuns = async (
 
 	const results: RunResult[] = [];
 	let errorCount = 0;
+	let firstError: string | null = null;
 	const parallel = Math.max(1, concurrency);
 
 	for (let i = 0; i < runs; i++) {
-		liveConsole?.render(ProgressBar({ value: i, max: runs, labelPosition: "right" }));
+		liveConsole?.render(renderProgressBar(i, runs));
 		if (prepare) await execa(shell, ["-c", prepare]);
 
 		try {
@@ -84,6 +93,15 @@ export const executeBenchmarkRuns = async (
 			const successfulRuns = settled
 				.filter((r): r is PromiseFulfilledResult<RunResult> => r.status === "fulfilled")
 				.map(r => r.value);
+
+			if (firstError === null) {
+				const firstRejected = settled.find((r): r is PromiseRejectedResult => r.status === "rejected");
+				if (firstRejected) {
+					firstError = firstRejected.reason instanceof Error
+						? firstRejected.reason.message
+						: String(firstRejected.reason);
+				}
+			}
 
 			const batchErrors = settled.length - successfulRuns.length;
 			errorCount += batchErrors;
@@ -98,24 +116,31 @@ export const executeBenchmarkRuns = async (
 				if (verbose) {
 					console.log(`  Run ${i + 1}: failed (${parallel}x)`);
 				}
-				liveConsole?.render(ProgressBar({ value: i + 1, max: runs, labelPosition: "right", color: "red" }));
+				liveConsole?.render(renderProgressBar(i + 1, runs, "red"));
 			}
 		} catch {
 			errorCount += parallel;
+			if (firstError === null) {
+				firstError = "Unexpected error while running benchmark command";
+			}
 			if (verbose) {
 				console.log(`  Run ${i + 1}: failed (${parallel}x)`);
 			}
-			liveConsole?.render(ProgressBar({ value: i + 1, max: runs, labelPosition: "right", color: "red" }));
+			liveConsole?.render(renderProgressBar(i + 1, runs, "red"));
 		} finally {
 			if (cleanup) await execa(shell, ["-c", cleanup]);
 		}
 	}
 
-	liveConsole?.render(ProgressBar({ value: runs, max: runs, labelPosition: "right" }));
+	liveConsole?.render(renderProgressBar(runs, runs));
 	liveConsole?.clear();
 
 	if (results.length === 0) {
-		throw new Error(`All benchmark runs failed (${errorCount}/${runs * concurrency})`);
+		throw new Error(
+			`All benchmark runs failed for '${command}' (${errorCount}/${runs * concurrency})${
+				firstError ? `\n${firstError}` : ""
+			}`,
+		);
 	}
 
 	return {

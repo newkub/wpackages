@@ -188,7 +188,7 @@ const logGamma = (x: number): number => {
 		1.5056327351493116e-7,
 	];
 	if (x < 0.5) {
-		return Math.PI / (Math.sin(Math.PI * x) * Math.exp(logGamma(1 - x)));
+		return Math.log(Math.PI) - Math.log(Math.sin(Math.PI * x)) - logGamma(1 - x);
 	}
 	x -= 1;
 	let a = p[0]!;
@@ -211,23 +211,47 @@ const incompleteBeta = (x: number, a: number, b: number): number => {
 };
 
 const continuedFraction = (x: number, a: number, b: number): number => {
+	// Standard continued fraction for incomplete beta using Lentz's method (Numerical Recipes)
 	const maxIterations = 200;
-	const epsilon = 1e-15;
-	let am = 1, az = 1, qab = a + b, qap = a + 1, qam = a - 1, bz = 1 - qab * x / qap;
+	const eps = 3e-7;
+	const fpmin = 1e-30;
+
+	const qab = a + b;
+	const qap = a + 1;
+	const qam = a - 1;
+
+	let c = 1;
+	let d = 1 - (qab * x) / qap;
+	if (Math.abs(d) < fpmin) d = fpmin;
+	d = 1 / d;
+	let h = d;
 
 	for (let m = 1; m <= maxIterations; m++) {
-		const em = m * (b - m) * x / ((qam + 2 * m) * (a + 2 * m));
-		const d = 1 + em * am;
-		if (Math.abs(d) < epsilon) break;
-		am = 1 / d;
+		const m2 = 2 * m;
 
-		const en = -(a + m) * (qab + m) * x / ((a + 2 * m) * (qap + 2 * m));
-		const dn = 1 + en * az;
-		if (Math.abs(dn) < epsilon) break;
-		az = 1 / dn;
-		bz += en * az;
+		let aa = (m * (b - m) * x) / ((qam + m2) * (a + m2));
+		d = 1 + aa * d;
+		if (Math.abs(d) < fpmin) d = fpmin;
+		c = 1 + aa / c;
+		if (Math.abs(c) < fpmin) c = fpmin;
+		d = 1 / d;
+		h *= d * c;
+
+		aa = (-(a + m) * (qab + m) * x) / ((a + m2) * (qap + m2));
+		d = 1 + aa * d;
+		if (Math.abs(d) < fpmin) d = fpmin;
+		c = 1 + aa / c;
+		if (Math.abs(c) < fpmin) c = fpmin;
+		d = 1 / d;
+		const del = d * c;
+		h *= del;
+
+		if (Math.abs(del - 1) < eps) {
+			break;
+		}
 	}
-	return bz;
+
+	return h;
 };
 
 const tTestPValue = (t: number, df: number): number => {
@@ -257,7 +281,8 @@ export const welchTTest = (
 	const dfDenominator = ((v1 / n1) ** 2) / (n1 - 1) + ((v2 / n2) ** 2) / (n2 - 1);
 	const df = dfNumerator / dfDenominator;
 
-	const p = tTestPValue(Math.abs(t), df);
+	const pRaw = tTestPValue(Math.abs(t), df);
+	const p = Math.min(1, Math.max(0, pRaw));
 
 	return { t, df, p };
 };

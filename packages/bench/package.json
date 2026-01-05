@@ -5,7 +5,6 @@
 	"bin": {
 		"wbench": "./dist/bin/cli.js"
 	},
-	"packageManager": "bun@1.3.5",
 	"type": "module",
 	"description": "Benchmarking utility for WTS packages with functional programming patterns",
 	"keywords": [
@@ -15,16 +14,14 @@
 		"typescript",
 		"functional"
 	],
-	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
+	"main": "./dist/index.mjs",
+	"types": "./dist/index.d.mts",
 	"exports": {
-		".": "./dist/index.js",
+		".": "./dist/index.mjs",
+		"./bin/cli": "./dist/bin/cli.mjs",
 		"./package.json": "./package.json"
 	},
-	"files": [
-		"dist",
-		"README.md"
-	],
+	"files": ["dist", "README.md"],
 	"scripts": {
 		"watch": "bun lint && bun --watch src/bin/cli.ts && bun test",
 		"start": "bun --watch src/bin/cli.ts && bun run test:ui",
@@ -36,15 +33,19 @@
 		"test": "vitest --run",
 		"test:coverage": "vitest run --coverage",
 		"test:ui": "vitest --ui",
-		"verify": "bun format && bun lint && bun test && bun audit && bun build"
+		"audit": "bun audit",
+		"verify": "bun format && bun lint && bun test && bun run build"
 	},
 	"dependencies": {
 		"@effect/schema": "^0.75.5",
+		"@opentelemetry/api": "^1.9.0",
+		"@opentelemetry/sdk-trace-base": "^1.30.1",
 		"@wpackages/cli-components": "workspace:*",
 		"@wpackages/schema": "workspace:*",
-		"@wpackages/webserver": "workspace:*",
+		"@wpackages/tracing": "workspace:*",
 		"effect": "^3.19.14",
-		"picocolors": "^1.1.1"
+		"picocolors": "^1.1.1",
+		"tinybench": "^2.9.0"
 	},
 	"devDependencies": {
 		"@types/bun": "^1.3.5",
@@ -55,5 +56,5 @@
 		"typescript": "^5.9.3",
 		"vitest": "^4.0.16"
 	},
-	"module": "./dist/index.js"
+	"module": "./dist/index.mjs"
 }
