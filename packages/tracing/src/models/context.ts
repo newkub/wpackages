@@ -1,5 +1,5 @@
-import type { Baggage } from "./baggage";
 import type { Context, Span } from "../types/tracing";
+import type { Baggage } from "./baggage";
 
 class ContextImpl implements Context {
 	private readonly _values: Map<symbol, unknown>;
@@ -27,8 +27,8 @@ class ContextImpl implements Context {
 
 export const ROOT_CONTEXT: Context = new ContextImpl();
 
-const ACTIVE_SPAN_KEY = Symbol.for('wpackages.tracing.active_span');
-const ACTIVE_BAGGAGE_KEY = Symbol.for('wpackages.tracing.active_baggage');
+const ACTIVE_SPAN_KEY = Symbol.for("wpackages.tracing.active_span");
+const ACTIVE_BAGGAGE_KEY = Symbol.for("wpackages.tracing.active_baggage");
 
 export function getSpan(context: Context): Span | undefined {
 	return context.getValue(ACTIVE_SPAN_KEY) as Span | undefined;

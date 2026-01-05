@@ -1,4 +1,4 @@
-import { describe, it, expect } from "@wpackages/test";
+import { describe, expect, it } from "@wpackages/test";
 import { createPlan } from "./plan.service";
 
 describe("createPlan", () => {

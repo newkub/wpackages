@@ -1,2 +1,1 @@
-export * from './utils/resolver';
-
+export * from "./utils/resolver";

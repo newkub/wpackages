@@ -1,5 +1,5 @@
-import { manageLifecycle } from './services/lifecycle.service';
-import type { MapStore, MapListener } from './types';
+import { manageLifecycle } from "./services/lifecycle.service";
+import type { MapListener, MapStore } from "./types";
 
 /**
  * Creates a new map store, a store for an object.

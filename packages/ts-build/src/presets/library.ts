@@ -1,6 +1,6 @@
-import type { BunpackConfig } from '../types';
+import type { BunpackConfig } from "../types";
 
 export const libraryPreset: Partial<BunpackConfig> = {
-  format: ['esm', 'cjs'],
-  dts: true,
+	format: ["esm", "cjs"],
+	dts: true,
 };

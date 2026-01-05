@@ -1,9 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
-import { atom } from '../src';
-import { onMount } from '../src';
+import { describe, expect, it, vi } from "vitest";
+import { atom } from "../src";
+import { onMount } from "../src";
 
-describe('onMount', () => {
-	it('should call onMount when the first listener subscribes', () => {
+describe("onMount", () => {
+	it("should call onMount when the first listener subscribes", () => {
 		const store = atom(0);
 		const mountCallback = vi.fn();
 		onMount(store, mountCallback);
@@ -16,7 +16,7 @@ describe('onMount', () => {
 		unsubscribe();
 	});
 
-	it('should call the returned onUnmount function when the last listener unsubscribes', () => {
+	it("should call the returned onUnmount function when the last listener unsubscribes", () => {
 		const store = atom(0);
 		const unmountCallback = vi.fn();
 		const mountCallback = vi.fn(() => unmountCallback);

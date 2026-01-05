@@ -1,2 +1,1 @@
-export * from './components/sarif-reporter';
-
+export * from "./components/sarif-reporter";

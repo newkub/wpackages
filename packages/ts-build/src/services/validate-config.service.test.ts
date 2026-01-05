@@ -1,4 +1,4 @@
-import { describe, it, expect } from "@wpackages/test";
+import { describe, expect, it } from "@wpackages/test";
 import { validateConfig } from "./validate-config.service";
 
 describe("validateConfig", () => {
@@ -6,7 +6,7 @@ describe("validateConfig", () => {
 		expect(() =>
 			validateConfig({
 				entry: ["src/index.ts"],
-			} as any),
+			} as any)
 		).toThrow();
 	});
 
@@ -15,7 +15,7 @@ describe("validateConfig", () => {
 			validateConfig({
 				entry: ["src/index.ts"],
 				outDir: ".output",
-			} as any),
+			} as any)
 		).not.toThrow();
 	});
 });

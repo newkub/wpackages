@@ -1,9 +1,9 @@
 import type { Span, SpanExporter } from "../types/tracing";
 
-const DEFAULT_UI_URL = 'http://localhost:5555/v1/traces';
+const DEFAULT_UI_URL = "http://localhost:5555/v1/traces";
 
 const uiUrlFromEnv =
-	(typeof process !== 'undefined' && process.env && typeof process.env["WPACKAGES_TRACING_UI_URL"] === 'string')
+	(typeof process !== "undefined" && process.env && typeof process.env["WPACKAGES_TRACING_UI_URL"] === "string")
 		? process.env["WPACKAGES_TRACING_UI_URL"]
 		: undefined;
 
@@ -20,9 +20,9 @@ export class WebUiExporter implements SpanExporter {
 	async export(spans: Span[]): Promise<void> {
 		try {
 			await fetch(this._url, {
-				method: 'POST',
+				method: "POST",
 				headers: {
-					'Content-Type': 'application/json',
+					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(spans),
 			});

@@ -18,64 +18,64 @@ A modern, fast, and opinionated build tool for TypeScript and Rust (N-API) proje
 
 ## Usage
 
-1.  **Install**
+1. **Install**
 
-    ```bash
-    bun add -d @wpackages/ts-build
-    ```
+   ```bash
+   bun add -d @wpackages/ts-build
+   ```
 
-2.  **Configure**
+2. **Configure**
 
-    Create a `bunpack.config.ts` file in your project root for basic configuration:
+   Create a `bunpack.config.ts` file in your project root for basic configuration:
 
-    ```ts
-    // bunpack.config.ts
-    import { defineConfig } from "@wpackages/ts-build"
+   ```ts
+   // bunpack.config.ts
+   import { defineConfig } from "@wpackages/ts-build";
 
-    export default defineConfig({
-      entry: ["src/index.ts"],
-      outDir: "dist",
-      // ... other options
-    })
-    ```
+   export default defineConfig({
+   	entry: ["src/index.ts"],
+   	outDir: "dist",
+   	// ... other options
+   });
+   ```
 
-    **For Rust N-API Projects:**
+   **For Rust N-API Projects:**
 
-    If your project has a `Cargo.toml` file in the root, `native/`, or `rust/` directory, `@wpackages/ts-build` will **automatically detect and build it**—no extra configuration needed!
+   If your project has a `Cargo.toml` file in the root, `native/`, or `rust/` directory, `@wpackages/ts-build` will **automatically detect and build it**—no extra configuration needed!
 
-    If you need to customize the native build, you can add a `native` section to your config:
+   If you need to customize the native build, you can add a `native` section to your config:
 
-    ```ts
-    // bunpack.config.ts
-    export default defineConfig({
-      entry: ["src/index.ts"],
-      outDir: "dist",
-      native: {
-        napi: {
-          // Overrides the auto-detected crate directory
-          crateDir: "my-rust-app", 
-          // Overrides the auto-detected output file name
-          outFile: "my_custom_name",
-          release: true,
-        },
-      },
-    })
-    ```
+   ```ts
+   // bunpack.config.ts
+   export default defineConfig({
+   	entry: ["src/index.ts"],
+   	outDir: "dist",
+   	native: {
+   		napi: {
+   			// Overrides the auto-detected crate directory
+   			crateDir: "my-rust-app",
+   			// Overrides the auto-detected output file name
+   			outFile: "my_custom_name",
+   			release: true,
+   		},
+   	},
+   });
+   ```
 
-3.  **Build**
+3. **Build**
 
-    Add a build script to your `package.json`:
+   Add a build script to your `package.json`:
 
-    ```json
-    {
-      "scripts": {
-        "build": "bunpack"
-      }
-    }
-    ```
+   ```json
+   {
+   	"scripts": {
+   		"build": "bunpack"
+   	}
+   }
+   ```
 
-    And run it:
+   And run it:
 
-    ```bash
-    bun run build
-    ```
+   ```bash
+   bun run build
+   ```

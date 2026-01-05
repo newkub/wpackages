@@ -2,7 +2,7 @@ import { createBaggage } from "../models/baggage";
 import { getBaggage, getSpan, setBaggage, setSpan } from "../models/context";
 import type { Context, TextMapGetter, TextMapPropagator, TextMapSetter } from "../types/tracing";
 
-const TRACE_PARENT_HEADER = 'traceparent';
+const TRACE_PARENT_HEADER = "traceparent";
 const TRACE_PARENT_REGEX = /^([0-9a-f]{2})-([0-9a-f]{32})-([0-9a-f]{16})-([0-9a-f]{2})$/;
 
 export class W3cTraceContextPropagator implements TextMapPropagator {
@@ -16,7 +16,7 @@ export class W3cTraceContextPropagator implements TextMapPropagator {
 
 	extract(context: Context, carrier: unknown, getter: TextMapGetter): Context {
 		const traceParent = getter.get(carrier, TRACE_PARENT_HEADER);
-		if (typeof traceParent !== 'string') return context;
+		if (typeof traceParent !== "string") return context;
 
 		const match = traceParent.match(TRACE_PARENT_REGEX);
 		if (!match) return context;
@@ -28,7 +28,7 @@ export class W3cTraceContextPropagator implements TextMapPropagator {
 	}
 }
 
-const BAGGAGE_HEADER = 'baggage';
+const BAGGAGE_HEADER = "baggage";
 
 export class W3cBaggagePropagator implements TextMapPropagator {
 	inject(context: Context, carrier: unknown, setter: TextMapSetter): void {
@@ -37,7 +37,7 @@ export class W3cBaggagePropagator implements TextMapPropagator {
 
 		const header = baggage.getAllEntries()
 			.map(([key, entry]) => `${encodeURIComponent(key)}=${encodeURIComponent(entry.value)}`)
-			.join(',');
+			.join(",");
 
 		if (header) {
 			setter.set(carrier, BAGGAGE_HEADER, header);
@@ -46,10 +46,10 @@ export class W3cBaggagePropagator implements TextMapPropagator {
 
 	extract(context: Context, carrier: unknown, getter: TextMapGetter): Context {
 		const header = getter.get(carrier, BAGGAGE_HEADER);
-		if (typeof header !== 'string') return context;
+		if (typeof header !== "string") return context;
 
-		const baggage = header.split(',').reduce((bag, part) => {
-			const [key, value] = part.split('=');
+		const baggage = header.split(",").reduce((bag, part) => {
+			const [key, value] = part.split("=");
 			if (key && value) {
 				return bag.setEntry(decodeURIComponent(key.trim()), { value: decodeURIComponent(value.trim()) });
 			}

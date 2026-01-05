@@ -1,4 +1,4 @@
-import type { BaseStore } from '../types';
+import type { BaseStore } from "../types";
 
 const activeStores = new Set<BaseStore>();
 
@@ -13,7 +13,7 @@ export function manageLifecycle(store: BaseStore, listeners: Set<unknown>) {
 		}
 	} else if (listeners.size === 0 && activeStores.has(store)) {
 		activeStores.delete(store);
-		if (typeof store.onUnmount === 'function') {
+		if (typeof store.onUnmount === "function") {
 			store.onUnmount();
 			delete store.onUnmount;
 		}

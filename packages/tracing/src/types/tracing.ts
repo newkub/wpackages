@@ -1,4 +1,3 @@
-
 export type SpanId = string;
 export type TraceId = string;
 

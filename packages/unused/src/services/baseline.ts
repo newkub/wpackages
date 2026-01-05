@@ -1,15 +1,15 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import type { AnalysisResult, PackageAnalysisResult, WorkspaceAnalysisResult } from '../types';
-import type { JsonReport, WorkspaceJsonReport } from '../components/json-reporter';
-import { toJsonReport, toWorkspaceJsonReport } from '../components/json-reporter';
+import fs from "node:fs/promises";
+import path from "node:path";
+import type { JsonReport, WorkspaceJsonReport } from "../components/json-reporter";
+import { toJsonReport, toWorkspaceJsonReport } from "../components/json-reporter";
+import type { AnalysisResult, PackageAnalysisResult, WorkspaceAnalysisResult } from "../types";
 
 type BaselineFile = JsonReport | WorkspaceJsonReport;
 
 type ExportKey = `${string}::${string}`;
 
 type BaselineIndex = {
-	mode: 'single' | 'workspace';
+	mode: "single" | "workspace";
 	unusedFiles: Set<string>;
 	unusedDependencies: Set<string>;
 	unusedExportKeys: Set<ExportKey>;
@@ -17,7 +17,7 @@ type BaselineIndex = {
 };
 
 function isWorkspaceBaseline(baseline: BaselineFile): baseline is WorkspaceJsonReport {
-	return (baseline as WorkspaceJsonReport).mode === 'workspace';
+	return (baseline as WorkspaceJsonReport).mode === "workspace";
 }
 
 function createExportKey(filePath: string, exportName: string): ExportKey {
@@ -33,7 +33,7 @@ function buildIndexFromJsonReport(report: JsonReport): BaselineIndex {
 	}
 
 	return {
-		mode: 'single',
+		mode: "single",
 		unusedFiles: new Set(report.unusedFiles),
 		unusedDependencies: new Set(report.unusedDependencies),
 		unusedExportKeys: exportKeys,
@@ -47,7 +47,7 @@ function buildIndexFromWorkspaceReport(report: WorkspaceJsonReport): BaselineInd
 	}
 
 	return {
-		mode: 'workspace',
+		mode: "workspace",
 		unusedFiles: new Set(),
 		unusedDependencies: new Set(),
 		unusedExportKeys: new Set(),
@@ -63,7 +63,7 @@ function buildIndex(baseline: BaselineFile): BaselineIndex {
 
 export async function loadBaseline(filePath: string): Promise<BaselineIndex | null> {
 	try {
-		const raw = await fs.readFile(filePath, 'utf-8');
+		const raw = await fs.readFile(filePath, "utf-8");
 		const parsed = JSON.parse(raw) as BaselineFile;
 		return buildIndex(parsed);
 	} catch {
@@ -98,8 +98,8 @@ export function applyBaseline(
 	baseline: BaselineIndex,
 	cwd: string,
 ): AnalysisResult | WorkspaceAnalysisResult {
-	if (baseline.mode === 'workspace') {
-		if ((result as WorkspaceAnalysisResult).mode !== 'workspace') {
+	if (baseline.mode === "workspace") {
+		if ((result as WorkspaceAnalysisResult).mode !== "workspace") {
 			return result;
 		}
 		const wr = result as WorkspaceAnalysisResult;
@@ -116,7 +116,7 @@ export function applyBaseline(
 		};
 	}
 
-	if ((result as WorkspaceAnalysisResult).mode === 'workspace') {
+	if ((result as WorkspaceAnalysisResult).mode === "workspace") {
 		// baseline is single but result is workspace => do nothing
 		return result;
 	}
@@ -129,8 +129,8 @@ export async function writeBaseline(
 	result: AnalysisResult | WorkspaceAnalysisResult,
 	cwd: string,
 ): Promise<void> {
-	const baseline: BaselineFile = (result as WorkspaceAnalysisResult).mode === 'workspace'
+	const baseline: BaselineFile = (result as WorkspaceAnalysisResult).mode === "workspace"
 		? toWorkspaceJsonReport(result as WorkspaceAnalysisResult)
 		: toJsonReport(result as AnalysisResult, cwd);
-	await fs.writeFile(filePath, JSON.stringify(baseline, null, 2), 'utf-8');
+	await fs.writeFile(filePath, JSON.stringify(baseline, null, 2), "utf-8");
 }

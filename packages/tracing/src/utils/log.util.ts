@@ -6,12 +6,12 @@ import { getActiveSpan } from "../services/context.service";
  * @returns An object with traceId and spanId, or an empty object if no span is active.
  */
 export function getTraceContext(): { traceId?: string; spanId?: string } {
-  const span = getActiveSpan();
-  if (!span) {
-    return {};
-  }
-  return {
-    traceId: span.traceId,
-    spanId: span.spanId,
-  };
+	const span = getActiveSpan();
+	if (!span) {
+		return {};
+	}
+	return {
+		traceId: span.traceId,
+		spanId: span.spanId,
+	};
 }

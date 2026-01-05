@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import { atom, computed } from '../src';
-import { vi } from 'vitest';
+import { describe, expect, it } from "vitest";
+import { vi } from "vitest";
+import { atom, computed } from "../src";
 
-describe('computed', () => {
-	it('should derive value from other atoms', () => {
+describe("computed", () => {
+	it("should derive value from other atoms", () => {
 		const a = atom(1);
 		const b = atom(2);
 		const c = computed([a, b], (a, b) => a + b);
@@ -14,7 +14,7 @@ describe('computed', () => {
 		expect(c.get()).toBe(4);
 	});
 
-	it('should be lazy and only compute when subscribed', () => {
+	it("should be lazy and only compute when subscribed", () => {
 		const a = atom(1);
 		const computer = vi.fn((val: number) => val * 2);
 		const derived = computed([a], computer);
@@ -40,14 +40,14 @@ describe('computed', () => {
 		expect(computer).toHaveBeenCalledTimes(3);
 	});
 
-	it('should derive a value from multiple atoms', () => {
-		const firstName = atom('John');
-		const lastName = atom('Doe');
+	it("should derive a value from multiple atoms", () => {
+		const firstName = atom("John");
+		const lastName = atom("Doe");
 		const fullName = computed([firstName, lastName], (f, l) => `${f} ${l}`);
 
-		expect(fullName.get()).toBe('John Doe');
+		expect(fullName.get()).toBe("John Doe");
 
-		firstName.set('Jane');
-		expect(fullName.get()).toBe('Jane Doe');
+		firstName.set("Jane");
+		expect(fullName.get()).toBe("Jane Doe");
 	});
 });

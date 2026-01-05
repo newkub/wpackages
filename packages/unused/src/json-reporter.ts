@@ -1,2 +1,1 @@
-export * from './components/json-reporter';
-
+export * from "./components/json-reporter";

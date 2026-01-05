@@ -1,9 +1,22 @@
 import { performance } from "node:perf_hooks";
-import { getActiveContext, getActiveSpan, withActiveSpan } from "./context.service";
 import { getSpan } from "../models/context";
-import type { Sampler, Span, SpanContext, SpanEvent, SpanId, SpanLink, SpanOptions, SpanProcessor, SpanStatus, Tracer, TextMapGetter, TraceId } from "../types/tracing";
-import { SamplingDecision } from "../types/tracing";
 import { Resource } from "../models/resource";
+import type {
+	Sampler,
+	Span,
+	SpanContext,
+	SpanEvent,
+	SpanId,
+	SpanLink,
+	SpanOptions,
+	SpanProcessor,
+	SpanStatus,
+	TextMapGetter,
+	TraceId,
+	Tracer,
+} from "../types/tracing";
+import { SamplingDecision } from "../types/tracing";
+import { getActiveContext, getActiveSpan, withActiveSpan } from "./context.service";
 import { W3cTraceContextPropagator } from "./propagation.service";
 
 const defaultPropagator = new W3cTraceContextPropagator();
@@ -33,7 +46,15 @@ class SpanImpl implements Span {
 	attributes: Record<string, unknown> = {};
 	events: SpanEvent[] = [];
 
-	constructor(name: string, context: SpanContext, processor: SpanProcessor, resource: Resource, parentId?: SpanId, links: SpanLink[] = [], attributes: Record<string, unknown> = {}) {
+	constructor(
+		name: string,
+		context: SpanContext,
+		processor: SpanProcessor,
+		resource: Resource,
+		parentId?: SpanId,
+		links: SpanLink[] = [],
+		attributes: Record<string, unknown> = {},
+	) {
 		this.name = name;
 		this.context = context;
 		this.traceId = context.traceId;
@@ -99,7 +120,7 @@ export class TracerImpl implements Tracer {
 			parent = getActiveSpan();
 		}
 
-		const parentContext = parent && 'spanId' in parent ? parent : undefined;
+		const parentContext = parent && "spanId" in parent ? parent : undefined;
 		const traceId = parentContext?.traceId ?? crypto.randomUUID();
 
 		const samplingResult = this.sampler.shouldSample(getActiveContext(), traceId, name, parentContext);
@@ -111,7 +132,15 @@ export class TracerImpl implements Tracer {
 		const spanId = crypto.randomUUID();
 		const context = { traceId, spanId };
 		const attributes = { ...samplingResult.attributes, ...options.attributes };
-		const span = new SpanImpl(name, context, this.processor, this.resource, parentContext?.spanId, options.links, attributes);
+		const span = new SpanImpl(
+			name,
+			context,
+			this.processor,
+			this.resource,
+			parentContext?.spanId,
+			options.links,
+			attributes,
+		);
 		this.processor.onStart(span);
 		return span;
 	}

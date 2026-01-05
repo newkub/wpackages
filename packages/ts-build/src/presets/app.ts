@@ -1,7 +1,7 @@
-import type { BunpackConfig } from '../types';
+import type { BunpackConfig } from "../types";
 
 export const appPreset: Partial<BunpackConfig> = {
-  target: 'bun',
-  format: ['esm'],
-  dts: false,
+	target: "bun",
+	format: ["esm"],
+	dts: false,
 };

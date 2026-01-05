@@ -1,2 +1,1 @@
-export * from './services/analyzer';
-
+export * from "./services/analyzer";

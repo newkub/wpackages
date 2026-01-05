@@ -1,5 +1,5 @@
-import type { Instrumentation, Sampler, SpanProcessor, Tracer, TracerProviderConfig } from "../types/tracing";
 import type { Resource } from "../models/resource";
+import type { Instrumentation, Sampler, SpanProcessor, Tracer, TracerProviderConfig } from "../types/tracing";
 import { ParentBasedSampler, TraceIdRatioBasedSampler } from "./sampler.service";
 import { TracerImpl } from "./tracer.service";
 

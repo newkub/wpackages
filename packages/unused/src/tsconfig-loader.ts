@@ -1,2 +1,1 @@
-export * from './services/tsconfig-loader';
-
+export * from "./services/tsconfig-loader";

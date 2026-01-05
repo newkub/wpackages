@@ -1,5 +1,19 @@
-import { BatchSpanProcessor, ConsoleSpanExporter, ExpressInstrumentation, FetchInstrumentation, HttpInstrumentation, TracerProvider } from "../index";
-import type { BatchSpanProcessorConfig, Instrumentation, Sampler, SpanProcessor, Resource, TracerProviderConfig } from "../types/tracing";
+import {
+	BatchSpanProcessor,
+	ConsoleSpanExporter,
+	ExpressInstrumentation,
+	FetchInstrumentation,
+	HttpInstrumentation,
+	TracerProvider,
+} from "../index";
+import type {
+	BatchSpanProcessorConfig,
+	Instrumentation,
+	Resource,
+	Sampler,
+	SpanProcessor,
+	TracerProviderConfig,
+} from "../types/tracing";
 import { detectDefaultResource } from "../utils/resource.util";
 import { registerGracefulShutdown } from "../utils/shutdown.util";
 
@@ -24,7 +38,7 @@ export interface TracingConfig {
  */
 export async function init(config: TracingConfig = {}): Promise<TracerProvider> {
 	const defaultInstrumentations: Instrumentation[] = [];
-	if (typeof window === 'undefined') {
+	if (typeof window === "undefined") {
 		// Running in Node.js
 		defaultInstrumentations.push(new HttpInstrumentation());
 		defaultInstrumentations.push(new FetchInstrumentation());
@@ -38,7 +52,7 @@ export async function init(config: TracingConfig = {}): Promise<TracerProvider> 
 
 	const processor = config.processor ?? new BatchSpanProcessor(
 		new ConsoleSpanExporter(),
-		config.batchProcessorConfig
+		config.batchProcessorConfig,
 	);
 
 	const detectedResource = await detectDefaultResource();
@@ -56,7 +70,7 @@ export async function init(config: TracingConfig = {}): Promise<TracerProvider> 
 
 	const provider = new TracerProvider(providerConfig);
 
-	if (typeof process !== 'undefined') {
+	if (typeof process !== "undefined") {
 		registerGracefulShutdown(provider);
 	}
 

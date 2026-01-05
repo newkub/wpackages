@@ -1,9 +1,9 @@
+import type { NextFunction, Request, Response as ExpressResponse } from "express";
 import type * as httpType from "node:http";
 import { createRequire } from "node:module";
-import type { Request, Response as ExpressResponse, NextFunction } from 'express';
-import type { Instrumentation, Tracer, TextMapGetter, TextMapSetter, TextMapPropagator } from "../types/tracing";
+import type { Instrumentation, TextMapGetter, TextMapPropagator, TextMapSetter, Tracer } from "../types/tracing";
 import { getActiveContext, withActiveContext } from "./context.service";
-import { W3cTraceContextPropagator, W3cBaggagePropagator, CompositePropagator } from "./propagation.service";
+import { CompositePropagator, W3cBaggagePropagator, W3cTraceContextPropagator } from "./propagation.service";
 
 const require = createRequire(import.meta.url);
 const http = require("node:http") as typeof httpType;
@@ -29,7 +29,7 @@ export class FetchInstrumentation implements Instrumentation {
 		this._tracer = tracer;
 
 		const self = this;
-		const wrapper = function (this: typeof globalThis, input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+		const wrapper = function(this: typeof globalThis, input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
 			return self._patchedFetch.call(this, input, init);
 		};
 
@@ -111,18 +111,18 @@ export class HttpInstrumentation implements Instrumentation {
 
 	private _patchRequest() {
 		const self = this;
-		return function (this: any, ...args: any[]): httpType.ClientRequest {
+		return function(this: any, ...args: any[]): httpType.ClientRequest {
 			if (!self._tracer) {
 				return (originalHttpRequest as any).apply(this, args as any);
 			}
 
 			const [options, callback] = self._normalizeArgs(args);
-			const method = (options.method || 'GET').toUpperCase();
+			const method = (options.method || "GET").toUpperCase();
 			const url = self._constructUrl(options);
 
 			const span = self._tracer.startSpan(`HTTP ${method}`);
-			span.setAttribute('http.method', method);
-			span.setAttribute('http.url', url);
+			span.setAttribute("http.method", method);
+			span.setAttribute("http.url", url);
 
 			const headers = options.headers || {};
 			const activeContext = getActiveContext();
@@ -134,10 +134,10 @@ export class HttpInstrumentation implements Instrumentation {
 			options.headers = headers;
 
 			const req = (originalHttpRequest as any).call(this, options, (res: httpType.IncomingMessage) => {
-				res.on('end', () => {
-					span.setAttribute('http.status_code', res.statusCode);
+				res.on("end", () => {
+					span.setAttribute("http.status_code", res.statusCode);
 					if (res.statusCode && res.statusCode >= 400) {
-						span.setStatus('error');
+						span.setStatus("error");
 					}
 					span.end();
 				});
@@ -146,9 +146,9 @@ export class HttpInstrumentation implements Instrumentation {
 				}
 			});
 
-			req.on('error', (error: Error) => {
-				span.setStatus('error');
-				span.setAttribute('error.message', error.message);
+			req.on("error", (error: Error) => {
+				span.setStatus("error");
+				span.setAttribute("error.message", error.message);
 				span.end();
 			});
 
@@ -158,15 +158,17 @@ export class HttpInstrumentation implements Instrumentation {
 
 	private _patchGet() {
 		const self = this;
-		return function (this: any, ...args: any[]): httpType.ClientRequest {
+		return function(this: any, ...args: any[]): httpType.ClientRequest {
 			const req = self._patchRequest().apply(this, args as any);
 			req.end();
 			return req;
 		};
 	}
 
-	private _normalizeArgs(args: any[]): [httpType.RequestOptions, ((res: httpType.IncomingMessage) => void) | undefined] {
-		if (typeof args[0] === 'string' || args[0] instanceof URL) {
+	private _normalizeArgs(
+		args: any[],
+	): [httpType.RequestOptions, ((res: httpType.IncomingMessage) => void) | undefined] {
+		if (typeof args[0] === "string" || args[0] instanceof URL) {
 			const [url, options, callback] = args;
 			return [{ ...new URL(url), ...options }, callback];
 		}
@@ -175,10 +177,10 @@ export class HttpInstrumentation implements Instrumentation {
 	}
 
 	private _constructUrl(options: httpType.RequestOptions): string {
-		const protocol = options.protocol || 'http:';
-		const host = options.hostname || options.host || 'localhost';
-		const port = options.port ? `:${options.port}` : '';
-		const path = options.path || '/';
+		const protocol = options.protocol || "http:";
+		const host = options.hostname || options.host || "localhost";
+		const port = options.port ? `:${options.port}` : "";
+		const path = options.path || "/";
 		return `${protocol}//${host}${port}${path}`;
 	}
 }
@@ -198,12 +200,12 @@ export class ExpressInstrumentation implements Instrumentation {
 		this._tracer = tracer;
 
 		try {
-			const express = require('express');
+			const express = require("express");
 			const originalUse = express.application.use;
 			const self = this;
 
-			express.application.use = function (this: any, ...args: any[]) {
-				if (typeof args[0] === 'function') {
+			express.application.use = function(this: any, ...args: any[]) {
+				if (typeof args[0] === "function") {
 					const middleware = self._createMiddleware(args[0]);
 					return originalUse.call(this, middleware);
 				}
@@ -223,12 +225,12 @@ export class ExpressInstrumentation implements Instrumentation {
 
 	private _createMiddleware(middleware: Function) {
 		const self = this;
-		return function (this: any, req: Request, res: ExpressResponse, next: NextFunction) {
+		return function(this: any, req: Request, res: ExpressResponse, next: NextFunction) {
 			if (!self._tracer) {
 				return middleware.call(this, req, res, next);
 			}
 
-			const getter: TextMapGetter<Request['headers']> = {
+			const getter: TextMapGetter<Request["headers"]> = {
 				get: (carrier, key) => {
 					const value = carrier[key];
 					if (Array.isArray(value)) return value[0];
@@ -242,14 +244,14 @@ export class ExpressInstrumentation implements Instrumentation {
 			return withActiveContext(parentContext, () => {
 				const spanName = `${req.method} ${req.path}`;
 				self._tracer!.trace(spanName, (span) => {
-					span.setAttribute('http.method', req.method);
-					span.setAttribute('http.url', `${req.protocol}://${req.get('host')}${req.originalUrl}`);
-					span.setAttribute('http.route', req.route?.path);
+					span.setAttribute("http.method", req.method);
+					span.setAttribute("http.url", `${req.protocol}://${req.get("host")}${req.originalUrl}`);
+					span.setAttribute("http.route", req.route?.path);
 
-					res.on('finish', () => {
-						span.setAttribute('http.status_code', res.statusCode);
+					res.on("finish", () => {
+						span.setAttribute("http.status_code", res.statusCode);
 						if (res.statusCode >= 500) {
-							span.setStatus('error');
+							span.setStatus("error");
 						}
 						span.end();
 					});

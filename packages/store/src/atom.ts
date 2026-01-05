@@ -1,5 +1,5 @@
-import { manageLifecycle } from './services/lifecycle.service';
-import type { Store, Listener } from './types';
+import { manageLifecycle } from "./services/lifecycle.service";
+import type { Listener, Store } from "./types";
 
 /**
  * Creates a new atom, a store for a single value.

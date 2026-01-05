@@ -1,5 +1,5 @@
-import type { BunpackConfig } from '../types';
+import type { BunpackConfig } from "../types";
 
 export const reactPreset: Partial<BunpackConfig> = {
-  // Bun handles JSX/TSX compilation by default.
+	// Bun handles JSX/TSX compilation by default.
 };

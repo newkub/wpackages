@@ -1,5 +1,5 @@
-import path from 'node:path';
-import type { AnalysisResult, PackageAnalysisResult, WorkspaceAnalysisResult } from '../types';
+import path from "node:path";
+import type { AnalysisResult, PackageAnalysisResult, WorkspaceAnalysisResult } from "../types";
 
 export type JsonReport = {
 	cwd: string;
@@ -15,7 +15,7 @@ export type JsonReport = {
 };
 
 export type WorkspaceJsonReport = {
-	mode: 'workspace';
+	mode: "workspace";
 	root: string;
 	summary: {
 		issues: number;
@@ -73,7 +73,7 @@ export function toWorkspaceJsonReport(result: WorkspaceAnalysisResult): Workspac
 	);
 
 	return {
-		mode: 'workspace',
+		mode: "workspace",
 		root: result.root,
 		summary,
 		packages,

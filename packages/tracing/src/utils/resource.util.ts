@@ -1,11 +1,11 @@
 import { readFile } from "node:fs/promises";
-import { resolve, dirname } from "node:path";
+import { dirname, resolve } from "node:path";
 import { Resource } from "../models/resource";
 
 async function findPackageJson(startDir: string): Promise<string | undefined> {
 	let currentDir = startDir;
 	while (true) {
-		const filePath = resolve(currentDir, 'package.json');
+		const filePath = resolve(currentDir, "package.json");
 		try {
 			await readFile(filePath); // Check if file exists and is readable
 			return filePath;
@@ -30,15 +30,15 @@ export async function detectDefaultResource(): Promise<Resource> {
 			return new Resource({});
 		}
 
-		const content = await readFile(packageJsonPath, 'utf-8');
+		const content = await readFile(packageJsonPath, "utf-8");
 		const json = JSON.parse(content);
 
 		const attributes: Record<string, unknown> = {};
-		if (typeof json.name === 'string') {
-			attributes['service.name'] = json.name;
+		if (typeof json.name === "string") {
+			attributes["service.name"] = json.name;
 		}
-		if (typeof json.version === 'string') {
-			attributes['service.version'] = json.version;
+		if (typeof json.version === "string") {
+			attributes["service.version"] = json.version;
 		}
 
 		return new Resource(attributes);

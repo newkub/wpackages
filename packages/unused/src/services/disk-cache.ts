@@ -1,6 +1,6 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import type { FileNode, ImportSpecifier, ReExport } from '../types';
+import fs from "node:fs/promises";
+import path from "node:path";
+import type { FileNode, ImportSpecifier, ReExport } from "../types";
 
 type SerializableImportSpecifier = {
 	module: string;
@@ -76,7 +76,7 @@ export class DiskCache {
 	static async load(cwd: string, fileName: string): Promise<DiskCache> {
 		const cachePath = path.isAbsolute(fileName) ? fileName : path.join(cwd, fileName);
 		try {
-			const raw = await fs.readFile(cachePath, 'utf-8');
+			const raw = await fs.readFile(cachePath, "utf-8");
 			const parsed = JSON.parse(raw) as CacheFile;
 			if (parsed.version !== CACHE_VERSION || !parsed.entries) {
 				return new DiskCache(cachePath, { version: CACHE_VERSION, entries: {} });
@@ -105,7 +105,7 @@ export class DiskCache {
 
 	async save(): Promise<void> {
 		if (!this.dirty) return;
-		await fs.writeFile(this.cachePath, JSON.stringify(this.data, null, 2), 'utf-8');
+		await fs.writeFile(this.cachePath, JSON.stringify(this.data, null, 2), "utf-8");
 		this.dirty = false;
 	}
 }

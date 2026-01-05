@@ -42,6 +42,8 @@ const colorClasses = colors[colorIndex];
 		@click="emit('select', span)"
 	>
 		<span class="font-semibold truncate">{{ span.name }}</span>
-		<span class="ml-2 text-gray-300 font-mono">{{ duration.toFixed(2) }}ms</span>
+		<span class="ml-2 text-gray-300 font-mono">{{
+				duration.toFixed(2)
+			}}ms</span>
 	</button>
 </template>

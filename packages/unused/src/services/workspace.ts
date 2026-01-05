@@ -1,6 +1,6 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { glob } from 'glob';
+import { glob } from "glob";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 export type WorkspacePackage = {
 	name: string;
@@ -24,9 +24,9 @@ async function fileExists(filePath: string): Promise<boolean> {
 export async function findMonorepoRoot(startDir: string): Promise<string> {
 	let current = path.resolve(startDir);
 	for (;;) {
-		const pkgPath = path.join(current, 'package.json');
+		const pkgPath = path.join(current, "package.json");
 		if (await fileExists(pkgPath)) {
-			const pkg = await fs.readFile(pkgPath, 'utf-8');
+			const pkg = await fs.readFile(pkgPath, "utf-8");
 			const json = JSON.parse(pkg) as RootPackageJson;
 			if (Array.isArray(json.workspaces) && json.workspaces.length > 0) {
 				return current;
@@ -39,19 +39,19 @@ export async function findMonorepoRoot(startDir: string): Promise<string> {
 }
 
 export async function listWorkspacePackages(monorepoRoot: string): Promise<WorkspacePackage[]> {
-	const pkgPath = path.join(monorepoRoot, 'package.json');
-	const pkg = await fs.readFile(pkgPath, 'utf-8');
+	const pkgPath = path.join(monorepoRoot, "package.json");
+	const pkg = await fs.readFile(pkgPath, "utf-8");
 	const root = JSON.parse(pkg) as RootPackageJson;
 	const workspaces = root.workspaces ?? [];
 
-	const includePatterns = workspaces.filter(p => !p.startsWith('!'));
-	const excludePatterns = workspaces.filter(p => p.startsWith('!')).map(p => p.slice(1));
+	const includePatterns = workspaces.filter(p => !p.startsWith("!"));
+	const excludePatterns = workspaces.filter(p => p.startsWith("!")).map(p => p.slice(1));
 
 	const packageJsonMatches = new Set<string>();
 	for (const pattern of includePatterns) {
 		const matches = await glob(`${pattern}/package.json`, {
 			cwd: monorepoRoot,
-			ignore: ['**/node_modules/**', '**/dist/**', ...excludePatterns.map(p => `${p}/**`)],
+			ignore: ["**/node_modules/**", "**/dist/**", ...excludePatterns.map(p => `${p}/**`)],
 			absolute: true,
 			nodir: true,
 		});
@@ -61,9 +61,9 @@ export async function listWorkspacePackages(monorepoRoot: string): Promise<Works
 	const packages: WorkspacePackage[] = [];
 	for (const absPkgJson of packageJsonMatches) {
 		try {
-			const text = await fs.readFile(absPkgJson, 'utf-8');
+			const text = await fs.readFile(absPkgJson, "utf-8");
 			const json = JSON.parse(text) as { name?: unknown };
-			const name = typeof json.name === 'string' ? json.name : path.basename(path.dirname(absPkgJson));
+			const name = typeof json.name === "string" ? json.name : path.basename(path.dirname(absPkgJson));
 			packages.push({
 				name,
 				dir: path.dirname(absPkgJson),

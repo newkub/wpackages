@@ -1,7 +1,7 @@
 import { AsyncLocalStorage } from "node:async_hooks";
+import type { Baggage } from "../models/baggage";
 import { getBaggage, getSpan, ROOT_CONTEXT, setBaggage, setSpan } from "../models/context";
 import type { Context } from "../types/tracing";
-import type { Baggage } from "../models/baggage";
 import type { Span } from "../types/tracing";
 
 const contextStore = new AsyncLocalStorage<Context>();

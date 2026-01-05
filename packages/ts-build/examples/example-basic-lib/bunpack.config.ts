@@ -1,6 +1,6 @@
-import { defineConfig } from "@wpackages/ts-build"
+import { defineConfig } from "@wpackages/ts-build";
 
 export default defineConfig({
-  entry: ["src/index.ts"],
-  outDir: "dist",
-})
+	entry: ["src/index.ts"],
+	outDir: "dist",
+});

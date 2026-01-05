@@ -1,6 +1,6 @@
-import { onMount } from './services/lifecycle.service';
-import type { Store, ReadonlyStore, Listener, Unsubscribe } from './types';
-import { atom } from './atom';
+import { atom } from "./atom";
+import { onMount } from "./services/lifecycle.service";
+import type { Listener, ReadonlyStore, Store, Unsubscribe } from "./types";
 
 /**
  * Creates a readonly store that derives its value from other stores.
@@ -20,9 +20,8 @@ export function computed<T, D extends readonly unknown[]>(
 			store.subscribe(() => {
 				const newValues = stores.map(s => s.get()) as { [K in keyof D]: D[K] };
 				derived.set(computer(...newValues));
-			}),
+			})
 		);
-
 
 		return () => {
 			unsubscribes.forEach(unsub => unsub());

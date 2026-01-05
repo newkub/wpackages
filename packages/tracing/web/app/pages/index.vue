@@ -32,11 +32,11 @@ const filteredSpans = computed(() => {
 				: "") ?? "";
 
 		return (
-			s.traceId.toLowerCase().includes(q) ||
-			s.spanId.toLowerCase().includes(q) ||
-			s.name.toLowerCase().includes(q) ||
-			serviceName.toLowerCase().includes(q) ||
-			s.status.toLowerCase().includes(q)
+			s.traceId.toLowerCase().includes(q)
+			|| s.spanId.toLowerCase().includes(q)
+			|| s.name.toLowerCase().includes(q)
+			|| serviceName.toLowerCase().includes(q)
+			|| s.status.toLowerCase().includes(q)
 		);
 	});
 });
@@ -99,7 +99,8 @@ function closeDrawer() {
 
 const selectedSpanDurationMs = computed(() => {
 	if (!selectedSpan.value) return 0;
-	return (selectedSpan.value.endTime ?? selectedSpan.value.startTime) - selectedSpan.value.startTime;
+	return (selectedSpan.value.endTime ?? selectedSpan.value.startTime)
+		- selectedSpan.value.startTime;
 });
 
 const selectedSpanServiceName = computed(() => {
@@ -130,7 +131,9 @@ onUnmounted(() => {
 					<h2 class="text-2xl font-semibold">Tracing Dashboard</h2>
 					<p class="text-sm text-gray-500 dark:text-gray-400">
 						{{ spans.length }} spans
-						<span v-if="lastUpdatedAt" class="ml-2">Updated: {{ lastUpdatedAt.toLocaleTimeString() }}</span>
+						<span v-if="lastUpdatedAt" class="ml-2">Updated: {{
+								lastUpdatedAt.toLocaleTimeString()
+							}}</span>
 					</p>
 				</div>
 				<div class="flex flex-wrap items-center justify-end gap-2">
@@ -138,7 +141,7 @@ onUnmounted(() => {
 						class="px-3 py-2 rounded-md border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
 						@click="toggleLive"
 					>
-						{{ isLive ? 'Pause' : 'Live' }}
+						{{ isLive ? "Pause" : "Live" }}
 					</button>
 					<button
 						class="px-3 py-2 rounded-md border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
@@ -170,17 +173,26 @@ onUnmounted(() => {
 			</div>
 		</div>
 
-		<div v-if="error" class="p-4 rounded-lg border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-200">
+		<div
+			v-if="error"
+			class="p-4 rounded-lg border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-200"
+		>
 			<p class="font-semibold">Error</p>
 			<p class="text-sm">{{ error.message }}</p>
 		</div>
 
 		<div v-else-if="groupedTraces.length === 0" class="text-center py-16">
 			<p class="text-gray-500 dark:text-gray-400">No traces yet</p>
-			<p class="text-sm text-gray-400 dark:text-gray-500 mt-2">Send spans to <code class="font-mono">/v1/traces</code> or click Generate Sample</p>
+			<p class="text-sm text-gray-400 dark:text-gray-500 mt-2">
+				Send spans to <code class="font-mono">/v1/traces</code> or click
+				Generate Sample
+			</p>
 		</div>
 
-		<div v-else class="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-4 items-start">
+		<div
+			v-else
+			class="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-4 items-start"
+		>
 			<div class="space-y-4">
 				<TraceWaterfall
 					v-for="group in groupedTraces"
@@ -198,10 +210,12 @@ onUnmounted(() => {
 				>
 					<div class="px-4 py-3 border-b border-gray-200 dark:border-gray-800 flex items-start justify-between gap-3">
 						<div class="min-w-0">
-							<p class="text-xs text-gray-500 dark:text-gray-400">Selected span</p>
+							<p class="text-xs text-gray-500 dark:text-gray-400">
+								Selected span
+							</p>
 							<p class="font-mono text-sm truncate">{{ selectedSpan.name }}</p>
 							<p class="text-xs text-gray-500 dark:text-gray-400 truncate">
-								{{ selectedSpanServiceName ?? '-' }}
+								{{ selectedSpanServiceName ?? "-" }}
 								<span class="mx-2">·</span>
 								{{ selectedSpanDurationMs.toFixed(2) }} ms
 							</p>
@@ -219,15 +233,23 @@ onUnmounted(() => {
 						<div class="grid grid-cols-2 gap-3">
 							<div>
 								<p class="text-xs text-gray-500 dark:text-gray-400">Trace ID</p>
-								<p class="font-mono text-xs break-all">{{ selectedSpan.traceId }}</p>
+								<p class="font-mono text-xs break-all">
+									{{ selectedSpan.traceId }}
+								</p>
 							</div>
 							<div>
 								<p class="text-xs text-gray-500 dark:text-gray-400">Span ID</p>
-								<p class="font-mono text-xs break-all">{{ selectedSpan.spanId }}</p>
+								<p class="font-mono text-xs break-all">
+									{{ selectedSpan.spanId }}
+								</p>
 							</div>
 							<div>
-								<p class="text-xs text-gray-500 dark:text-gray-400">Parent ID</p>
-								<p class="font-mono text-xs break-all">{{ selectedSpan.parentId ?? '-' }}</p>
+								<p class="text-xs text-gray-500 dark:text-gray-400">
+									Parent ID
+								</p>
+								<p class="font-mono text-xs break-all">
+									{{ selectedSpan.parentId ?? "-" }}
+								</p>
 							</div>
 							<div>
 								<p class="text-xs text-gray-500 dark:text-gray-400">Status</p>
@@ -236,17 +258,23 @@ onUnmounted(() => {
 						</div>
 
 						<div>
-							<p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Attributes</p>
+							<p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
+								Attributes
+							</p>
 							<pre class="text-xs bg-gray-50 dark:bg-gray-950/30 border border-gray-200 dark:border-gray-800 rounded-lg p-3 overflow-auto">{{ JSON.stringify(selectedSpan.attributes, null, 2) }}</pre>
 						</div>
 
 						<div>
-							<p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Resource</p>
+							<p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
+								Resource
+							</p>
 							<pre class="text-xs bg-gray-50 dark:bg-gray-950/30 border border-gray-200 dark:border-gray-800 rounded-lg p-3 overflow-auto">{{ JSON.stringify(selectedSpan.resource.attributes, null, 2) }}</pre>
 						</div>
 
 						<div>
-							<p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Events</p>
+							<p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
+								Events
+							</p>
 							<pre class="text-xs bg-gray-50 dark:bg-gray-950/30 border border-gray-200 dark:border-gray-800 rounded-lg p-3 overflow-auto">{{ JSON.stringify(selectedSpan.events, null, 2) }}</pre>
 						</div>
 					</div>
@@ -256,7 +284,9 @@ onUnmounted(() => {
 					v-else
 					class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm p-4"
 				>
-					<p class="text-sm text-gray-500 dark:text-gray-400">Click a span to view details</p>
+					<p class="text-sm text-gray-500 dark:text-gray-400">
+						Click a span to view details
+					</p>
 				</div>
 			</div>
 		</div>

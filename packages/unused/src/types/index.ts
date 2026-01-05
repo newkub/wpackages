@@ -1,7 +1,7 @@
 export type ImportSpecifier = {
 	module: string;
 	// `*` for namespace, `default` for default, or the named import
-	specifiers: Set<string>; 
+	specifiers: Set<string>;
 };
 
 export type ReExport = {
@@ -21,9 +21,9 @@ export type FileNode = {
 export type DependencyGraph = Map<string, FileNode>;
 
 export interface AnalysisResult {
-    unusedFiles: string[];
-    unusedDependencies: string[];
-    unusedExports: Map<string, string[]>; // FilePath -> Unused export names
+	unusedFiles: string[];
+	unusedDependencies: string[];
+	unusedExports: Map<string, string[]>; // FilePath -> Unused export names
 }
 
 export type PackageAnalysisResult = AnalysisResult & {
@@ -32,7 +32,7 @@ export type PackageAnalysisResult = AnalysisResult & {
 };
 
 export type WorkspaceAnalysisResult = {
-	mode: 'workspace';
+	mode: "workspace";
 	root: string;
 	packages: PackageAnalysisResult[];
 };
@@ -40,9 +40,9 @@ export type WorkspaceAnalysisResult = {
 export type AnyAnalysisResult = AnalysisResult | WorkspaceAnalysisResult;
 
 export interface AnalyzeOptions {
-    cwd: string;
-    entrypoints: string[];
-    ignore: string[];
+	cwd: string;
+	entrypoints: string[];
+	ignore: string[];
 	ignoreUnusedFiles?: string[];
 	ignoreExports?: string[];
 	ignoreDependencies?: string[];

@@ -53,14 +53,14 @@ export class BatchSpanProcessor implements SpanProcessor {
 		}
 
 		const batch = this._queue.splice(0, this._maxExportBatchSize);
-		const timeoutPromise = new Promise((_, reject) => 
-			setTimeout(() => reject(new Error('Export timed out')), this._exportTimeoutMillis)
+		const timeoutPromise = new Promise((_, reject) =>
+			setTimeout(() => reject(new Error("Export timed out")), this._exportTimeoutMillis)
 		);
 
 		try {
 			await Promise.race([this._exporter.export(batch), timeoutPromise]);
 		} catch (error) {
-			console.error('Failed to export spans:', error);
+			console.error("Failed to export spans:", error);
 		}
 	}
 

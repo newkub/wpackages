@@ -35,12 +35,18 @@ const getSpanWidth = (span: Span) => {
 	<div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
 		<div class="px-4 py-3 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
 			<div class="min-w-0">
-				<p class="font-mono text-sm text-gray-500 dark:text-gray-400 truncate">Trace</p>
-				<p class="font-mono text-xs text-gray-400 dark:text-gray-500 truncate">{{ trace[0]?.traceId }}</p>
+				<p class="font-mono text-sm text-gray-500 dark:text-gray-400 truncate">
+					Trace
+				</p>
+				<p class="font-mono text-xs text-gray-400 dark:text-gray-500 truncate">
+					{{ trace[0]?.traceId }}
+				</p>
 			</div>
 			<div class="text-right">
 				<p class="font-mono text-sm">{{ trace.length }}</p>
-				<p class="text-xs text-gray-500 dark:text-gray-400">{{ traceDuration.toFixed(2) }} ms</p>
+				<p class="text-xs text-gray-500 dark:text-gray-400">
+					{{ traceDuration.toFixed(2) }} ms
+				</p>
 			</div>
 		</div>
 

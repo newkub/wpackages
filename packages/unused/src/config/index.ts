@@ -1,7 +1,7 @@
-import type { AnalyzeOptions } from '../types';
+import type { AnalyzeOptions } from "../types";
 
 export type UnusedConfig = AnalyzeOptions & Record<string, unknown> & {
-	format?: 'text' | 'json' | 'sarif';
+	format?: "text" | "json" | "sarif";
 	output?: string;
 	workspace?: boolean;
 	baseline?: string;
@@ -17,7 +17,7 @@ export const defaultUnusedConfig: UnusedConfig = {
 	cwd: process.cwd(),
 	entrypoints: [],
 	ignore: [],
-	format: 'text',
+	format: "text",
 	workspace: false,
 	updateBaseline: false,
 	cache: true,

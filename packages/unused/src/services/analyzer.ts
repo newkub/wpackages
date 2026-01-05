@@ -1,18 +1,22 @@
-import path from 'node:path';
-import fs from 'node:fs/promises';
-import picomatch from 'picomatch';
-import type { DependencyGraph, AnalyzeOptions, AnalysisResult } from '../types';
-import { resolvePath } from '../utils/resolver';
-import type { ResolvedAlias } from './tsconfig-loader';
+import fs from "node:fs/promises";
+import path from "node:path";
+import picomatch from "picomatch";
+import type { AnalysisResult, AnalyzeOptions, DependencyGraph } from "../types";
+import { resolvePath } from "../utils/resolver";
+import type { ResolvedAlias } from "./tsconfig-loader";
 
 /**
  * Analyzes the dependency graph to find unused files, dependencies, and exports.
  */
-export async function analyzeGraph(graph: DependencyGraph, options: AnalyzeOptions, aliases: ResolvedAlias[]): Promise<AnalysisResult> {
+export async function analyzeGraph(
+	graph: DependencyGraph,
+	options: AnalyzeOptions,
+	aliases: ResolvedAlias[],
+): Promise<AnalysisResult> {
 	const allFilePaths = new Set(graph.keys());
 
 	// 1. Find Unused Files and Exports simultaneously
-    const { unusedFiles, unusedExports } = findUnusedCode(graph, options, allFilePaths, aliases);
+	const { unusedFiles, unusedExports } = findUnusedCode(graph, options, allFilePaths, aliases);
 
 	// 2. Find Unused Dependencies
 	const unusedDependencies = await findUnusedDependencies(graph, options);
@@ -34,7 +38,7 @@ function applyIgnoreRules(result: AnalysisResult, options: AnalyzeOptions): Anal
 	const unusedFiles = ignoreFileMatchers.length === 0
 		? result.unusedFiles
 		: result.unusedFiles.filter((abs) => {
-			const rel = path.relative(options.cwd, abs).replaceAll('\\', '/');
+			const rel = path.relative(options.cwd, abs).replaceAll("\\", "/");
 			return !ignoreFileMatchers.some((isMatch) => isMatch(rel));
 		});
 
@@ -44,12 +48,12 @@ function applyIgnoreRules(result: AnalysisResult, options: AnalyzeOptions): Anal
 
 	const unusedExportsResult = new Map<string, string[]>();
 	for (const [filePath, exports] of result.unusedExports.entries()) {
-		const rel = path.relative(options.cwd, filePath).replaceAll('\\', '/');
+		const rel = path.relative(options.cwd, filePath).replaceAll("\\", "/");
 		if (ignoreFileMatchers.some((isMatch) => isMatch(rel))) {
 			continue;
 		}
 
-		const filteredExports = exports.filter((e) => !ignoreExports.has(e) && !ignoreExports.has('*'));
+		const filteredExports = exports.filter((e) => !ignoreExports.has(e) && !ignoreExports.has("*"));
 
 		if (filteredExports.length > 0) {
 			unusedExportsResult.set(rel, filteredExports);
@@ -59,7 +63,12 @@ function applyIgnoreRules(result: AnalysisResult, options: AnalyzeOptions): Anal
 	return { unusedFiles, unusedDependencies, unusedExports: unusedExportsResult };
 }
 
-function findUnusedCode(graph: DependencyGraph, options: AnalyzeOptions, allFilePaths: Set<string>, aliases: ResolvedAlias[]): { unusedFiles: string[], unusedExports: Map<string, string[]> } {
+function findUnusedCode(
+	graph: DependencyGraph,
+	options: AnalyzeOptions,
+	allFilePaths: Set<string>,
+	aliases: ResolvedAlias[],
+): { unusedFiles: string[]; unusedExports: Map<string, string[]> } {
 	const reachableFiles = new Set<string>();
 	const allUsedExports = new Map<string, Set<string>>(); // Map<filePath, Set<usedExport>>
 	const entryPoints = options.entrypoints.map(p => path.resolve(options.cwd, p));
@@ -121,8 +130,8 @@ function findUnusedCode(graph: DependencyGraph, options: AnalyzeOptions, allFile
 				const sourceUsed = allUsedExports.get(sourceFile) ?? new Set<string>();
 				const originalSize = sourceUsed.size;
 
-				if (usedExports.has('*')) {
-					sourceUsed.add('*');
+				if (usedExports.has("*")) {
+					sourceUsed.add("*");
 				} else if (reExport.exportAll) {
 					for (const spec of usedExports) {
 						sourceUsed.add(spec);
@@ -150,10 +159,10 @@ function findUnusedCode(graph: DependencyGraph, options: AnalyzeOptions, allFile
 		if (node.exports.size === 0 || entryPoints.includes(filePath)) continue;
 
 		const used = allUsedExports.get(filePath);
-		if (!used || used.has('*')) {
+		if (!used || used.has("*")) {
 			// If nothing imports the file, or it has a namespace import, all exports are considered unused
 			// unless the file is reachable (imported by something)
-			if (!reachableFiles.has(filePath) && !used?.has('*')) {
+			if (!reachableFiles.has(filePath) && !used?.has("*")) {
 				const unused = [...node.exports];
 				if (unused.length > 0) {
 					unusedExportsResult.set(filePath, unused);
@@ -172,33 +181,30 @@ function findUnusedCode(graph: DependencyGraph, options: AnalyzeOptions, allFile
 }
 
 async function findUnusedDependencies(graph: DependencyGraph, options: AnalyzeOptions): Promise<string[]> {
-    const packageJsonPath = path.join(options.cwd, 'package.json');
+	const packageJsonPath = path.join(options.cwd, "package.json");
 	try {
-        const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
-        const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
-        const depKeys = Object.keys(dependencies);
+		const packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf-8"));
+		const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
+		const depKeys = Object.keys(dependencies);
 
-        const allExternalImports = new Set<string>();
-        for (const node of graph.values()) {
-            for (const imp of node.imports) {
-                if (typeof imp.module === 'string' && !imp.module.startsWith('.') && !imp.module.startsWith('node:')) {
-                    const parts = imp.module.split('/');
-                    const packageName = parts[0]?.startsWith('@')
-                        ? (parts[1] ? `${parts[0]}/${parts[1]}` : undefined)
-                        : parts[0];
-                    if (packageName) {
-                        allExternalImports.add(packageName);
-                    }
-                }
-            }
-        }
+		const allExternalImports = new Set<string>();
+		for (const node of graph.values()) {
+			for (const imp of node.imports) {
+				if (typeof imp.module === "string" && !imp.module.startsWith(".") && !imp.module.startsWith("node:")) {
+					const parts = imp.module.split("/");
+					const packageName = parts[0]?.startsWith("@")
+						? (parts[1] ? `${parts[0]}/${parts[1]}` : undefined)
+						: parts[0];
+					if (packageName) {
+						allExternalImports.add(packageName);
+					}
+				}
+			}
+		}
 
-        return depKeys.filter(dep => !allExternalImports.has(dep));
-    } catch (e) {
-        console.warn('Could not read or parse package.json. Skipping dependency check.', e);
-        return [];
-    }
+		return depKeys.filter(dep => !allExternalImports.has(dep));
+	} catch (e) {
+		console.warn("Could not read or parse package.json. Skipping dependency check.", e);
+		return [];
+	}
 }
-
-
-

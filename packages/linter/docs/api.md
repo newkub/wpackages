@@ -6,4 +6,4 @@ This document outlines the API for creating custom rules and extending the linte
 
 Creating a new rule involves defining a visitor function that traverses the Abstract Syntax Tree (AST).
 
-*Coming soon...*
+_Coming soon..._
