@@ -22,8 +22,8 @@
 	"scripts": {
 		"build": "tsdown",
 		"dev": "bun run src/app.ts",
-		"lint": "tsc --noEmit && biome lint --write",
-		"format": "biome format --write",
+		"lint": "tsc --noEmit && biome lint --write src",
+		"format": "biome format --write src",
 		"test": "vitest --run",
 		"verify": "bun format && bun lint && bun test && bun build"
 	},

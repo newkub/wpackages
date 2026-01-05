@@ -32,7 +32,10 @@
 		"typecheck": {
 			"dependsOn": ["^lint"]
 		},
-		"test": {},
+		"test": {
+			"dependsOn": ["^lint"],
+			"cache" : true
+		},
 
 		"test:coverage": {
 			"dependsOn": ["^lint"]

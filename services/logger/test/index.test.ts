@@ -1,5 +1,5 @@
-import { expect, test } from "bun:test";
 import { Effect, Layer } from "effect";
+import { expect, test } from "vitest";
 import { Console, info, type LogEntry, Logger, LoggerConfigTag, makeLogger } from "../src";
 
 test("Logger should log an informational message", async () => {

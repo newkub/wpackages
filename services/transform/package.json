@@ -28,7 +28,7 @@
 		"lint": "oxlint --fix --type-aware",
 		"test": "vitest run",
 		"test:watch": "vitest",
-		"review": "bun run format && bun run lint && bun run build && bun run test"
+		"verify": "bun run format && bun run lint && bun run build && bun run test"
 	},
 	"dependencies": {
 		"@iarna/toml": "^2.2.5",

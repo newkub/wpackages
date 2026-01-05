@@ -7,7 +7,7 @@ import { parseSync } from "oxc-parser";
 import { createParseErrorMessage, createParseResult } from "../components";
 import type { Language } from "../types/language.type";
 import type { ParseError } from "../types/parse-error.type";
-import type { GenericParseResult, ParseOptionsBase, StringifyableParser } from "../types/parser-base.type";
+import type { GenericParseResult, ParseOptionsBase, Parser } from "../types/parser-base.type";
 import { Result } from "../utils";
 
 export type JavaScriptParseOptions = ParseOptionsBase & {
@@ -24,7 +24,7 @@ export type JavaScriptAST = {
 /**
  * JavaScript/TypeScript Parser implementation
  */
-export const javascriptParser: StringifyableParser<JavaScriptAST, JavaScriptParseOptions> = {
+export const javascriptParser: Parser<JavaScriptAST, JavaScriptParseOptions> = {
 	name: "javascript",
 	supportedLanguages: ["javascript", "typescript", "jsx", "tsx"] as const,
 
@@ -38,14 +38,16 @@ export const javascriptParser: StringifyableParser<JavaScriptAST, JavaScriptPars
 
 		try {
 			const language = detectJSLanguage(filename, jsOptions);
-			const result = parseSync(filename, source, {
-				sourceType,
-				typescript: jsOptions.typescript,
-				jsx: jsOptions.jsx,
-			});
+			const result = parseSync(
+				source,
+				JSON.stringify({
+					sourceType,
+					typescript: jsOptions.typescript ?? false,
+					jsx: jsOptions.jsx ?? false,
+				}),
+			);
 
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			const errors: ParseError[] = result.errors.map((e: any) => ({
+			const errors: ParseError[] = result.errors.map((e: { message: string }) => ({
 				message: e.message,
 				line: 0, // Placeholder, OXC error format needs investigation
 				column: 0, // Placeholder
@@ -68,12 +70,11 @@ export const javascriptParser: StringifyableParser<JavaScriptAST, JavaScriptPars
 					},
 				),
 			);
-		} catch (error) {
+		} catch (error: unknown) {
 			return Result.err(createParseErrorMessage("JavaScript", filename, error));
 		}
 	},
 	// stringify: (ast: JavaScriptAST, _options = {}): string => {
-	// 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	// 	const { code } = print(ast.program as any);
 	// 	return code;
 	// },

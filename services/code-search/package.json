@@ -18,7 +18,7 @@
 		"verify": "bun run lint && bun run build && bun run test"
 	},
 	"dependencies": {
-		"@ast-grep/napi": "^0.40.3",
+		"@ast-grep/napi": "^0.40.4",
 		"find-up": "^8.0.0",
 		"oxc-parser": "0.105.0"
 	},

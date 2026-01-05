@@ -1,9 +1,25 @@
-import { createSelector } from "@wpackages/design-pattern";
 /**
  * Language detection utility - Detect language from filename
  */
 
 import type { Language, LanguageInfo } from "../types/language.type";
+
+type SelectorCase<I, O> = {
+	readonly condition: (input: I) => boolean;
+	readonly result: O;
+};
+
+const createSelector = <I, O>(cases: readonly SelectorCase<I, O>[], defaultResult: O) => {
+	return (input: I): O => {
+		for (const c of cases) {
+			if (c.condition(input)) {
+				return c.result;
+			}
+		}
+
+		return defaultResult;
+	};
+};
 
 /**
  * Language information database

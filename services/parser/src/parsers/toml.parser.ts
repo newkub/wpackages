@@ -2,7 +2,7 @@
  * TOML Parser - Parse TOML configuration files using @ltd/j-toml
  */
 
-import { TOML } from "@ltd/j-toml";
+import TOML from "@ltd/j-toml";
 import { createParseErrorMessage, createParseResult } from "../components";
 import type { Language } from "../types/language.type";
 import type { GenericParseResult, ParseOptionsBase, Parser } from "../types/parser-base.type";
@@ -14,7 +14,6 @@ export type TOMLParseOptions = ParseOptionsBase;
  * Stringify TOML data
  */
 export const stringifyTOML = (data: unknown): string => {
-	// @ts-expect-error - j-toml stringify can handle various types
 	return TOML.stringify(data as any, { newline: "\n" });
 };
 

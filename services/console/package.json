@@ -19,7 +19,6 @@
 		"dev": "bun --watch src/index.ts",
 		"format": "dprint fmt",
 		"lint": "oxlint --fix --type-aware",
-		"review": "bun format && bun lint && bun test",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"verify": "bun run format && bun run lint && bun run test && bun audit && bun run build"

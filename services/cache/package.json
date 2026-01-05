@@ -22,7 +22,6 @@
 		"test:coverage": "vitest run --coverage",
 		"format": "dprint fmt",
 		"lint": "oxlint --fix --type-aware",
-		"review": "bun run format && bun run lint && bun run test && bun run build",
 		"verify": "bun run format && bun run lint && bun run test:coverage && bun run build"
 	},
 	"dependencies": {

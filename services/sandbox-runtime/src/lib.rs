@@ -16,7 +16,6 @@ pub struct WasmSandbox {
     runtime: AppRuntime,
 }
 
-#[wasm_bindgen]
 impl Default for WasmSandbox {
     fn default() -> Self {
         Self::new()

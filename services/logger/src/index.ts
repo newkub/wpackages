@@ -1,4 +1,4 @@
-import { Context, Effect, Layer, type Tag } from "effect";
+import { Context, Effect, Layer } from "effect";
 
 // --------------------------------------------------------------------------------
 // Models
@@ -28,13 +28,13 @@ export interface Console {
 	readonly error: (line: string) => Effect.Effect<void>;
 }
 
-export const Console: Tag<Console> = Context.Tag<Console>("@wpackages/logger/Console");
+export const Console = Context.GenericTag<Console>("@wpackages/logger/Console");
 
 export interface Logger {
 	readonly log: (entry: LogEntry) => Effect.Effect<void>;
 }
 
-export const Logger: Tag<Logger> = Context.Tag<Logger>("@wpackages/logger/Logger");
+export const Logger = Context.GenericTag<Logger>("@wpackages/logger/Logger");
 
 const levelRank: Record<LogLevel, number> = {
 	debug: 10,
@@ -86,20 +86,27 @@ export const makeLogger = Effect.gen(function*() {
 
 export const ConsoleLive = Layer.succeed(
 	Console,
-	{
+	Console.of({
 		log: (line: string) => Effect.sync(() => console.log(line)),
 		warn: (line: string) => Effect.sync(() => console.warn(line)),
 		error: (line: string) => Effect.sync(() => console.error(line)),
-	},
+	}),
 );
 
-export const LoggerConfigTag: Tag<LoggerConfig> = Context.Tag<LoggerConfig>("@wpackages/logger/LoggerConfig");
+export const LoggerConfigTag = Context.GenericTag<LoggerConfig>("@wpackages/logger/LoggerConfig");
 
 export const LoggerLive = Layer.effect(Logger, makeLogger).pipe(
-	Layer.provide(Layer.succeed(LoggerConfigTag, { redactKeys: ["token", "password", "secret"] })),
+	Layer.provide(
+		Layer.succeed(
+			LoggerConfigTag,
+			LoggerConfigTag.of({ redactKeys: ["token", "password", "secret"] }),
+		),
+	),
 );
 
-export const DefaultLoggerLayer = ConsoleLive.pipe(Layer.provide(LoggerLive));
+const LoggerWithConsole = LoggerLive.pipe(Layer.provide(ConsoleLive));
+
+export const DefaultLoggerLayer = Layer.merge(ConsoleLive, LoggerWithConsole);
 
 export const log = (level: LogLevel, message: string, meta?: Readonly<Record<string, unknown>>) =>
 	Effect.flatMap(Logger, (svc) => svc.log({ level, message, time: Date.now(), ...(meta ? { meta } : {}) }));
