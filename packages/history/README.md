@@ -7,7 +7,7 @@ This library is heavily inspired by the popular `history` package from Remix.
 ## Features
 
 - ✅ **Minimal API**: Simple and intuitive API for managing history (`push`, `replace`, `go`, `listen`).
--  môi trường **Multiple Environments**: Supports browser history (HTML5 API), hash history, and in-memory history.
+- môi trường **Multiple Environments**: Supports browser history (HTML5 API), hash history, and in-memory history.
 - 🚀 **Singleton Exports**: Provides singleton instances for browser and hash history for quick and easy setup.
 - 🖼️ **iFrame Support**: Allows passing a custom `window` object, making it suitable for use in iFrames.
 - 🔒 **Type-Safe**: Written in TypeScript with a type-safe `Action` enum.
@@ -27,9 +27,9 @@ Uses the HTML5 History API to keep your UI in sync with the URL.
 For most web applications, you can import the pre-configured singleton instance.
 
 ```typescript
-import history from '@wpackages/history/browser';
+import history from "@wpackages/history/browser";
 
-history.push('/home');
+history.push("/home");
 ```
 
 **Factory Function**
@@ -37,10 +37,10 @@ history.push('/home');
 If you need to manage history for a specific `window` (like an iFrame), use the factory function.
 
 ```typescript
-import { createBrowserHistory } from '@wpackages/history';
+import { createBrowserHistory } from "@wpackages/history";
 
 const history = createBrowserHistory({ window: myIframe.contentWindow });
-history.push('/profile');
+history.push("/profile");
 ```
 
 ### Hash History
@@ -50,18 +50,18 @@ Uses the hash (`#`) portion of the URL, suitable for older browsers or static fi
 **Singleton Instance (Recommended)**
 
 ```typescript
-import history from '@wpackages/history/hash';
+import history from "@wpackages/history/hash";
 
-history.push('/settings'); // URL becomes /#/settings
+history.push("/settings"); // URL becomes /#/settings
 ```
 
 **Factory Function**
 
 ```typescript
-import { createHashHistory } from '@wpackages/history';
+import { createHashHistory } from "@wpackages/history";
 
 const history = createHashHistory();
-history.push('/dashboard');
+history.push("/dashboard");
 ```
 
 ### Memory History
@@ -69,14 +69,14 @@ history.push('/dashboard');
 Useful for testing and non-browser environments (like React Native). It stores the history stack in an array in memory.
 
 ```typescript
-import { createMemoryHistory } from '@wpackages/history';
+import { createMemoryHistory } from "@wpackages/history";
 
-const history = createMemoryHistory({ initialEntries: ['/login'] });
+const history = createMemoryHistory({ initialEntries: ["/login"] });
 
 console.log(history.location.pathname); // -> /login
 console.log(history.index); // -> 0
 
-history.push('/dashboard');
+history.push("/dashboard");
 console.log(history.index); // -> 1
 ```
 

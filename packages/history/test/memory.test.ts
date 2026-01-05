@@ -1,6 +1,6 @@
 import { describe, expect, it, mock } from "bun:test";
-import { Action } from "../src/types/history";
 import { createMemoryHistory } from "../src/services/memory";
+import { Action } from "../src/types/history";
 
 describe("createMemoryHistory", () => {
 	it("should initialize with a default entry", () => {

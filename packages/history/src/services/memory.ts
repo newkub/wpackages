@@ -1,5 +1,5 @@
 import { Action } from "../types/history";
-import type { Location, HistorySource, Listener } from "../types/history";
+import type { HistorySource, Listener, Location } from "../types/history";
 import { createKey } from "../utils/key";
 import { parsePath } from "../utils/path";
 

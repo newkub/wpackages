@@ -1,4 +1,4 @@
-import { HistorySource, Action } from "../types/history";
+import { Action, HistorySource } from "../types/history";
 
 export function createMockSource(): HistorySource {
 	return {

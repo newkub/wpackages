@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it, mock } from "bun:test";
-import { Action } from "../src/types/history";
 import { createBrowserHistory } from "../src/services/browser";
+import { Action } from "../src/types/history";
 
 beforeAll(() => {
 	const locationMock = {

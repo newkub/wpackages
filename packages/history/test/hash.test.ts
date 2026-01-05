@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it, mock } from "bun:test";
-import { Action } from "../src/types/history";
 import { createHashHistory } from "../src/services/hash";
+import { Action } from "../src/types/history";
 
 beforeAll(() => {
 	let currentHash = "";
