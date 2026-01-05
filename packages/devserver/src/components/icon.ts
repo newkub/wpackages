@@ -14,12 +14,11 @@ export function createIconPlugin<T extends object>(
 	const iconOptions = Array.isArray(options.icon)
 		? deepMerge(defaultIconConfig, {
 			customCollections: {},
-			// @ts-expect-error - unplugin-icons option type is wide; keep runtime simple
 			collections: options.icon,
 		})
 		: typeof options.icon === "object"
 		? deepMerge(defaultIconConfig, options.icon)
 		: defaultIconConfig;
 
-	return icons(iconOptions);
+	return icons(iconOptions as any) as unknown as PluginOption;
 }

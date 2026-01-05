@@ -53,5 +53,5 @@ setInterval(() => {
 }, 5000);
 
 // Start the server
-startServer();
+void startServer();
 

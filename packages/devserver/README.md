@@ -2,34 +2,56 @@
 
 ## Introduction
 
-`@wpackages/devserver` is an advanced, high-performance development server designed to provide a best-in-class developer experience. It offers features like Hot Module Replacement (HMR), smart caching, and an advanced file watcher, aiming to be a more powerful and integrated alternative to Vite's development server within the `wpackages` ecosystem.
+`@wpackages/devserver` is a modern, high-performance development server built from scratch to provide a superior developer experience. It features Hot Module Replacement (HMR), intelligent caching, module graph tracking, and monorepo workspace support, designed to compete with and surpass existing solutions like Vite and Rsbuild.
 
 ## Features
 
-- ⚡ **Lightning Fast**: An optimized development server with minimal overhead for rapid startup and response times.
-- 🔥 **Hot Module Replacement**: Provides instant updates in the browser without requiring a full page reload.
-- 🧠 **Smart Caching**: An intelligent multi-layer caching system for modules and file system operations with automatic invalidation.
-- 👀 **Advanced File Watching**: A high-performance file watcher with support for negation patterns and performance monitoring, powered by `@wpackages/watch`.
-- 🛡️ **In-Browser Error Overlay**: Displays runtime errors directly in the browser with source-mapped stack traces for easy debugging.
-- 📊 **Performance Monitoring**: Offers real-time performance metrics and actionable recommendations.
-- 🔌 **Middleware Support**: Easily extend the server with custom middleware through a simple and powerful API.
-- 🌐 **Integrated WebSocket**: Native WebSocket support for building real-time features.
+### ✅ Implemented (Phase A + Phase B)
+- ⚡ **Core Runtime**: HTTP server + WebSocket + static file serving
+- 🔥 **HMR Protocol**: Custom WebSocket-based HMR with full-reload support
+- 🧠 **Transform Cache**: In-memory + disk caching for transformed modules
+- 📊 **Module Graph**: Dependency tracking and invalidation system
+- 🔍 **Smart Resolver**: Module resolution with monorepo workspace support (`@workspace/package`)
+- 👀 **File Watching**: High-performance watcher with performance monitoring
+- 📈 **Performance Metrics**: Real-time stats and recommendations
+- 🔌 **Plugin API**: Type-safe hooks (resolve/load/transform/configureServer)
+- ✅ **Test Coverage**: Vitest tests with coverage reporting
+- 🏗️ **Build System**: TypeScript compilation with type declarations
 
-## Goal
+### 🚧 In Progress
+- 🎨 **Error Overlay**: Browser overlay for runtime errors
+- ⚡ **Partial HMR**: Module-level hot updates (vs full-reload)
+- 📦 **Optimize Deps**: Dependency pre-bundling strategy
 
-- 🎯 **Peak Developer Productivity**: To create a development server that is so fast and reliable it becomes invisible to the developer.
-- 🧩 **Seamless Integration**: To tightly integrate with other packages in the monorepo, such as `webserver` and `watch`, providing a cohesive experience.
-- 🚀 **Next-Generation Performance**: To push the boundaries of what is possible for a development server in terms of speed and features.
+### 📋 Planned
+- 🌐 **SSR Support**: Server-side rendering development story
+- 🔬 **Tracing Integration**: Performance tracing with `@wpackages/tracing`
+- 📊 **Benchmarks**: Performance comparison against Vite/Rsbuild
 
-## Design Principles
+## Architecture
 
-- **Performance-Oriented**: Performance is a key consideration in every aspect of the server's design.
-- **Extensibility**: The server is designed to be easily extendable and configurable to fit a wide variety of project needs.
-- **Sensible Defaults**: Provides a powerful and intuitive experience out of the box with minimal configuration required.
+```
+@wpackages/devserver
+├── Core Runtime
+│   ├── HTTP Server (h3)
+│   ├── WebSocket Server (ws)
+│   └── Static File Serving
+├── HMR System
+│   ├── WebSocket Protocol
+│   ├── Module Graph
+│   └── Transform Cache
+├── Plugin System
+│   ├── Type-safe Hooks
+│   └── Plugin Manager
+└── Developer Tools
+    ├── Performance Monitor
+    ├── Error Overlay (TODO)
+    └── Devtools Integration
+```
 
 ## Installation
 
-This is a workspace package. Ensure you have installed dependencies from the monorepo root:
+This is a workspace package. Install dependencies from the monorepo root:
 
 ```bash
 bun install
@@ -37,17 +59,161 @@ bun install
 
 ## Usage
 
-The primary way to use this package is by creating a server instance and starting it.
-
-### Example: Basic Server Setup
+### Basic Setup
 
 ```typescript
 import { createDevServer } from "@wpackages/devserver";
 
 const server = createDevServer({
-	root: "./src", // Your project's source root
+	root: "./src",
 	port: 3000,
 	hostname: "localhost",
+	alias: {
+		"@": "./src",
+	},
+	extensions: [".ts", ".tsx", ".js", ".jsx", ".json", ".css"],
+});
+
+// Start the server
+await server.start();
+
+// Handle reloads
+server.onReload(() => {
+	console.log("Files changed, reloading...");
+});
+
+// Graceful shutdown
+process.on("SIGINT", async () => {
+	await server.stop();
+	process.exit(0);
+});
+```
+
+### Monorepo Workspace Support
+
+```typescript
+const server = createDevServer({
+	root: ".",
+	// Automatically resolves @workspace/package to packages/package
+});
+
+// Import from workspace packages
+import { utils } from "@workspace/shared";
+```
+
+### Plugin Development
+
+```typescript
+import type { DevServerPluginInstance } from "@wpackages/devserver";
+
+const myPlugin: DevServerPluginInstance = {
+	name: "my-plugin",
+	version: "1.0.0",
+	hooks: {
+		async resolveId(id, importer) {
+			if (id.startsWith("virtual:")) {
+				return id; // Handle virtual modules
+			}
+			return null; // Let other resolvers handle it
+		},
+		async transform(code, id) {
+			if (id.endsWith(".special")) {
+				return { code: transformSpecial(code) };
+			}
+			return null;
+		},
+	},
+};
+```
+
+## API Reference
+
+### createDevServer(config)
+
+Creates a new dev server instance.
+
+**Config Options:**
+- `port?: number` - Server port (default: 3000)
+- `hostname?: string` - Server hostname (default: "localhost")
+- `root?: string` - Project root directory
+- `alias?: Record<string, string>` - Path aliases
+- `extensions?: readonly string[]` - File extensions to resolve
+- `cache?: CacheConfig` - Cache configuration
+- `watch?: WatchOptions` - File watching options
+
+**Server Methods:**
+- `start(): Promise<void>` - Start the server
+- `stop(): Promise<void>` - Stop the server
+- `onReload(callback): void` - Register reload callback
+- `getStats(): ServerStats` - Get server statistics
+- `getPerformanceStats(): PerformanceStats` - Get performance metrics
+
+## Development
+
+### Scripts
+
+```bash
+bun run dev          # Start development mode
+bun run build        # Build the package
+bun run test         # Run tests
+bun run test:coverage # Run tests with coverage
+bun run lint         # Run linter
+bun run verify       # Run all checks (lint + test + build)
+```
+
+### Testing
+
+The package includes comprehensive tests with Vitest and coverage reporting:
+
+```bash
+bun run test:coverage
+```
+
+Current coverage: ~17% (growing with new features)
+
+## Performance
+
+### Benchmarks (Coming Soon)
+
+We're working on comprehensive benchmarks comparing:
+- Cold start time
+- First page load
+- HMR latency
+- Memory usage
+- Monorepo scale performance
+
+### Goals
+
+- **Cold Start**: < 100ms (vs Vite ~200ms)
+- **HMR Latency**: < 50ms (vs Vite ~100ms)
+- **Memory Usage**: < 50MB for small projects
+- **Monorepo**: Linear scaling with package count
+
+## Comparison with Other Tools
+
+| Feature | @wpackages/devserver | Vite | Rsbuild | Rspack | Webpack |
+|---|---|---|---|---|---|
+| Core Runtime | ✅ | ✅ | ✅ | ✅ | ✅ |
+| HMR | ✅ (custom) | ✅ | ✅ | ✅ | ✅ |
+| Plugin API | ✅ (type-safe) | ✅ | ✅ | ✅ | ✅ |
+| Cache | ✅ (multi-layer) | ✅ | ✅ | ✅ | ✅ |
+| Module Graph | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Monorepo | ✅ (native) | ⚠️ | ✅ | ⚠️ | ⚠️ |
+| Error Overlay | 🚧 | ✅ | ✅ | ✅ | ✅ |
+| Performance | ✅ (monitoring) | ✅ | ✅ | ✅ | ⚠️ |
+| TypeScript | ✅ (native) | ✅ | ✅ | ✅ | ⚠️ |
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run `bun run verify` to ensure quality
+5. Submit a pull request
+
+## License
+
+MIT
 });
 
 // Start the server

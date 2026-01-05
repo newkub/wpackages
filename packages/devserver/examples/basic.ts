@@ -10,7 +10,7 @@ devServer.onReload(() => {
 	console.log("Reload triggered!");
 });
 
-devServer.start();
+void devServer.start();
 
 console.log("Dev server started on http://localhost:3000");
 
@@ -18,5 +18,8 @@ process.on("SIGINT", () => {
 	devServer.stop().then(() => {
 		console.log("Dev server stopped.");
 		process.exit(0);
+	}).catch((error) => {
+		console.error("Error stopping dev server:", error);
+		process.exit(1);
 	});
 });

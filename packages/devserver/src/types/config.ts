@@ -9,11 +9,13 @@ import type { WdevOptions } from "./wdev";
 
 export type DevServerConfig = {
 	readonly plugins?: WdevOptions<object>;
+	readonly port: number;
+	readonly hostname: string;
 	readonly root?: string;
-	readonly port?: number;
-	readonly hostname?: string;
-	readonly watch?: Partial<ChokidarWatchOptions>;
+	readonly alias?: Record<string, string>;
+	readonly extensions?: readonly string[];
 	readonly cache?: Partial<CacheConfig>;
+	readonly watch?: Partial<ChokidarWatchOptions>;
 	readonly server?: {
 		readonly middleware?: Array<(req: Request, res: Response, next: () => Promise<void>) => Promise<void>>;
 	};
@@ -31,7 +33,7 @@ export type ServerStats = {
 	};
 	readonly watcher: { readonly active: boolean } | null;
 	readonly cache: { readonly active: boolean } | null;
-	readonly vite: { readonly status: "running" | "stopped" } | null;
+	readonly hmr: { readonly active: boolean; readonly connectedClients: number } | null;
 	readonly server: { readonly status: "running" | "stopped" } | null;
 };
 

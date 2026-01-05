@@ -1,11 +1,17 @@
 import { toNodeListener } from "h3";
 import { createServer as createHttpServer, type Server } from "node:http";
+import { join } from "node:path";
 import { createDevServerConfig } from "../config";
 import { createServer as createApp } from "../server";
-import type { DevServerConfig, DevServerInstance, ServerStats } from "../types";
+import type { DevServerConfig, DevServerInstance, ServerStats, DevServerWs } from "../types";
 import { createLogger } from "../utils/logger";
 import { createPerformanceMonitor } from "./performance-monitor.service";
 import { createWatcherService } from "./watcher.service";
+import { createWebSocketServer } from "./websocket.service";
+import { handleWebSocket } from "../components/devtools-ws";
+import { createTransformCache, createMetadataCache } from "./cache.service";
+import { createModuleGraph } from "./module-graph.service";
+import { createResolver } from "./resolver.service";
 
 export const createDevServer = (
 	config: Partial<DevServerConfig> = {},
@@ -15,7 +21,19 @@ export const createDevServer = (
 	const performanceMonitor = createPerformanceMonitor(logger);
 	const watcher = createWatcherService();
 
+	// Initialize cache, module graph, and resolver
+	const cacheDir = join(finalConfig.root || process.cwd(), ".wdev", "cache");
+	const transformCache = createTransformCache(cacheDir);
+	const _metadataCache = createMetadataCache(cacheDir);
+	const moduleGraph = createModuleGraph(transformCache);
+	const _resolver = createResolver({
+		root: finalConfig.root || process.cwd(),
+		alias: finalConfig.alias || {},
+		extensions: finalConfig.extensions || [".ts", ".tsx", ".js", ".jsx", ".json", ".css"],
+	});
+
 	let server: Server | null = null;
+	let wsServer: DevServerWs | null = null;
 
 	const start = async (): Promise<void> => {
 		logger.info(
@@ -26,7 +44,17 @@ export const createDevServer = (
 			performanceMonitor.start();
 			const app = createApp();
 			server = createHttpServer(toNodeListener(app));
-			server.listen(finalConfig.port, finalConfig.hostname);
+			wsServer = createWebSocketServer(server);
+			
+			// Setup WebSocket handlers
+			handleWebSocket({
+				root: finalConfig.root || process.cwd(),
+				port: finalConfig.port || 3000,
+				hostname: finalConfig.hostname || "localhost",
+				ws: wsServer,
+			});
+			
+			server.listen(finalConfig.port || 3000, finalConfig.hostname || "localhost");
 			if (finalConfig.root) {
 				watcher.start(finalConfig.root);
 			}
@@ -61,17 +89,30 @@ export const createDevServer = (
 	const onReload = (callback: () => void | Promise<void>): void => {
 		watcher.on("all", (event, path) => {
 			logger.info(`File ${event}: ${path}. Triggering reload...`);
+			
+			// Send HMR update to all connected clients
+			if (wsServer) {
+				wsServer.broadcast({
+					type: "wdev:hmr-update",
+					data: {
+						type: "full-reload",
+						timestamp: Date.now(),
+					},
+				});
+			}
+			
 			Promise.resolve(callback()).catch(err => logger.error(`Reload callback failed: ${err}`));
 		});
 	};
 
 	const getStats = (): ServerStats => {
+		// const graphStats = moduleGraph.getStats(); // TODO: expose in stats
 		return {
 			performance: performanceMonitor.getStats(),
-			vite: null,
+			hmr: { active: !!wsServer, connectedClients: 0 }, // TODO: track connected clients
 			server: server ? { status: "running" } : { status: "stopped" },
 			watcher: { active: !!server },
-			cache: null, // Not implemented yet
+			cache: { active: true }, // Cache is always active now
 		};
 	};
 

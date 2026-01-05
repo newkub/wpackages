@@ -1,32 +1,47 @@
 import fs from "node:fs";
 import { resolve } from "node:path";
-import type { ViteDevServer } from "vite";
+import type { DevServerContext } from "../types/ws";
+import type { AnyWsMessage, WsConfigMessage, WsPackageInfoMessage, WsModuleGraphResponseMessage } from "../types/ws";
 
-export const handleWebSocket = (server: ViteDevServer) => {
-	server.ws.on("connection", (ws) => {
-		ws.on("message", (data) => {
-			const message = JSON.parse(data.toString());
+export const handleWebSocket = (context: DevServerContext) => {
+	context.ws.on("connection", (ws) => {
+		ws.on("message", (data: Buffer) => {
+			const message: AnyWsMessage = JSON.parse(data.toString());
 
-			if (message.type === "wdevtools:client-ready") {
-				server.ws.send("wdevtools:vite-config", { config: server.config });
-				const packageJsonPath = resolve(server.config.root, "package.json");
+			if (message.type === "wdev:client-ready") {
+				const configMessage: WsConfigMessage = {
+					type: "wdev:config",
+					data: {
+						root: context.root,
+						port: context.port,
+						hostname: context.hostname,
+					},
+				};
+				context.ws.send(configMessage.type, configMessage.data);
+
+				const packageJsonPath = resolve(context.root, "package.json");
 				try {
 					const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
-					server.ws.send("wdevtools:package-info", { packageJson });
+					const packageMessage: WsPackageInfoMessage = {
+						type: "wdev:package-info",
+						data: { packageJson },
+					};
+					context.ws.send(packageMessage.type, packageMessage.data);
 				} catch (e) {
 					console.error("wdevtools: could not find or parse package.json", e);
 				}
 			}
 
-			if (message.type === "wdevtools:get-module-graph") {
-				const moduleGraph = server.moduleGraph.getModulesByFile(message.file);
-				const graph = {
-					nodes: Array.from(moduleGraph?.values() ?? []).map(node => ({ id: node.url, label: node.url })),
-					edges: Array.from(moduleGraph?.values() ?? []).flatMap(node =>
-						Array.from(node.importedModules).map(imported => ({ from: node.url, to: imported.url }))
-					),
+			if (message.type === "wdev:get-module-graph") {
+				// TODO: Implement module graph when we have it
+				const graphMessage: WsModuleGraphResponseMessage = {
+					type: "wdev:module-graph",
+					data: {
+						nodes: [],
+						edges: [],
+					},
 				};
-				server.ws.send("wdevtools:module-graph", { graph });
+				context.ws.send(graphMessage.type, graphMessage.data);
 			}
 		});
 	});
