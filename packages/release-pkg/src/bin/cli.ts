@@ -114,7 +114,7 @@ function parseArgs(args: string[]): CliArgs {
 async function interactiveMode(): Promise<ReleaseOptions> {
 	try {
 		// Dynamic import for TUI components
-		const tui = await import("@wts/cli-components");
+		const tui = await import("@wts/tui");
 		const { select, confirm, input } = tui;
 
 		const type = await select({

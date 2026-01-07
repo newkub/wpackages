@@ -43,7 +43,7 @@
 	},
 	"dependencies": {
 		"@effect/platform-bun": "^0.87.0",
-		"@wpackages/cli-components": "workspace:*",
+		"@wpackages/tui": "workspace:*",
 		"@wpackages/config-manager": "workspace:*",
 		"@wpackages/prompt": "workspace:*",
 		"@wpackages/schema": "workspace:*",

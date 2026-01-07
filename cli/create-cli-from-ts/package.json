@@ -2,7 +2,7 @@
   "dependencies": {
     "@clack/prompts": "^0.11.0",
     "@wpackages/cli-builder": "workspace:*",
-    "@wpackages/cli-components": "workspace:*",
+    "@wpackages/tui": "workspace:*",
     "openai": "^6.15.0"
   },
   "description": "Complete CLI toolkit - Commands, Components, and Prompts",
@@ -26,7 +26,7 @@
     "prompt",
     "components",
     "terminal",
-    "cli-components",
+    "tui",
     "typescript"
   ],
   "main": "./dist/index.js",

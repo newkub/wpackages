@@ -1,4 +1,4 @@
-declare module "@wts/cli-components" {
+declare module "@wts/tui" {
 	export function select(options: {
 		message: string;
 		options: { value: string; label: string }[];

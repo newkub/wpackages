@@ -14,7 +14,7 @@ import {
 /**
  * ตัวอย่างการใช้งาน statisticsUtils
  *
- * Run: bun run components/cli-components/src/utils/statistics.utils.usage.ts
+ * Run: bun run components/tui/src/utils/statistics.utils.usage.ts
  */
 
 console.log("--- Statistics Utils Usage Example ---");

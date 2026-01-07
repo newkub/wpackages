@@ -3,7 +3,7 @@ import { findMostSimilar, findSimilar, levenshteinDistance, similarityScore } fr
 /**
  * ตัวอย่างการใช้งาน string-similarity utils
  *
- * Run: bun run components/cli-components/src/utils/string-similarity.usage.ts
+ * Run: bun run components/tui/src/utils/string-similarity.usage.ts
  */
 
 console.log("--- String Similarity Usage Example ---");

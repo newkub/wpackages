@@ -1,8 +1,8 @@
-# @wpackages/cli-components
+# @wpackages/tui
 
 ## Introduction
 
-`@wpackages/cli-components` is a functional, type-safe, and composable toolkit for building interactive command-line interfaces. It provides a unified set of high-level components for handling common CLI UI patterns, such as displaying information, prompting for user input, and showing progress. The library is built with `Effect-TS`, ensuring that all interactions are managed as declarative, testable, and robust effects.
+`@wpackages/tui` is a functional, type-safe, and composable toolkit for building interactive command-line interfaces. It provides a unified set of high-level components for handling common CLI UI patterns, such as displaying information, prompting for user input, and showing progress. The library is built with `Effect-TS`, ensuring that all interactions are managed as declarative, testable, and robust effects.
 
 ## Features
 
@@ -41,7 +41,7 @@ Components from this library are imported and used within an `Effect` program. T
 ### Example: Creating an Interactive Prompt
 
 ```typescript
-import { components } from "@wpackages/cli-components";
+import { components } from "@wpackages/tui";
 import { Effect } from "effect";
 
 // Define a program that asks for the user's name and then greets them.
@@ -61,7 +61,7 @@ const program = Effect.gen(function*() {
 ### Example: Displaying a Table
 
 ```typescript
-import { components } from "@wpackages/cli-components";
+import { components } from "@wpackages/tui";
 import { Effect } from "effect";
 
 const program = components.display.table([

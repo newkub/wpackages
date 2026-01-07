@@ -43,7 +43,7 @@
 		"useUnknownInCatchVariables": true,
 		// Language and Environment
 		"target": "ESNext",
-		"types": ["bun-types"]
+		"types": ["@types/bun"]
 	},
 	"exclude": [
 		"node_modules",
