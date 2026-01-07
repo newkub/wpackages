@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { BunRuntime } from "@effect/platform-bun";
-import { ConsoleSpanExporter, init, SimpleSpanProcessor } from "@wpackages/tracing";
+import { ConsoleSpanExporter, init, SimpleSpanProcessor } from "@wpackages/observability";
 import { Effect, Fiber, Layer } from "effect";
 import { main } from "./app";
 import { ConfigLive, ConfigLiveLayer } from "./config";

@@ -1,8 +1,7 @@
 import { HttpServer } from "@effect/platform";
 import { BunHttpServer } from "@effect/platform-bun";
 import { DatabaseLive } from "@wpackages/database";
-import { ResponseFactoryLive } from "@wpackages/http";
-import { appMiddleware, HttpRoutingConfigLive } from "@wpackages/http-routing";
+import { ResponseFactoryLive, appMiddleware, HttpRoutingConfigLive } from "@wpackages/http-server";
 import { Effect, Layer } from "effect";
 import { ConfigLive } from "./config";
 import { appRoutes } from "./http/routes";
