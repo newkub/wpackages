@@ -5,7 +5,9 @@
 	"description": "Utilities for building API integrations, including error handling, retry logic, caching, and more.",
 	"main": "./dist/index.mjs",
 	"types": "./dist/index.d.mts",
-	"files": ["dist/**"],
+	"files": [
+		"dist/**"
+	],
 	"scripts": {
 		"build": "tsdown --exports --dts --minify",
 		"dev": "tsdown --watch",
@@ -15,9 +17,7 @@
 		"lint": "tsc --noEmit && oxlint --fix",
 		"verify": "bun run format && bun run lint && bun run build && bun run test"
 	},
-	"dependencies": {
-		"@wpackages/design-pattern": "workspace:*"
-	},
+	"dependencies": {},
 	"devDependencies": {
 		"tsdown": "^0.18.4",
 		"typescript": "^5.9.3",

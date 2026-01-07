@@ -1,4 +1,3 @@
-import { createSelector } from "@wpackages/design-pattern";
 import { DEFAULT_RETRY_CONFIG, RETRYABLE_STATUS_CODES } from "../constant";
 import type { RetryConfig } from "../types";
 
@@ -28,21 +27,11 @@ export const calculateRetryDelay = (
 /**
  * Check if status code is retryable
  */
-const createRetryableStatusSelector = (retryableStatuses: readonly number[]) =>
-	createSelector<number, boolean>(
-		retryableStatuses.map(status => ({
-			condition: (statusCode: number) => statusCode === status,
-			result: true,
-		})),
-		false,
-	);
-
 export const isRetryableStatus = (
 	statusCode: number,
 	retryableStatuses: readonly number[] = RETRYABLE_STATUS_CODES,
 ): boolean => {
-	const selector = createRetryableStatusSelector(retryableStatuses);
-	return selector(statusCode);
+	return retryableStatuses.includes(statusCode);
 };
 
 /**

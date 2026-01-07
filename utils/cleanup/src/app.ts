@@ -63,6 +63,7 @@ export const runCleanupApp = async ({
 	p.intro(pc.cyan("🧹 Welcome to computer-cleanup"));
 
 	const config = await loadConfig();
+	config.scanPaths = [process.cwd()];
 
 	let selectedProfile: Profile;
 	let selectedItems: CleanableItem[] | symbol;

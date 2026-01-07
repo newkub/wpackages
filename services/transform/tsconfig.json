@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"baseUrl": ".",
 		"target": "ES2022",
 		"module": "ESNext",
 		"lib": [
@@ -16,12 +15,6 @@
 		"forceConsistentCasingInFileNames": true,
 		"noEmit": true,
 		"paths": {
-			"@w/design-pattern": [
-				"../../utils/design-pattern/src/index.ts"
-			],
-			"@w/design-pattern/*": [
-				"../../utils/design-pattern/src/*"
-			],
 			"parser": [
 				"../parser/src/index.ts"
 			]

@@ -2,7 +2,13 @@
 	"name": "@wpackages/signal",
 	"version": "0.1.0",
 	"description": "Simple reactive primitives for functional programming",
-	"keywords": ["reactive", "functional", "signals", "state", "reactivity"],
+	"keywords": [
+		"reactive",
+		"functional",
+		"signals",
+		"state",
+		"reactivity"
+	],
 	"type": "module",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -10,7 +16,10 @@
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
-	"files": ["dist", "README.md"],
+	"files": [
+		"dist",
+		"README.md"
+	],
 	"scripts": {
 		"build": "tsdown --exports --dts --minify",
 		"dev": "tsdown --watch",

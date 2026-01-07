@@ -21,9 +21,7 @@
 		"verify": "bun format && bun lint && bun test",
 		"test": "vitest"
 	},
-	"dependencies": {
-		"@wpackages/file-system": "workspace:*"
-	},
+	"dependencies": {},
 	"devDependencies": {
 		"@types/bun": "latest",
 		"@types/node": "^24.10.4",

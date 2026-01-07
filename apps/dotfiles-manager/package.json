@@ -34,9 +34,9 @@
 		"@types/mustache": "^4.2.6",
 		"@vitest/coverage-v8": "^4.0.16",
 		"dprint": "^0.50.2",
-		"oxlint": "^1.36.0",
+		"oxlint": "^1.38.0",
 		"oxlint-tsgolint": "^0.10.1",
-		"release-it": "^19.2.2",
+		"release-it": "^19.2.3",
 		"tsdown": "^0.18.4",
 		"typescript": "^5.9.3"
 	},

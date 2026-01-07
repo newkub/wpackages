@@ -9,11 +9,16 @@
 		"test": "vitest",
 		"lint": "oxlint --fix --type-aware"
 	},
-	"keywords": ["state-management", "store", "atomic", "nanostore"],
+	"keywords": [
+		"state-management",
+		"store",
+		"atomic",
+		"nanostore"
+	],
 	"author": "newkub",
 	"license": "MIT",
 	"devDependencies": {
-		"oxlint": "^1.36.0",
+		"oxlint": "^1.38.0",
 		"oxlint-tsgolint": "^0.10.1",
 		"typescript": "^5.9.3",
 		"vitest": "^1.6.1"

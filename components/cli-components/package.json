@@ -21,10 +21,12 @@
 		"functional",
 		"fp-ts"
 	],
-	"files": ["dist", "src"],
+	"files": [
+		"dist",
+		"src"
+	],
 	"dependencies": {
 		"@clack/prompts": "^0.11.0",
-		"@wpackages/design-pattern": "workspace:*",
 		"@wpackages/error": "workspace:*",
 		"@wpackages/functional": "workspace:*",
 		"@wpackages/schema": "workspace:*",

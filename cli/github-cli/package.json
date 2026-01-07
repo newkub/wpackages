@@ -21,7 +21,6 @@
 	"license": "MIT",
 	"dependencies": {
 		"@clack/prompts": "^0.11.0",
-		"@wpackages/bench": "workspace:*",
 		"@wpackages/prompt": "workspace:*",
 		"dotenv": "^17.2.3",
 		"octokit": "^5.0.5",
@@ -30,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "^25.0.3",
-		"oxlint": "^1.36.0",
+		"oxlint": "^1.38.0",
 		"tsdown": "^0.18.4",
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3",

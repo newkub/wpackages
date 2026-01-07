@@ -23,7 +23,12 @@
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
-	"files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
+	"files": [
+		"dist",
+		"README.md",
+		"CHANGELOG.md",
+		"LICENSE"
+	],
 	"keywords": [
 		"cli",
 		"release",

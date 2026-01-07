@@ -20,7 +20,7 @@
 		"@types/node": "^24.10.4",
 		"dprint": "^0.51.1",
 		"effect": "^3.19.14",
-		"release-it": "^19.2.2",
+		"release-it": "^19.2.3",
 		"tsdown": "^0.15.12",
 		"typescript": "^5.9.3"
 	},

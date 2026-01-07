@@ -2,7 +2,15 @@
 	"name": "@wpackages/ts-build",
 	"version": "0.1.0",
 	"description": "A powerful and extensible build tool for TypeScript, Node.js, and native addons.",
-	"keywords": ["build", "typescript", "bun", "node", "native", "napi", "wasm"],
+	"keywords": [
+		"build",
+		"typescript",
+		"bun",
+		"node",
+		"native",
+		"napi",
+		"wasm"
+	],
 	"private": true,
 	"bin": {
 		"bunpack": "./.output/bin/bunpack.js"
@@ -10,7 +18,9 @@
 	"main": "./.output/cjs/index.js",
 	"module": "./.output/esm/index.js",
 	"types": "./.output/types/src/index.d.ts",
-	"files": [".output"],
+	"files": [
+		".output"
+	],
 	"scripts": {
 		"dev": "bun run src/index.ts --watch",
 		"build": "bun run src/cli.ts build",
@@ -32,7 +42,7 @@
 		"bun-plugin-svelte": "^0.0.6",
 		"bun-plugin-vue": "^1.0.0",
 		"bun-types": "latest",
-		"oxlint": "^1.36.0",
+		"oxlint": "^1.38.0",
 		"oxlint-tsgolint": "^0.10.1",
 		"typescript": ">=5.9.3"
 	},

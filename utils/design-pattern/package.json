@@ -1,0 +1,30 @@
+{
+  "name": "@wpackages/design-pattern",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "engines": {
+    "bun": "latest"
+  },
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "build": "bun build ./src/index.ts --outdir ./dist",
+    "test": "vitest",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint . --fix",
+    "format": "dprint fmt",
+    "verify": "bun run format && bun audit && bun run lint && bun run test && bun run build",
+    "watch": "bun --watch verify"
+  },
+  "devDependencies": {
+    "dprint": "latest",
+    "oxlint": "latest",
+    "typescript": "^5.9.3",
+    "vitest": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
