@@ -1,7 +1,7 @@
 import { type Graph } from "@wpackages/data-structure";
 
 export function topologicalSort<T>(graph: Graph<T>): T[] | null {
-	const vertices = Array.from(graph.keys());
+	const vertices: T[] = Array.from(graph.keys());
 	const visited = new Set<T>();
 	const recursionStack = new Set<T>();
 	const sorted: T[] = [];

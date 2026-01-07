@@ -1,5 +1,5 @@
-import { envConfig } from "@/config/env.config";
 import OpenAI from "openai";
+import { envConfig } from "../config/env.config";
 
 let openai: OpenAI | null = null;
 

@@ -95,7 +95,7 @@ const createAskBuilder = <T>(state: AskState<T>): AskBuilder<T> => {
 			if (!state.descriptor) {
 				throw new Error("ask().run() requires a prompt to be selected first");
 			}
-			return prompt(state.descriptor as PromptDescriptor<T, any>, { theme: state.theme });
+			return prompt(state.descriptor as PromptDescriptor<T, any>, state.theme ? { theme: state.theme } : {});
 		},
 	});
 };

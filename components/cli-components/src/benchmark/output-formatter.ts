@@ -1,8 +1,8 @@
 import { formatChart, formatComparison, formatJson, formatTable } from "../components/index";
-import type { BenchComparison } from "../types/index";
+import type { ComparisonResult } from "../types/index";
 
 export function formatOutput(
-	comparison: BenchComparison,
+	comparison: ComparisonResult,
 	outputType: "json" | "table" | "chart" | "comparison",
 ): string {
 	switch (outputType) {

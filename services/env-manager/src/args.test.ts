@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseArgs } from "./args";
+import { parseArgs } from "./utils/args";
 
 describe("env-manager args", () => {
 	it("defaults to current directory and json output", () => {

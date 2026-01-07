@@ -1,4 +1,3 @@
-import { patterns } from "@w/design-pattern";
 import type { BenchComparison, BenchmarkResult, BenchResult, BenchSuite, ComparisonResult } from "../types/index";
 import {
 	formatBenchComparison as formatBenchComparisonBench,
@@ -42,17 +41,11 @@ export const formatChart = (comparison: ComparisonResult): string => {
 
 export type ComparisonFormat = "default" | "table" | "json" | "chart";
 
-const selectFormatter = patterns.behavioral.conditionalSelector.createSelector<
-	ComparisonFormat,
-	(comparison: ComparisonResult) => string
->(
-	[
-		{ condition: (format: ComparisonFormat) => format === "table", result: formatTable },
-		{ condition: (format: ComparisonFormat) => format === "json", result: formatJson },
-		{ condition: (format: ComparisonFormat) => format === "chart", result: formatChart },
-	],
-	formatComparison, // Default formatter
-);
+const comparisonFormatters: Record<Exclude<ComparisonFormat, "default">, (comparison: ComparisonResult) => string> = {
+	table: formatTable,
+	json: formatJson,
+	chart: formatChart,
+} as const;
 
 /**
  * Master formatter for benchmark comparisons
@@ -64,8 +57,8 @@ export const formatComparisonResult = (
 	comparison: ComparisonResult,
 	format: ComparisonFormat = "default",
 ): string => {
-	const formatter = selectFormatter(format);
-	return formatter(comparison);
+	if (format === "default") return formatComparison(comparison);
+	return comparisonFormatters[format](comparison);
 };
 
 /**

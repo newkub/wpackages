@@ -18,7 +18,7 @@ export async function runSingleBenchmark(
 	}
 
 	if (options.export) {
-		await exportResult(options.export, result, options.silent);
+		await exportResult(options.export, result, Boolean(options.silent));
 	}
 
 	return result;

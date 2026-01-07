@@ -12,7 +12,7 @@ export function heapSort<T extends number | string>(arr: T[]): T[] {
 		return [...arr];
 	}
 
-	const comparator: Comparator<T> = (a, b) => {
+	const comparator: Comparator<T> = (a: T, b: T) => {
 		if (a < b) return -1;
 		if (a > b) return 1;
 		return 0;

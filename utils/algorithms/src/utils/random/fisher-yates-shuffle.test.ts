@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fisherYatesShuffle } from "../src/utils/fisher-yates-shuffle";
+import { fisherYatesShuffle } from "./fisher-yates-shuffle";
 
 describe("fisherYatesShuffle", () => {
 	it("should return an array with the same length", () => {
@@ -11,7 +11,7 @@ describe("fisherYatesShuffle", () => {
 	it("should return an array with the same elements", () => {
 		const arr = [1, 2, 3, 4, 5];
 		const shuffled = fisherYatesShuffle(arr);
-		expect(shuffled.sort()).toEqual(arr.sort());
+		expect(shuffled.sort((a, b) => a - b)).toEqual(arr.sort((a, b) => a - b));
 	});
 
 	it("should not modify the original array", () => {

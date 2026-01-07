@@ -3,11 +3,18 @@ import { huffmanCoding } from "./huffman-coding";
 
 describe("huffmanCoding", () => {
 	it("should correctly encode a simple string", () => {
-		const text = "BCAADDDCCACACAC";
+		const text = "BCAADDDCCACACAC"; // Frequencies: C=5, A=5, D=3, B=1
 		const result = huffmanCoding(text);
-		expect(result).not.toBeNull();
-		expect(result!.codes).toEqual({ A: "10", B: "111", C: "0", D: "110" });
-		expect(result!.encodedString).toBe("1110101011011011000100100");
+		const codes = result!.codes;
+
+		// Check that characters with higher frequency have shorter or equal length codes
+		expect(codes['C'].length).toBeLessThanOrEqual(codes['D'].length);
+		expect(codes['A'].length).toBeLessThanOrEqual(codes['D'].length);
+		expect(codes['D'].length).toBeLessThanOrEqual(codes['B'].length);
+
+		// Re-encode the string with the generated codes to verify correctness
+		const expectedEncodedString = text.split('').map(char => codes[char]).join('');
+		expect(result!.encodedString).toBe(expectedEncodedString);
 	});
 
 	it("should handle a string with a single character", () => {

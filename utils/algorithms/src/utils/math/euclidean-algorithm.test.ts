@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { euclideanAlgorithm } from "../src/utils/euclidean-algorithm";
+import { euclideanAlgorithm } from "./euclidean-algorithm";
 
 describe("euclideanAlgorithm", () => {
 	it("should find the greatest common divisor of two positive integers", () => {

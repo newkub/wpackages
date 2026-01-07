@@ -162,4 +162,7 @@ async function main() {
 	}
 }
 
-main();
+void main().catch((error: unknown) => {
+	console.error(error);
+	process.exitCode = 1;
+});

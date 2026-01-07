@@ -57,6 +57,10 @@ export {
 // === Legacy API (Backward Compatibility) ===
 export { parseLegacyFile, parseLegacyMultipleFiles, parseSource } from "./services";
 
+// === Low-level libs ===
+export { parseWithOXC } from "./lib";
+export type { OXCParseOptions } from "./lib";
+
 // === Types ===
 // Universal types
 export type { GenericParseResult, Language, LanguageCategory, LanguageInfo, ParseOptionsBase, Parser } from "./types";

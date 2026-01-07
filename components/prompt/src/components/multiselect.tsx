@@ -34,7 +34,7 @@ export const MultiSelectPromptComponent = <T,>({ message, options }: MultiSelect
 				const isSelected = selectedValues.includes(option.value);
 				const isActive = activeIndex === index;
 				return (
-					<Box key={option.label}>
+					<Box key={index}>
 						<Text color={isActive ? "cyan" : "gray"}>
 							{isActive ? "❯" : " "} {isSelected ? "◉" : "◯"} {option.label}
 						</Text>

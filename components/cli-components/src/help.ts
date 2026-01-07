@@ -3,7 +3,7 @@
  * Uses pure components for rendering
  */
 
-import { generateCommandHelp, generateProgramHelp } from "./components";
+import { generateCommandHelp, generateProgramHelp } from "./components/help";
 import type { ProgramDef } from "./types/index";
 
 /**

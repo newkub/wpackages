@@ -10,7 +10,7 @@ export type CommandOptions = {
 
 export type WdevOptions<T extends object = object> = {
 	readonly check?: Record<string, CommandOptions>;
-	readonly deps?: Record<string, CommandOptions>;
+	readonly deps?: CommandOptions;
 	readonly format?: Record<string, CommandOptions>;
 	readonly lint?: Record<string, CommandOptions>;
 	readonly prepare?: Record<string, CommandOptions>;

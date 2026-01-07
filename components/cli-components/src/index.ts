@@ -3,6 +3,8 @@
  */
 export { runBenchmark } from "./app";
 
+export { components } from "./components";
+
 /**
  * Core types used for configuring and interpreting benchmark results.
  */

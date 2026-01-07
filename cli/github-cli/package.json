@@ -11,16 +11,20 @@
 	"scripts": {
 		"start": "bun run dev",
 		"dev": "bun run src/index.ts",
+		"format": "dprint fmt",
 		"lint": "oxlint --fix --type-aware",
+		"audit": "bun audit --production",
 		"build": "tsdown",
 		"test": "vitest --run",
-		"verify": "bun run format && bun run lint && bun run test && bun audit && bun run build"
+		"verify": "bun run format && bun run lint && bun run test && bun run build"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "MIT",
 	"dependencies": {
 		"@clack/prompts": "^0.11.0",
+		"commander": "^14.0.2",
+		"@wpackages/tui": "workspace:*",
 		"@wpackages/prompt": "workspace:*",
 		"dotenv": "^17.2.3",
 		"octokit": "^5.0.5",
@@ -29,6 +33,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "^25.0.3",
+		"dprint": "^0.50.2",
 		"oxlint": "^1.38.0",
 		"tsdown": "^0.18.4",
 		"tsx": "^4.21.0",

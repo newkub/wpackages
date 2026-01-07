@@ -1,7 +1,7 @@
 import { HttpRouter } from "@effect/platform";
 import { ResponseFactory } from "@wpackages/http";
 import { Effect, Schema } from "effect";
-import { DatabaseError, UserNotFoundError, UserService } from "../../services/user.service";
+import { UserService } from "../../services/user.service";
 import { api } from "../api";
 
 const UserIdParams = Schema.Struct({
@@ -18,9 +18,9 @@ export const userRoute = HttpRouter.get(
 		return response.json({ user });
 	}).pipe(
 		Effect.catchTags({
-			UserNotFoundError: (e) =>
+			"UserNotFoundError": (e) =>
 				Effect.flatMap(Effect.service(ResponseFactory), (r) => r.text(`User ${e.id} not found`, { status: 404 })),
-			DatabaseError: () =>
+			"DatabaseError": () =>
 				Effect.flatMap(Effect.service(ResponseFactory), (r) => r.text("Database error", { status: 503 })),
 		}),
 	),

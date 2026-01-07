@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sieveOfEratosthenes } from "../src/utils/sieve-of-eratosthenes";
+import { sieveOfEratosthenes } from "./sieve-of-eratosthenes";
 
 describe("sieveOfEratosthenes", () => {
 	it("should find all prime numbers up to a given number", () => {

@@ -10,7 +10,7 @@ export function floydWarshall(
 ): FloydWarshallResult {
 	const dist: Record<string, Record<string, number>> = {};
 	const next: Record<string, Record<string, string | null>> = {};
-	const vertices = Array.from(graph.keys());
+	const vertices: string[] = Array.from(graph.keys());
 
 	// Initialize dist and next matrices
 	for (const u of vertices) {

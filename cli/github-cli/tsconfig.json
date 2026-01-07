@@ -1,12 +1,7 @@
 {
 	"extends": "./../../tsconfig.json",
 	"compilerOptions": {
-		"outDir": "./dist",
-		"baseUrl": "../..",
-		"paths": {
-			"@/*": ["apps/github-cli/src/*"],
-			"bench": ["packages/bench/src"]
-		}
+		"outDir": "./dist"
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules", "dist"]

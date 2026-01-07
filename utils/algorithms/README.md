@@ -54,8 +54,10 @@ if (index !== -1) {
 | Category            | Algorithm                  |
 | ------------------- | -------------------------- |
 | Compression         | Huffman Coding             |
+| Compression         | LZW Compression            |
 | Dynamic Programming | Kadane's Algorithm         |
 | Dynamic Programming | Longest Common Subsequence |
+| Dynamic Programming | Knapsack Problem           |
 | Graph               | Bellman-Ford               |
 | Graph               | Depth First Search         |
 | Graph               | Dijkstra's Algorithm       |

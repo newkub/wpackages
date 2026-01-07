@@ -64,6 +64,12 @@ export function prompt<T>(
 	descriptor: PromptDescriptor<T, any>,
 	options: PromptOptions = {},
 ): Promise<PromptResult<T>> {
+	if (!process.stdin.isTTY) {
+		// Ink requires a TTY to operate in raw mode.
+		// Gracefully cancel if not in a TTY environment.
+		return Promise.resolve(cancelResult);
+	}
+
 	return new Promise((resolve) => {
 		const onCancel = () => {
 			legacyRenderer.unmount();

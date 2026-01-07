@@ -29,6 +29,8 @@
 		"@effect/platform": "^0.94.1",
 		"@effect/platform-bun": "^0.87.0",
 		"@wpackages/database": "workspace:*",
+		"@wpackages/http": "workspace:*",
+		"@wpackages/http-routing": "workspace:*",
 		"@wpackages/logger": "workspace:*",
 		"@wpackages/tracing": "workspace:*",
 		"dotenv": "^17.2.3",

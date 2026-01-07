@@ -8,7 +8,7 @@
 
 - ✨ **Interactive Interface**: A user-friendly wizard powered by `@clack/prompts` guides you through the cleanup process.
 - 🎯 **Targeted Cleanup**: Allows you to select exactly which types of artifacts you want to remove.
-- 🚀 **Fast and Safe**: Uses `glob` for fast file discovery and `rimraf` for safe and reliable deletion.
+- 🚀 **Fast and Safe**: Uses `glob` for fast file discovery and `trash` to safely move items to the trash bin.
 - 📦 **Customizable**: Highly configurable with global and project-specific settings.
 - 🚀 **Profiles**: Use different cleanup profiles for different project types (e.g., frontend, Rust).
 
@@ -22,7 +22,7 @@
 
 - **User-Friendly**: The interactive prompt makes the tool easy and safe to use, even for destructive operations.
 - **Simplicity**: The tool has a single, focused purpose and executes it well.
-- **Safety**: Relies on well-tested libraries like `rimraf` to prevent accidental deletion of important files.
+- **Safety**: Relies on the `trash` library to move items to the system's trash bin, preventing accidental permanent deletion.
 
 ## Installation
 
@@ -50,7 +50,7 @@ bun computer-cleanup
 
 The tool will then:
 
-1. **Scan Your Workspace**: It searches for common project artifacts based on pre-configured patterns (e.g., `node_modules`, `dist` folders, `.turbo` cache, etc.).
+1. **Scan Current Directory**: It searches for common project artifacts in the directory where you run the command, based on pre-configured patterns.
 2. **Display Found Items**: It presents you with an interactive list of all the files and directories it found, along with their respective sizes.
 3. **Select and Confirm**: You can use the spacebar to select the items you wish to delete.
 4. **Clean Up**: After you confirm your selection, the tool will safely delete the chosen items and report the total disk space saved.
@@ -59,40 +59,18 @@ The tool will then:
 
 The cleanup tool can be configured at both a global and a project-specific level.
 
-### Global Configuration
+### Configuration
 
-Run `computer-cleanup init` to create a `computer-cleanup.config.json` in your home directory. This file allows you to define:
+The cleanup tool can be configured at both a global and a project-specific level.
 
-- **`scanPaths`**: An array of absolute paths where the tool should look for items to clean.
-- **`profiles`**: An object where you can define different cleanup profiles. Each profile has:
-  - `patterns`: An array of glob patterns to match files/directories.
-  - `excludePatterns`: An array of glob patterns to exclude from the scan.
+- **Global Configuration**: Run `computer-cleanup init` to create a `computer-cleanup.config.json` in your home directory.
+- **Project-Specific Configuration**: Create a `.cleanup.config.json` file in a project's root directory.
 
-Example `computer-cleanup.config.json`:
+These files allow you to define and override cleanup **profiles**. A profile consists of:
+- `patterns`: An array of glob patterns to match files/directories (e.g., `"node_modules"`).
+- `excludePatterns`: An array of glob patterns to exclude from the scan.
 
-```json
-{
-	"profiles": {
-		"default": {
-			"patterns": ["node_modules", "dist"],
-			"excludePatterns": ["**/.git/**"]
-		},
-		"frontend": {
-			"patterns": ["node_modules", ".cache", "build"],
-			"excludePatterns": []
-		}
-	},
-	"scanPaths": ["/Users/your-user/projects"]
-}
-```
-
-### Project-Specific Configuration
-
-You can also create a `.cleanup.config.json` file in the root of a specific project. This file can override `scanPaths` or add/extend profiles from your global config.
-
-When you run `computer-cleanup` from within that project's directory, the local configuration will be merged with the global one, with local settings taking precedence.
-
-This is useful for defining project-specific cleanup rules without altering your global settings.
+When you run `computer-cleanup`, it always scans the **current directory**. It merges any local and global configurations to determine which profiles and patterns to use, with local settings taking precedence.
 
 ## License
 

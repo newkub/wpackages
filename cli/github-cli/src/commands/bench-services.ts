@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
-import type { BenchmarkOptions } from "bench";
-import { runBenchmark } from "bench";
+import type { BenchmarkOptions } from "@wpackages/tui";
+import { runBenchmark } from "@wpackages/tui";
 
 type OutputFormat = NonNullable<BenchmarkOptions["output"]>;
 

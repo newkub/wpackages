@@ -29,7 +29,7 @@ describe("zAlgorithmSearch", () => {
 	it("should find the pattern at the beginning and end", () => {
 		const text = "pattern at the end and pattern at the start";
 		const pattern = "pattern";
-		expect(zAlgorithmSearch(text, pattern)).toEqual([0, 25]);
+		expect(zAlgorithmSearch(text, pattern)).toEqual([0, 23]);
 	});
 
 	it("should return an empty array if the pattern is an empty string", () => {

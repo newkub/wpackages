@@ -1,4 +1,10 @@
 // --- Core & Types ---
+export {
+	createDSU,
+	type DSU,
+	find as dsuFind,
+	union as dsuUnion,
+} from "./utils/core/DisjointSetUnion";
 export * from "./types/list-node";
 export * from "./types/node";
 export * from "./types/tree-node";

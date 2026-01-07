@@ -5,7 +5,7 @@ import {
 	findFastest,
 	findSlowest,
 	sortByPerformance,
-} from "./comparison.utils";
+} from "../src/utils/comparison.utils";
 import { createBenchResult } from "./usage.helpers";
 
 // ============================================================================

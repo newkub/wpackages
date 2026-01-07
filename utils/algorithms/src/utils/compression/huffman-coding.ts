@@ -31,23 +31,24 @@ const buildHuffmanTree = (freqMap: Map<string, number>): HuffmanNode | null => {
 	}
 
 	while (pqSize(pq) > 1) {
-		let left, right;
-		[left, pq] = pqDequeue(pq);
-		[right, pq] = pqDequeue(pq);
+		let leftNode: any, rightNode: any;
 
-		if (left && right) {
+		[leftNode, pq] = pqDequeue(pq);
+		[rightNode, pq] = pqDequeue(pq);
+
+		if (leftNode && rightNode && 'freq' in leftNode && 'freq' in rightNode) {
 			const newNode: HuffmanNode = {
 				char: null,
-				freq: left.freq + right.freq,
-				left,
-				right,
+				freq: leftNode.freq + rightNode.freq,
+				left: leftNode as HuffmanNode,
+				right: rightNode as HuffmanNode,
 			};
 			pq = pqEnqueue(pq, newNode, newNode.freq);
 		}
 	}
 
-	const [root] = pqDequeue(pq);
-	return root ?? null;
+	const [rootNode] = pqDequeue(pq);
+	return rootNode as HuffmanNode ?? null;
 };
 
 // Generate Huffman codes from the tree

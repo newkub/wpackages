@@ -1,12 +1,34 @@
-import { runBenchServices } from "@/commands/bench-services";
-import { cli } from "@/components";
-import { commitAndPushFiles, generateCommitMessage, getRepoFiles } from "@/services";
-import fs from "node:fs/promises";
-import path from "node:path";
+import { Command } from "commander";
+import { runBenchServices } from "./commands/bench-services";
+import { runConfigCommand } from "./commands/config";
+import { runSync } from "./commands/sync";
 
-async function main() {
-	const args = process.argv.slice(2);
-	if (args[0] === "bench-services") {
+const program = new Command();
+
+program.name("github-sync").description("GitHub Sync CLI");
+
+// Global flags for output mode
+program
+	.option("--output <mode>", "Output format: text, json, table, md")
+	.option("--quiet", "Suppress non-error output");
+
+program
+	.command("sync")
+	.description("Run interactive GitHub file sync")
+	.action(async () => {
+		try {
+			await runSync();
+		} catch (error: unknown) {
+			const message = error instanceof Error ? error.message : String(error);
+			console.error(message);
+			process.exitCode = 1;
+		}
+	});
+
+program
+	.command("bench-services")
+	.description("Benchmark services commands")
+	.action(async () => {
 		try {
 			await runBenchServices();
 		} catch (error: unknown) {
@@ -14,84 +36,33 @@ async function main() {
 			console.error(message);
 			process.exitCode = 1;
 		}
-		return;
-	}
+	});
 
-	cli.intro();
-
-	const { owner, repo } = await cli.promptForRepoInfo();
-
-	const fetchSpinner = cli.startSpinner("Fetching repository files...");
-	const repoFiles = await getRepoFiles(owner, repo);
-	cli.stopSpinner(fetchSpinner, "Repository files fetched.");
-
-	if (repoFiles.length === 0) {
-		cli.outro("No files found in the repository.");
-		return;
-	}
-
-	const selectedFiles = await cli.selectFiles(repoFiles);
-
-	const filesToCommit = await Promise.all(
-		selectedFiles.map(async (filePath) => {
-			try {
-				// Assuming the files exist locally at the same path relative to the project root
-				const content = await fs.readFile(
-					path.resolve(process.cwd(), filePath),
-					"utf-8",
-				);
-				return { path: filePath, content };
-			} catch (error) {
-				console.error(`Error reading file ${filePath}:`, error);
-				// Returning null for files that can't be read, will be filtered out later
-				return null;
-			}
-		}),
-	);
-
-	const validFiles = filesToCommit.filter((f) => f !== null) as {
-		path: string;
-		content: string;
-	}[];
-
-	if (validFiles.length === 0) {
-		cli.outro("No valid files selected or files could not be read.");
-		return;
-	}
-
-	const diff = validFiles
-		.map((f) => `--- a/${f.path}\n+++ b/${f.path}\n${f.content}`)
-		.join("\n");
-
-	const genSpinner = cli.startSpinner("Generating commit message with AI...");
-	const commitMessage = await generateCommitMessage(diff);
-	cli.stopSpinner(genSpinner, "Commit message generated.");
-
-	const shouldCommit = await cli.confirmCommit(commitMessage);
-
-	if (shouldCommit) {
-		const commitSpinner = cli.startSpinner("Committing and pushing files...");
+program
+	.command("config")
+	.description("Manage configuration")
+	.option("--get <key>", "Get a configuration value")
+	.option("--set <key>", "Set a configuration value")
+	.option("--value <value>", "Value to set (use with --set)")
+	.option("--scope <scope>", "Config scope: repo or global", "repo")
+	.action(async (options) => {
 		try {
-			const commitSha = await commitAndPushFiles(
-				owner,
-				repo,
-				validFiles,
-				commitMessage,
-			);
-			cli.stopSpinner(
-				commitSpinner,
-				`Successfully committed and pushed. Commit SHA: ${commitSha}`,
-			);
+			await runConfigCommand(options);
 		} catch (error: unknown) {
 			const message = error instanceof Error ? error.message : String(error);
-			cli.stopSpinner(
-				commitSpinner,
-				`Failed to commit and push files: ${message}`,
-			);
+			console.error(message);
+			process.exitCode = 1;
 		}
+	});
+
+program.action(async () => {
+	try {
+		await runSync();
+	} catch (error: unknown) {
+		const message = error instanceof Error ? error.message : String(error);
+		console.error(message);
+		process.exitCode = 1;
 	}
+});
 
-	cli.outro("GitHub Sync process finished.");
-}
-
-main().catch(console.error);
+program.parse(process.argv);

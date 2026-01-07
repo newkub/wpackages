@@ -15,9 +15,14 @@ import {
 } from "../services/index";
 import type { CheckerOptions, CheckResult, CheckResults, CheckType } from "../types/index";
 
-import type { TypeAnalyzerService } from "../services/index";
+import { TypeAnalyzerService } from "../services/index";
 
-const serviceMap: Partial<Record<CheckType, Effect.Tag<any>>> = {
+type CheckerServiceTag = Effect.Tag<
+	any,
+	{ readonly check: (...args: readonly unknown[]) => Effect.Effect<CheckResult, Error> }
+>;
+
+const serviceMap: Partial<Record<CheckType, CheckerServiceTag>> = {
 	type: TypeCheckerService,
 	unused: UnusedCheckerService,
 	deps: DepsCheckerService,
@@ -69,13 +74,13 @@ const runSingleCheck = (
 		const serviceTag = serviceMap[checkType];
 
 		if (!serviceTag) {
-			return Effect.succeed(Effect.succeed({
+			return {
 				duration: 0,
 				issues: [],
 				name: checkType,
 				status: "skipped" as const,
 				summary: "Not implemented yet",
-			}));
+			};
 		}
 
 		const service = yield* serviceTag;

@@ -3,18 +3,19 @@ import { BunRuntime } from "@effect/platform-bun";
 import { ConsoleSpanExporter, init, SimpleSpanProcessor } from "@wpackages/tracing";
 import { Effect, Fiber, Layer } from "effect";
 import { main } from "./app";
-import { loadEnv } from "./config/env";
+import { ConfigLive, ConfigLiveLayer } from "./config";
 
-const env = loadEnv();
-
-if (env.ENABLE_TRACING) {
-	void init({
-		spanProcessor: new SimpleSpanProcessor(new ConsoleSpanExporter()),
-	});
-}
+const AppLayer = Layer.provide(main, ConfigLiveLayer);
 
 const program = Effect.gen(function*() {
-	const fiber = yield* Effect.fork(Layer.launch(main));
+	const enableTracing = yield* Effect.map(ConfigLive, (config) => config.ENABLE_TRACING);
+	if (enableTracing) {
+		void init({
+			spanProcessor: new SimpleSpanProcessor(new ConsoleSpanExporter()),
+		});
+	}
+
+	const fiber = yield* Effect.fork(Layer.launch(AppLayer));
 
 	yield* Effect.sync(() => {
 		if (typeof process?.on !== "function") return;

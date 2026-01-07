@@ -15,14 +15,10 @@
 		"build": "tsdown",
 		"format": "dprint fmt",
 		"test": "vitest --run --passWithNoTests",
-		"verify": "bun format && bun lint && bun test && bun audit && run build"
+		"audit": "bun audit --production",
+		"verify": "bun format && bun lint && bun test && bun run build"
 	},
-	"keywords": [
-		"git",
-		"cli",
-		"interactive",
-		"typescript"
-	],
+	"keywords": ["git", "cli", "interactive", "typescript"],
 	"author": "",
 	"license": "MIT",
 	"dependencies": {

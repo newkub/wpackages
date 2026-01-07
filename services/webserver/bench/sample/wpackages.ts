@@ -34,6 +34,15 @@ const makePayload = (bytes: number): string => {
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const formatUnknownError = (error: unknown): string => {
+	if (error instanceof Error) return `${error.name}: ${error.message}`;
+	try {
+		return JSON.stringify(error);
+	} catch {
+		return String(error);
+	}
+};
+
 const fetchWithRetry = async (url: string): Promise<void> => {
 	let lastError: unknown;
 	for (let attempt = 0; attempt < 10; attempt++) {
@@ -64,7 +73,7 @@ const waitForReady = async (url: string, timeoutMs: number): Promise<void> => {
 			await sleep(Math.min(250, 10 * attempt));
 		}
 	}
-	throw new Error(`Server not ready: ${url}${lastError ? `\nLast error: ${String(lastError)}` : ""}`);
+	throw new Error(`Server not ready: ${url}${lastError ? `\nLast error: ${formatUnknownError(lastError)}` : ""}`);
 };
 
 const pickBasePort = (benchCase: BenchCase): number => {
@@ -191,7 +200,7 @@ const main = async (): Promise<void> => {
 	}
 	if (!child) {
 		throw new Error(
-			`Unable to start @wpackages/webserver process${lastStartError ? `\n${String(lastStartError)}` : ""}${
+			`Unable to start @wpackages/webserver process${lastStartError ? `\n${formatUnknownError(lastStartError)}` : ""}${
 				lastLogs ? `\n\nLogs:\n${lastLogs}` : ""
 			}`,
 		);

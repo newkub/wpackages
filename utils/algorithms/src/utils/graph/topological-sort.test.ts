@@ -71,6 +71,13 @@ describe("topologicalSort", () => {
 			[1, []],
 		]);
 		const sorted = topologicalSort(graph);
-		expect(sorted).toEqual([4, 5, 2, 3, 1, 0]);
+		expect(sorted).not.toBeNull();
+		// Check dependencies
+		expect(sorted!.indexOf(5)).toBeLessThan(sorted!.indexOf(2));
+		expect(sorted!.indexOf(5)).toBeLessThan(sorted!.indexOf(0));
+		expect(sorted!.indexOf(4)).toBeLessThan(sorted!.indexOf(0));
+		expect(sorted!.indexOf(4)).toBeLessThan(sorted!.indexOf(1));
+		expect(sorted!.indexOf(2)).toBeLessThan(sorted!.indexOf(3));
+		expect(sorted!.indexOf(3)).toBeLessThan(sorted!.indexOf(1));
 	});
 });

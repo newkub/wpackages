@@ -1,5 +1,5 @@
-import { envConfig } from "@/config/env.config";
 import { Octokit } from "octokit";
+import { envConfig } from "../config/env.config";
 
 let octokit: Octokit | null = null;
 

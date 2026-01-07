@@ -39,6 +39,13 @@ To start the interactive Git wizard, run the `git-cli` command from the monorepo
 bun git-cli
 ```
 
+Package-level checks:
+
+```bash
+bun run verify
+bun run audit
+```
+
 This will launch an interactive menu that allows you to choose from a variety of Git operations, such as:
 
 - **Commit**: Stage files and write a commit message (with optional AI assistance).

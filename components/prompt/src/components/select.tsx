@@ -31,7 +31,7 @@ export const SelectPromptComponent = <T,>({ message, options }: SelectPromptOpti
 				const coloredLabel = isSelected ? theme.colors.primary(label) : theme.colors.secondary(label);
 
 				return (
-					<Box key={option.label}>
+					<Box key={index}>
 						<Text>{coloredLabel}</Text>
 						{option.hint && <Text>{theme.colors.secondary(`(${option.hint})`)}</Text>}
 					</Box>

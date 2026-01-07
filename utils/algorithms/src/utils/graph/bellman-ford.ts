@@ -12,7 +12,7 @@ export function bellmanFord(
 ): BellmanFordResult {
 	const distances: Record<string, number> = {};
 	const previous: Record<string, string | null> = {};
-	const vertices = Array.from(graph.keys());
+	const vertices: string[] = Array.from(graph.keys());
 	const edges: { u: string; v: string; weight: number }[] = [];
 
 	for (const [u, neighbors] of graph.entries()) {

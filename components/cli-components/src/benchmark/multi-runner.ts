@@ -1,13 +1,13 @@
 import { executeBenchmark } from "../components/benchmark-executor";
 import { compareResults } from "../lib/benchmark";
-import type { BenchComparison, BenchmarkOptions, BenchmarkResult } from "../types/index";
+import type { BenchmarkOptions, BenchmarkResult, ComparisonResult } from "../types/index";
 import { exportResult } from "./exporter";
 import { formatOutput } from "./output-formatter";
 
 export async function runMultiBenchmark(
 	commands: string[],
 	options: BenchmarkOptions,
-): Promise<BenchComparison> {
+): Promise<ComparisonResult> {
 	if (!options.silent) {
 		console.log(`🔥 Benchmarking ${commands.length} commands...\n`);
 	}
@@ -24,11 +24,12 @@ export async function runMultiBenchmark(
 	const comparison = compareResults(results);
 
 	if (!options.silent) {
-		console.log(formatOutput(comparison, options.output || "comparison"));
+		const output = options.output === "text" ? "comparison" : (options.output ?? "comparison");
+		console.log(formatOutput(comparison, output));
 	}
 
 	if (options.export) {
-		await exportResult(options.export, comparison, options.silent);
+		await exportResult(options.export, comparison, Boolean(options.silent));
 	}
 
 	return comparison;

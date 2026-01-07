@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BloomFilter } from "../src/utils/bloom-filter";
+import { BloomFilter } from "./bloom-filter";
 
 describe("BloomFilter", () => {
 	it("should correctly add items and check for their existence", () => {

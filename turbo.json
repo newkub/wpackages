@@ -33,7 +33,7 @@
 			"dependsOn": ["^lint"]
 		},
 		"test": {
-			"dependsOn": ["^lint"],
+			"dependsOn": ["^build"],
 			"cache": true
 		},
 

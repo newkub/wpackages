@@ -1,4 +1,4 @@
-import { createDSU, find as dsuFind, union as dsuUnion, type WeightedGraph } from "@wpackages/data-structure";
+import { createDSU, dsuFind, dsuUnion, type WeightedGraph } from "@wpackages/data-structure";
 
 interface Edge {
 	u: string;

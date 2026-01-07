@@ -41,6 +41,13 @@ To start the interactive synchronization wizard, run the `github-sync` command f
 bun github-sync
 ```
 
+You can also run explicit subcommands:
+
+```bash
+bun github-sync sync
+bun github-sync bench-services
+```
+
 This will launch an interactive menu that guides you through the process of selecting a repository, choosing files to sync, and confirming the operation.
 
 ## License

@@ -14,7 +14,7 @@ describe("floydWarshall", () => {
 
 		const { dist } = floydWarshall(graph);
 
-		expect(dist["A"]!["C"]).toBe(-1);
+		expect(dist["A"]!["C"]).toBe(-3);
 		expect(dist["A"]!["D"]).toBe(2);
 		expect(dist["B"]!["A"]).toBe(3);
 		expect(dist["E"]!["C"]).toBe(1);

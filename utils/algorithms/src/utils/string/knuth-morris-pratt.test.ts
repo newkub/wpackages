@@ -29,7 +29,7 @@ describe("knuthMorrisPratt", () => {
 	it("should find the pattern at the end of the text", () => {
 		const text = "this is the end pattern";
 		const pattern = "pattern";
-		expect(knuthMorrisPratt(text, pattern)).toBe(18);
+		expect(knuthMorrisPratt(text, pattern)).toBe(16);
 	});
 
 	it("should handle overlapping patterns", () => {

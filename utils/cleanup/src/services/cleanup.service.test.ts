@@ -1,9 +1,9 @@
-import { rimraf } from "rimraf";
+import trash from "trash";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup } from "./cleanup.service";
 
-vi.mock("rimraf", () => ({
-	rimraf: vi.fn(),
+vi.mock("trash", () => ({
+	default: vi.fn(),
 }));
 
 describe("cleanup service", () => {
@@ -17,13 +17,13 @@ describe("cleanup service", () => {
 
 	it("should delete specified targets", async () => {
 		const targets = ["/test/node_modules", "/test/dist"];
-		(rimraf as vi.Mock).mockResolvedValue(true as any);
+		(trash as vi.Mock).mockResolvedValue(undefined);
 
 		const results = await cleanup(targets);
 
-		expect(rimraf).toHaveBeenCalledTimes(2);
-		expect(rimraf).toHaveBeenCalledWith("/test/node_modules");
-		expect(rimraf).toHaveBeenCalledWith("/test/dist");
+		expect(trash).toHaveBeenCalledTimes(2);
+		expect(trash).toHaveBeenCalledWith("/test/node_modules");
+		expect(trash).toHaveBeenCalledWith("/test/dist");
 		expect(results).toEqual([
 			{ status: "fulfilled", path: "/test/node_modules" },
 			{ status: "fulfilled", path: "/test/dist" },
@@ -34,11 +34,11 @@ describe("cleanup service", () => {
 		const targets = ["/test/dist"];
 		const error = new Error("Permission denied");
 
-		(rimraf as vi.Mock).mockRejectedValue(error);
+		(trash as vi.Mock).mockRejectedValue(error);
 
 		const results = await cleanup(targets);
 
-		expect(rimraf).toHaveBeenCalledWith("/test/dist");
+		expect(trash).toHaveBeenCalledWith("/test/dist");
 		expect(results).toEqual([
 			{ status: "rejected", path: "/test/dist", reason: error },
 		]);

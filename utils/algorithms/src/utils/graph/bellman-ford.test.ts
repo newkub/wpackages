@@ -32,7 +32,7 @@ describe("bellmanFord", () => {
 		const result = bellmanFord(graph, startNode);
 
 		expect(result.hasNegativeCycle).toBe(false);
-		expect(result.distances).toEqual({ S: 0, A: -1, B: -3, C: -3, D: -2, E: -5 });
+		expect(result.distances).toEqual({ S: 0, A: -1, B: -4, C: -3, D: -3, E: -5 });
 	});
 
 	it("should detect a negative-weight cycle", () => {

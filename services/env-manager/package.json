@@ -35,6 +35,7 @@
 		"verify": "bun run format && bun run audit && bun run lint && bun run test && bun run build"
 	},
 	"dependencies": {
+		"@effect/cli": "^0.73.0",
 		"@wpackages/config-manager": "workspace:*",
 		"effect": "^3.19.14"
 	},
