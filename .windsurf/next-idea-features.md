@@ -3,8 +3,8 @@
 ## สถานะปัจจุบัน (Current Status)
 
 **เวอร์ชัน**: 0.0.1
-**Test Coverage**: 16.06% (3/3 tests passed)
-**Build Status**: ✅ สำเร็จ (34.12 kB minified)
+**Test Coverage**: 18.48% (10/10 tests passed)
+**Build Status**: ✅ สำเร็จ (34.03 kB minified)
 **Lint Status**: ✅ 0 warnings, 0 errors
 
 ## งานที่ทำเสร็จแล้ว (Completed Work)
@@ -18,10 +18,19 @@
 - ✅ แก้ lint warnings (floating promises)
 - ✅ Verify ผ่านทุกขั้นตอน (lint, test, build)
 
-### TODO Comments ที่แก้แล้ว
-- ✅ `dev-server.service.ts:109` - Module graph stats exposed
-- ✅ `dev-server.service.ts:112` - WebSocket clients tracking implemented
-- ✅ `cache.service.ts:90` - Disk cache clearing implemented
+### Phase 2: /comparison-and-make-real Workflow
+- ✅ เพิ่ม Proxy Server support (multiple targets, path rewriting)
+- ✅ เพิ่ม HTTPS Support (custom SSL certificates)
+- ✅ เพิ่ม Error Overlay (browser overlay with stack traces)
+- ✅ เขียน examples เพิ่มเติม (proxy.ts, https.ts, advanced.ts)
+- ✅ อัปเดต README พร้อม feature list ใหม่
+
+### Phase 3: /refactor Workflow
+- ✅ Refactor proxy implementation ให้ใช้ proxy.service.ts จริงๆ แทน inline
+- ✅ แก้ lint errors ทั้งหมด
+- ✅ เพิ่ม tests สำหรับ proxy.service.ts (7 tests, 74.07% coverage)
+- ✅ ปรับปรุง type exports ให้ครบถ้วน (ProxyConfig)
+- ✅ Verify ผ่านทุกขั้นตอน (lint, test:coverage, build)
 - ✅ `cache.service.ts:146` - Disk cache clearing implemented
 - ✅ `components/devtools-ws.ts:36` - Module graph visualization implemented
 
