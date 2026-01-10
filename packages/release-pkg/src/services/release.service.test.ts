@@ -25,11 +25,17 @@ const mockPublishService = {
 	isPublished: vi.fn().mockResolvedValue(false),
 	publish: vi.fn().mockResolvedValue(undefined),
 };
+const mockMonorepoService = {
+	isMonorepo: vi.fn().mockResolvedValue(false),
+	getPackages: vi.fn().mockResolvedValue([]),
+	getChangedPackages: vi.fn().mockResolvedValue([]),
+};
 
 vi.mock("./git.service", () => ({ GitService: vi.fn(() => mockGitService) }));
 vi.mock("./version.service", () => ({ VersionService: vi.fn(() => mockVersionService) }));
 vi.mock("./changelog.service", () => ({ ChangelogService: vi.fn(() => mockChangelogService) }));
 vi.mock("./publish.service", () => ({ PublishService: vi.fn(() => mockPublishService) }));
+vi.mock("./monorepo.service", () => ({ MonorepoService: vi.fn(() => mockMonorepoService) }));
 
 describe("release service (Orchestrator)", () => {
 	beforeEach(() => {

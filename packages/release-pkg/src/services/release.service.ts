@@ -29,7 +29,7 @@ class ReleaseOrchestrator {
 	}
 
 	async run(): Promise<ReleaseResult> {
-		const startTime = Date.now();
+		const _startTime = Date.now();
 		try {
 			// Check if monorepo
 			const isMonorepo = await this.monorepoService.isMonorepo();
