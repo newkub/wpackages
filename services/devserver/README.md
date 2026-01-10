@@ -18,10 +18,12 @@
 - 🔌 **Plugin API**: Type-safe hooks (resolve/load/transform/configureServer)
 - ✅ **Test Coverage**: Vitest tests with coverage reporting
 - 🏗️ **Build System**: TypeScript compilation with type declarations
+- 🌐 **Proxy Server**: Multiple proxy targets with path rewriting
+- 🔒 **HTTPS Support**: Custom SSL certificates for secure development
+- 🎨 **Error Overlay**: Browser overlay for runtime errors with stack traces
 
 ### 🚧 In Progress
 
-- 🎨 **Error Overlay**: Browser overlay for runtime errors
 - ⚡ **Partial HMR**: Module-level hot updates (vs full-reload)
 - 📦 **Optimize Deps**: Dependency pre-bundling strategy
 

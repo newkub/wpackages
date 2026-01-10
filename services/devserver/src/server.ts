@@ -2,16 +2,38 @@ import { createApp, createRouter, eventHandler } from "h3";
 import { readFile } from "node:fs/promises";
 import { extname, join } from "node:path";
 import { injectHtml } from "./services/html-inject.service";
+import { createProxyMiddlewareList } from "./services/proxy.service";
+import type { ProxyConfig } from "./types/config";
 
-export function createServer(root: string = process.cwd()) {
+export function createServer(root: string = process.cwd(), proxyConfigs?: readonly ProxyConfig[]) {
 	const app = createApp();
 	const router = createRouter();
+
+	// Apply proxy middlewares if configured
+	if (proxyConfigs && proxyConfigs.length > 0) {
+		const proxyMiddlewares = createProxyMiddlewareList(proxyConfigs);
+		for (const middleware of proxyMiddlewares) {
+			app.use(middleware);
+		}
+	}
 
 	// Serve HMR client
 	router.get(
 		"/@wdev/hmr-client.js",
 		eventHandler(async () => {
 			const clientPath = join(__dirname, "client", "hmr-client.ts");
+			const content = await readFile(clientPath, "utf-8");
+			return new Response(content, {
+				headers: { "Content-Type": "application/javascript" },
+			});
+		}),
+	);
+
+	// Serve HMR error overlay
+	router.get(
+		"/@wdev/error-overlay.js",
+		eventHandler(async () => {
+			const clientPath = join(__dirname, "client", "error-overlay.ts");
 			const content = await readFile(clientPath, "utf-8");
 			return new Response(content, {
 				headers: { "Content-Type": "application/javascript" },

@@ -6,4 +6,10 @@ export { createApp } from "./wvite";
 export { default } from "./wvite";
 
 // Type exports
-export type { DevServerConfig, DevServerInstance, ServerStats } from "./types";
+export type {
+	CacheConfig,
+	DevServerConfig,
+	DevServerInstance,
+	ServerStats,
+	ProxyConfig,
+} from "./types";
