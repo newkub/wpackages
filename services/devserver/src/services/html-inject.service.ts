@@ -14,50 +14,30 @@ export async function injectHtml(
 	html: string,
 	options: HtmlInjectOptions = { hmrClient: true, errorOverlay: true },
 ): Promise<string> {
-	if (!options.hmrClient) {
-		return html;
+	let scripts = "";
+
+	if (options.hmrClient) {
+		scripts += `
+<script type="module" src="/@wdev/hmr-client.js"></script>`;
 	}
 
-	const hmrScript = `
-<script>
-(function() {
-	const socket = new WebSocket(\`ws://\${window.location.host}\`);
-	
-	socket.addEventListener('open', () => {
-		console.log('[wdev:hmr] Connected to dev server');
-		socket.send(JSON.stringify({ type: 'wdev:client-ready' }));
-	});
-	
-	socket.addEventListener('message', (event) => {
-		const message = JSON.parse(event.data);
-		
-		switch (message.type) {
-			case 'wdev:hmr-update':
-				if (message.data.type === 'full-reload') {
-					console.log('[wdev:hmr] Full reload triggered');
-					window.location.reload();
-				}
-				break;
-			case 'wdev:error':
-				console.error('[wdev:hmr] Error:', message.data.message);
-				break;
-		}
-	});
-	
-	socket.addEventListener('close', () => {
-		console.log('[wdev:hmr] Disconnected from dev server');
-	});
-})();
-</script>`;
+	if (options.errorOverlay) {
+		scripts += `
+<script type="module" src="/@wdev/error-overlay.js"></script>`;
+	}
+
+	if (!scripts) {
+		return html;
+	}
 
 	// Inject before closing </body> tag or at the end
 	const bodyCloseIndex = html.lastIndexOf("</body>");
 	if (bodyCloseIndex !== -1) {
-		return html.slice(0, bodyCloseIndex) + hmrScript + "\n" + html.slice(bodyCloseIndex);
+		return html.slice(0, bodyCloseIndex) + scripts + "\n" + html.slice(bodyCloseIndex);
 	}
 
 	// If no </body> tag, inject at the end
-	return html + "\n" + hmrScript;
+	return html + "\n" + scripts;
 }
 
 export async function loadAndInjectHtml(

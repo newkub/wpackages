@@ -1,5 +1,7 @@
 import { toNodeListener } from "h3";
 import { createServer as createHttpServer, type Server } from "node:http";
+import { createServer as createHttpsServer } from "node:https";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { handleWebSocket } from "../components/devtools-ws";
 import { createDevServerConfig } from "../config";
@@ -36,14 +38,29 @@ export const createDevServer = (
 	let wsServer: DevServerWs | null = null;
 
 	const start = async (): Promise<void> => {
+		const protocol = finalConfig.server?.https ? "https" : "http";
 		logger.info(
-			`Starting development server on ${finalConfig.hostname}:${finalConfig.port}`,
+			`Starting development server on ${protocol}://${finalConfig.hostname}:${finalConfig.port}`,
 		);
 
 		try {
 			performanceMonitor.start();
-			const app = createApp();
-			server = createHttpServer(toNodeListener(app));
+			const app = createApp(
+				finalConfig.root || process.cwd(),
+				finalConfig.server?.proxy,
+			);
+
+			// Create HTTP or HTTPS server
+			if (finalConfig.server?.https) {
+				const httpsOptions = {
+					key: readFileSync(finalConfig.server.https.key),
+					cert: readFileSync(finalConfig.server.https.cert),
+				};
+				server = createHttpsServer(httpsOptions, toNodeListener(app));
+			} else {
+				server = createHttpServer(toNodeListener(app));
+			}
+
 			wsServer = createWebSocketServer(server);
 
 			// Setup WebSocket handlers
