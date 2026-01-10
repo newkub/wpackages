@@ -1,5 +1,5 @@
 {
-	"name": "@wpackages/observability",
+	"name": "@wpackages/observability-service",
 	"version": "0.1.0",
 	"private": true,
 	"description": "Observability utilities (logging, metrics, tracing helpers) for Wrikka packages",
