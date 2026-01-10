@@ -14,121 +14,31 @@ defineProps<{
 const dotClass = (status: StepStatus) => {
 	switch (status) {
 		case "idle":
-			return "dot dotIdle";
+			return "w-12px h-12px rd-full border-2 border-white/18 bg-white/10";
 		case "active":
-			return "dot dotActive";
+			return "w-12px h-12px rd-full border-2 border-run/65 bg-run shadow-[0_0_0_6px_rgba(96,165,250,0.10)] animate-pulse";
 		case "success":
-			return "dot dotOk";
+			return "w-12px h-12px rd-full border-2 border-ok/65 bg-ok";
 		case "error":
-			return "dot dotErr";
+			return "w-12px h-12px rd-full border-2 border-err/65 bg-err";
 	}
 };
 </script>
 
 <template>
-	<div class="timeline">
-		<div v-for="(s, idx) in steps" :key="s.id" class="row">
-			<div class="rail">
+	<div class="flex flex-col gap-2.5 px-0.5 pb-1.5">
+		<div v-for="(s, idx) in steps" :key="s.id" class="grid grid-cols-[18px_1fr] gap-3 items-start">
+			<div class="relative flex flex-col items-center">
 				<div :class="dotClass(s.status)" />
-				<div v-if="idx < steps.length - 1" class="line" />
+				<div
+					v-if="idx < steps.length - 1"
+					class="w-2px flex-1 min-h-26px bg-white/12 mt-2 rd-full"
+				/>
 			</div>
-			<div class="meta">
-				<div class="label">{{ s.label }}</div>
-				<div class="small">{{ s.id }}</div>
+			<div class="pt-0.5">
+				<div class="text-13px font-650 text-white/92 leading-1.25">{{ s.label }}</div>
+				<div class="mt-0.75 text-12px text-white/46">{{ s.id }}</div>
 			</div>
 		</div>
 	</div>
 </template>
-
-<style scoped>
-.timeline {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	padding: 2px 2px 6px;
-}
-
-.row {
-	display: grid;
-	grid-template-columns: 18px 1fr;
-	gap: 12px;
-	align-items: start;
-}
-
-.rail {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
-.dot {
-	width: 12px;
-	height: 12px;
-	border-radius: 999px;
-	border: 2px solid rgba(255, 255, 255, 0.18);
-	background: rgba(255, 255, 255, 0.16);
-}
-
-.dotIdle {
-	background: rgba(255, 255, 255, 0.10);
-}
-
-.dotActive {
-	background: var(--run);
-	border-color: rgba(96, 165, 250, 0.65);
-	box-shadow: 0 0 0 6px rgba(96, 165, 250, 0.10);
-	animation: pulse 1.1s ease-in-out infinite;
-}
-
-.dotOk {
-	background: var(--ok);
-	border-color: rgba(45, 212, 191, 0.65);
-}
-
-.dotErr {
-	background: var(--err);
-	border-color: rgba(251, 113, 133, 0.65);
-}
-
-.line {
-	width: 2px;
-	flex: 1;
-	min-height: 26px;
-	background: rgba(255, 255, 255, 0.12);
-	margin-top: 8px;
-	border-radius: 999px;
-}
-
-.meta {
-	padding-top: 1px;
-}
-
-.label {
-	font-size: 13px;
-	font-weight: 650;
-	color: rgba(255, 255, 255, 0.92);
-	line-height: 1.25;
-}
-
-.small {
-	margin-top: 3px;
-	font-size: 12px;
-	color: rgba(255, 255, 255, 0.46);
-}
-
-@keyframes pulse {
-	0% {
-		transform: scale(1);
-		opacity: 0.95;
-	}
-	50% {
-		transform: scale(1.04);
-		opacity: 1;
-	}
-	100% {
-		transform: scale(1);
-		opacity: 0.95;
-	}
-}
-</style>

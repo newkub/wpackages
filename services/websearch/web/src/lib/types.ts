@@ -1,4 +1,4 @@
-export type Stage = "understanding" | "planning" | "searching" | "summarizing" | "clustering";
+export type Stage = "enhance" | "search" | "summarize" | "cluster";
 
 export type StepStatus = "idle" | "active" | "success" | "error";
 
