@@ -3,3 +3,4 @@ export * from "./config";
 export * from "./history";
 export * from "./analytics";
 export * from "./extended";
+export * from "./workflow";
