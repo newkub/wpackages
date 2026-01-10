@@ -65,6 +65,16 @@ The tool supports both traditional release workflows and modern preview releases
 - 🔧 **Chores** (`chore:`)
 - 🚨 **Breaking Changes** - `feat!:` or `BREAKING CHANGE:` detection
 
+### Monorepo Support
+
+- 🏢 **Native Support** - Built-in monorepo detection and handling
+- 📦 **Workspace Detection** - Auto-detects pnpm, npm, yarn, bun workspaces
+- 🔄 **Changed Packages** - Auto-detect and release only changed packages
+- 🎯 **Specific Workspace** - Release specific package/workspace
+- 🚫 **Skip Private** - Option to skip private packages
+- 📊 **Batch Release** - Release all packages in monorepo at once
+- 🚀 **TurboRepo Compatible** - Works with TurboRepo and other monorepo tools
+
 ## Goal
 
 - 🎯 **Simplify Release Process** - Make releasing packages painless and automated
@@ -489,6 +499,48 @@ jobs:
       - run: bunx wrelease patch --ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+```
+
+### Monorepo Usage
+
+```bash
+# Release all packages in monorepo
+wrelease patch
+
+# Release only changed packages
+wrelease patch --changed-only
+
+# Release specific workspace
+wrelease minor --workspace packages/my-package
+
+# Skip private packages
+wrelease patch --ignore-private
+
+# Release changed packages only, skip private
+wrelease minor --changed-only --ignore-private
+```
+
+```typescript
+import { release } from "@wpackages/release-pkg";
+
+// Release all packages
+const result1 = await release({
+	type: "patch",
+	verbose: true,
+});
+
+// Release only changed packages
+const result2 = await release({
+	type: "minor",
+	changedOnly: true,
+	ignorePrivate: true,
+});
+
+// Release specific workspace
+const result3 = await release({
+	type: "patch",
+	workspace: "packages/my-package",
+});
 ```
 
 ## Workflow

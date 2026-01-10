@@ -1,0 +1,40 @@
+{
+	"name": "@wpackages/formatter",
+	"version": "0.1.0",
+	"description": "Universal code formatter wrapper supporting dprint and biome",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"keywords": [
+		"formatter",
+		"dprint",
+		"biome",
+		"code-formatting",
+		"auto-format"
+	],
+	"author": "newkub",
+	"license": "MIT",
+	"scripts": {
+		"dev": "bun run src/index.ts",
+		"build": "bun build src/index.ts --outdir dist --target bun",
+		"test": "bun test",
+		"lint": "oxlint --fix",
+		"format": "dprint fmt",
+		"verify": "bun format && bun lint && bun test && bun build"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@types/node": "^25.0.5",
+		"dprint": "^0.51.1",
+		"oxlint": "^1.38.0",
+		"typescript": "^5.9.3",
+		"vitest": "^4.0.16"
+	},
+	"packageManager": "bun@1.3.5"
+}
