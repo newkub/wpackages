@@ -104,6 +104,12 @@ function parseArgs(args: string[]): CliArgs {
 			parsed.message = args[++i] ?? "";
 		} else if (arg === "--tag" && args[i + 1]) {
 			parsed.tag = args[++i] ?? "";
+		} else if (arg === "--workspace" && args[i + 1]) {
+			parsed.workspace = args[++i] ?? "";
+		} else if (arg === "--changed-only") {
+			parsed.changedOnly = true;
+		} else if (arg === "--ignore-private") {
+			parsed.ignorePrivate = true;
 		} else if (
 			arg
 			&& !arg.startsWith("-")
