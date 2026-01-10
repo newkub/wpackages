@@ -71,7 +71,7 @@ export class WorkerPool {
 
 		availableWorker.onerror = (error) => {
 			this.activeTasks.delete(availableWorker.id);
-			task.reject(error as E);
+			task.reject(error as any);
 			this.processQueue();
 		};
 	}

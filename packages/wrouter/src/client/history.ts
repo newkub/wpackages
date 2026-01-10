@@ -7,8 +7,8 @@ export type HistoryState = {
 };
 
 export class HistoryManager {
-	private readonly entries: Location[] = [];
-	private index = -1;
+	protected entries: Location[] = [];
+	protected index = -1;
 	private listeners = new Set<(location: Location) => void>();
 
 	constructor(initialLocation: Location) {
@@ -17,7 +17,7 @@ export class HistoryManager {
 	}
 
 	get location(): Location {
-		return this.entries[this.index] ?? this.entries[0];
+		return this.entries[this.index] ?? this.entries[0]!;
 	}
 
 	get length(): number {
@@ -49,7 +49,7 @@ export class HistoryManager {
 			const newIndex = this.index + delta;
 			if (newIndex >= 0 && newIndex < this.entries.length) {
 				this.index = newIndex;
-				this.notify(this.entries[this.index]);
+				this.notify(this.entries[newIndex]!);
 			}
 		});
 	}
@@ -62,6 +62,8 @@ export class HistoryManager {
 		return this.go(1);
 	}
 
+	protected notify(location: Location): void {
+		this.listeners.forEach((listener) => listener(location));
 	private notify(location: Location): void {
 		for (const listener of this.listeners) {
 			listener(location);
@@ -100,9 +102,11 @@ export class BrowserHistory extends HistoryManager {
 			state,
 		};
 
-		return Effect.gen(function* () {
+		return Effect.sync(() => {
 			window.history.pushState(state, "", path);
-			yield* HistoryManager.prototype.push.call(HistoryManager.prototype, location);
+			this.entries = [...this.entries.slice(0, this.index + 1), location];
+			this.index = this.entries.length - 1;
+			this.notify(location);
 		});
 	}
 
@@ -115,9 +119,10 @@ export class BrowserHistory extends HistoryManager {
 			state,
 		};
 
-		return Effect.gen(function* () {
+		return Effect.sync(() => {
 			window.history.replaceState(state, "", path);
-			yield* HistoryManager.prototype.replace.call(HistoryManager.prototype, location);
+			this.entries = [...this.entries.slice(0, this.index), location];
+			this.notify(location);
 		});
 	}
 
