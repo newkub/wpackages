@@ -7,6 +7,7 @@ import { hasKey } from '../src/utils/validators/object.ts'
 import { z } from 'zod'
 import * as yup from 'yup'
 import Joi from 'joi'
+import { type } from 'arktype'
 
 // Sample data for benchmarking
 export const sampleData = {
@@ -61,4 +62,15 @@ export const joiValidators = {
   string: Joi.string().min(1),
   integer: Joi.number().integer(),
   object: Joi.object({ name: Joi.string().required() }),
+}
+
+// Arktype validators
+export const arktypeValidators = {
+  boolean: type('boolean'),
+  array: type('number[]'),
+  collection: type('number[]'),
+  numeric: type('number | string'),
+  string: type('string'),
+  integer: type('number'),
+  object: type({ name: 'string' }),
 }

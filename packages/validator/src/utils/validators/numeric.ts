@@ -10,16 +10,17 @@ import { failure, success } from "../../utils";
 const INVALID_TYPE_ERROR = "INVALID_TYPE";
 
 export function numeric(): Validator<string | number> {
+  const error = { success: false, error: { path: [], message: "Value must be numeric", code: INVALID_TYPE_ERROR } } as const;
   return (value: unknown): ValidationResult<string | number> => {
-    const type = typeof value;
-    if (type === "number") {
-      return value === value ? { success: true, data: value } : { success: false, error: { path: [], message: "Value must be numeric", code: INVALID_TYPE_ERROR } };
+    const t = typeof value;
+    if (t === "number") {
+      return value === value ? { success: true, data: value as number } : error;
     }
-    if (type === "string") {
-      const num = Number(value);
-      return num === num ? { success: true, data: value } : { success: false, error: { path: [], message: "Value must be numeric", code: INVALID_TYPE_ERROR } };
+    if (t === "string") {
+      const n = Number(value);
+      return n === n ? { success: true, data: value as string } : error;
     }
-    return { success: false, error: { path: [], message: "Value must be numeric", code: INVALID_TYPE_ERROR } };
+    return error;
   };
 }
 

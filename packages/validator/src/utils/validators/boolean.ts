@@ -6,12 +6,23 @@ import { ERROR_CODES } from "../../constants";
 import type { Validator, ValidationResult } from "../../types";
 import { failure, success } from "../../utils";
 
+// Cache error codes for performance
+const INVALID_TYPE_ERROR = "INVALID_TYPE";
+
+// Cache error object for performance
+const INVALID_BOOLEAN_ERROR = { path: [], message: "Value must be a boolean", code: INVALID_TYPE_ERROR } as const;
+const TRUE_SUCCESS = { success: true, data: true } as const;
+const FALSE_SUCCESS = { success: true, data: false } as const;
+
 export function boolean(): Validator<boolean> {
   return (value: unknown): ValidationResult<boolean> => {
-    if (typeof value !== "boolean") {
-      return failure("Value must be a boolean", ERROR_CODES.INVALID_TYPE);
+    if (value === true) {
+      return TRUE_SUCCESS;
     }
-    return success(value);
+    if (value === false) {
+      return FALSE_SUCCESS;
+    }
+    return { success: false, error: INVALID_BOOLEAN_ERROR };
   };
 }
 

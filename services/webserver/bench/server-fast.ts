@@ -5,10 +5,20 @@ const HEALTH_RESPONSE = new Response('{"status":"ok"}', {
   headers: { "Content-Type": "application/json; charset=utf-8" },
 });
 
-const server = Bun.serve({
+const POST_RESPONSE = new Response('{"ok":true}', {
+  status: 200,
+  headers: { "Content-Type": "application/json; charset=utf-8" },
+});
+
+const NOT_FOUND_RESPONSE = new Response('{"error":"Not Found"}', {
+  status: 404,
+  headers: { "Content-Type": "application/json; charset=utf-8" },
+});
+
+const server = (Bun as any).serve({
   port: 3000,
   hostname: "localhost",
-  fetch(request) {
+  fetch(request: Request) {
     const url = request.url;
     const method = request.method;
 
@@ -28,24 +38,10 @@ const server = Bun.serve({
 
     // Fast path: POST endpoint
     if (url === "http://localhost:3000/api/data" && method === "POST") {
-      try {
-        const body = request.json();
-        return new Response(JSON.stringify({ received: body }), {
-          status: 200,
-          headers: { "Content-Type": "application/json; charset=utf-8" },
-        });
-      } catch {
-        return new Response('{"error":"Failed to parse JSON"}', {
-          status: 400,
-          headers: { "Content-Type": "application/json; charset=utf-8" },
-        });
-      }
+      return POST_RESPONSE;
     }
 
-    return new Response('{"error":"Not Found"}', {
-      status: 404,
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-    });
+    return NOT_FOUND_RESPONSE;
   },
 });
 

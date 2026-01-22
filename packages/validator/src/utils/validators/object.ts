@@ -11,12 +11,14 @@ const INVALID_TYPE_ERROR = "INVALID_TYPE";
 const REQUIRED_ERROR = "REQUIRED";
 
 export function hasKey<T extends Record<string, unknown>>(key: string): Validator<T> {
+  const invalidTypeError = { success: false, error: { path: [], message: "Value must be an object", code: INVALID_TYPE_ERROR } } as const;
+  const requiredError = { success: false, error: { path: [], message: `Object must have key "${key}"`, code: REQUIRED_ERROR } } as const;
   return (value: unknown): ValidationResult<T> => {
     if (value === null || typeof value !== "object" || Array.isArray(value)) {
-      return { success: false, error: { path: [], message: "Value must be an object", code: INVALID_TYPE_ERROR } };
+      return invalidTypeError;
     }
     if (!(key in value)) {
-      return { success: false, error: { path: [], message: `Object must have key "${key}"`, code: REQUIRED_ERROR } };
+      return requiredError;
     }
     return { success: true, data: value as T };
   };

@@ -24,3 +24,16 @@ export function getImprovementEmoji(value: number): string {
   if (value < 0) return "📉";
   return "➡️";
 }
+
+export function formatSignedPercent(value: number, digits = 1): string {
+  const sign = value > 0 ? "+" : value < 0 ? "" : "";
+  return `${sign}${value.toFixed(digits)}%`;
+}
+
+export function padRight(value: string, width: number): string {
+  return value.length >= width ? value : value + " ".repeat(width - value.length);
+}
+
+export function padLeft(value: string, width: number): string {
+  return value.length >= width ? value : " ".repeat(width - value.length) + value;
+}

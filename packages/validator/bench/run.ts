@@ -1,4 +1,4 @@
-import { sampleData, validators, zodValidators, yupValidators, joiValidators } from './sample.ts'
+import { sampleData, validators, zodValidators, yupValidators, joiValidators, arktypeValidators } from './sample.ts'
 
 // Benchmark configuration
 const ITERATIONS = 100000
@@ -192,6 +192,49 @@ function runBenchmarks() {
   results.push(
     benchmark('joi-object', () => {
       joiValidators.object.validate(sampleData.object)
+    })
+  )
+
+  // Arktype validators
+  results.push(
+    benchmark('arktype-boolean', () => {
+      arktypeValidators.boolean(sampleData.boolean)
+    })
+  )
+
+  results.push(
+    benchmark('arktype-array', () => {
+      arktypeValidators.array(sampleData.array)
+    })
+  )
+
+  results.push(
+    benchmark('arktype-collection', () => {
+      arktypeValidators.collection(sampleData.collection)
+    })
+  )
+
+  results.push(
+    benchmark('arktype-numeric', () => {
+      arktypeValidators.numeric(sampleData.numeric)
+    })
+  )
+
+  results.push(
+    benchmark('arktype-string', () => {
+      arktypeValidators.string(sampleData.string)
+    })
+  )
+
+  results.push(
+    benchmark('arktype-integer', () => {
+      arktypeValidators.integer(sampleData.integer)
+    })
+  )
+
+  results.push(
+    benchmark('arktype-object', () => {
+      arktypeValidators.object(sampleData.object)
     })
   )
 

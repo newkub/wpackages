@@ -20,9 +20,21 @@ export interface BenchmarkResult {
   memory: number;
 }
 
+function getMethodForUrl(url: string): "GET" | "POST" {
+  const pathname = new URL(url).pathname;
+  if (pathname === "/api/data") return "POST";
+  return "GET";
+}
+
+function getScenario(url: string, method: string): string {
+  const pathname = new URL(url).pathname;
+  return `${method} ${pathname}`;
+}
+
 export async function runBenchmark(config: BenchmarkConfig): Promise<BenchmarkResult> {
-  const scenario = config.url.split("/").pop() || "unknown";
-  
+  const method = getMethodForUrl(config.url);
+  const scenario = getScenario(config.url, method);
+
   return new Promise((resolve, reject) => {
     autocannon(
       {
@@ -31,8 +43,8 @@ export async function runBenchmark(config: BenchmarkConfig): Promise<BenchmarkRe
         pipelining: config.pipelining,
         duration: config.duration,
         amount: undefined,
-        method: config.url.includes("data") && scenario === "data" ? "POST" : "GET",
-        body: config.url.includes("data") && scenario === "data" ? JSON.stringify({ test: "data" }) : undefined,
+        method,
+        body: method === "POST" ? JSON.stringify({ test: "data" }) : undefined,
         headers: {
           "content-type": "application/json",
         },
@@ -47,9 +59,9 @@ export async function runBenchmark(config: BenchmarkConfig): Promise<BenchmarkRe
           framework: config.framework,
           scenario,
           latency: {
-            p50: result.latency.mean / 1000, // Convert to ms
-            p95: result.latency.p95 / 1000,
-            p99: result.latency.p99 / 1000,
+            p50: result.latency.mean,
+            p95: result.latency.p95,
+            p99: result.latency.p99,
           },
           throughput: result.requests.mean,
           memory: 0, // Memory tracking can be added later

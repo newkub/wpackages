@@ -1,5 +1,5 @@
 // Sample benchmark configuration and scenarios
-import type { BenchmarkConfig } from "../benchmarks/benchmark";
+import type { BenchmarkConfig } from "./benchmark";
 
 export const sampleConfigs: BenchmarkConfig[] = [
   {
