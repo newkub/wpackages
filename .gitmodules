@@ -7,3 +7,6 @@
 [submodule "packages/webserver/ast-grep"]
 	path = packages/webserver/ast-grep
 	url = https://github.com/newkub/rules
+[submodule "cli"]
+	path = cli
+	url = https://github.com/wrikka/cli
