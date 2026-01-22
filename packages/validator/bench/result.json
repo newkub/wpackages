@@ -1,0 +1,174 @@
+{
+  "timestamp": "2026-01-22T13:22:30.301Z",
+  "iterations": 100000,
+  "results": [
+    {
+      "name": "our-integer",
+      "duration": 5.067999999999984,
+      "opsPerSec": 19731649.56590377,
+      "iterations": 100000
+    },
+    {
+      "name": "our-string",
+      "duration": 6.34170000000006,
+      "opsPerSec": 15768642.477568958,
+      "iterations": 100000
+    },
+    {
+      "name": "our-collection",
+      "duration": 8.378499999999917,
+      "opsPerSec": 11935310.616458911,
+      "iterations": 100000
+    },
+    {
+      "name": "our-object",
+      "duration": 17.89580000000001,
+      "opsPerSec": 5587903.306921175,
+      "iterations": 100000
+    },
+    {
+      "name": "our-boolean",
+      "duration": 18.27940000000001,
+      "opsPerSec": 5470639.080057329,
+      "iterations": 100000
+    },
+    {
+      "name": "our-array",
+      "duration": 22.432700000000068,
+      "opsPerSec": 4457778.154212364,
+      "iterations": 100000
+    },
+    {
+      "name": "our-numeric",
+      "duration": 27.48709999999994,
+      "opsPerSec": 3638070.222031433,
+      "iterations": 100000
+    },
+    {
+      "name": "zod-integer",
+      "duration": 58.56709999999998,
+      "opsPerSec": 1707443.2573919492,
+      "iterations": 100000
+    },
+    {
+      "name": "zod-string",
+      "duration": 63.347999999999956,
+      "opsPerSec": 1578581.8021089863,
+      "iterations": 100000
+    },
+    {
+      "name": "zod-boolean",
+      "duration": 95.24720000000002,
+      "opsPerSec": 1049899.6295954105,
+      "iterations": 100000
+    },
+    {
+      "name": "zod-collection",
+      "duration": 107.9176,
+      "opsPerSec": 926632.91251844,
+      "iterations": 100000
+    },
+    {
+      "name": "joi-boolean",
+      "duration": 118.70999999999913,
+      "opsPerSec": 842389.0152472474,
+      "iterations": 100000
+    },
+    {
+      "name": "zod-object",
+      "duration": 144.89100000000008,
+      "opsPerSec": 690173.9928636006,
+      "iterations": 100000
+    },
+    {
+      "name": "joi-integer",
+      "duration": 199.53490000000056,
+      "opsPerSec": 501165.4602778748,
+      "iterations": 100000
+    },
+    {
+      "name": "zod-array",
+      "duration": 205.2681,
+      "opsPerSec": 487167.75767886,
+      "iterations": 100000
+    },
+    {
+      "name": "zod-numeric",
+      "duration": 217.57200000000012,
+      "opsPerSec": 459617.965547037,
+      "iterations": 100000
+    },
+    {
+      "name": "joi-string",
+      "duration": 271.4433000000008,
+      "opsPerSec": 368401.0620265805,
+      "iterations": 100000
+    },
+    {
+      "name": "yup-numeric",
+      "duration": 301.2647999999999,
+      "opsPerSec": 331933.9000108875,
+      "iterations": 100000
+    },
+    {
+      "name": "yup-string",
+      "duration": 407.21639999999934,
+      "opsPerSec": 245569.67744914046,
+      "iterations": 100000
+    },
+    {
+      "name": "yup-integer",
+      "duration": 422.4562999999998,
+      "opsPerSec": 236710.87400045883,
+      "iterations": 100000
+    },
+    {
+      "name": "yup-boolean",
+      "duration": 477.61810000000014,
+      "opsPerSec": 209372.29975162155,
+      "iterations": 100000
+    },
+    {
+      "name": "joi-numeric",
+      "duration": 545.6089000000011,
+      "opsPerSec": 183281.46773265576,
+      "iterations": 100000
+    },
+    {
+      "name": "joi-object",
+      "duration": 1488.5846000000001,
+      "opsPerSec": 67177.90846418805,
+      "iterations": 100000
+    },
+    {
+      "name": "joi-collection",
+      "duration": 1683.1074000000008,
+      "opsPerSec": 59413.91500031427,
+      "iterations": 100000
+    },
+    {
+      "name": "yup-object",
+      "duration": 1685.8572000000004,
+      "opsPerSec": 59317.005022726706,
+      "iterations": 100000
+    },
+    {
+      "name": "joi-array",
+      "duration": 1786.9202000000005,
+      "opsPerSec": 55962.20804935775,
+      "iterations": 100000
+    },
+    {
+      "name": "yup-collection",
+      "duration": 2087.5828,
+      "opsPerSec": 47902.29158814682,
+      "iterations": 100000
+    },
+    {
+      "name": "yup-array",
+      "duration": 2166.6315,
+      "opsPerSec": 46154.59527843106,
+      "iterations": 100000
+    }
+  ]
+}
