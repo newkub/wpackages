@@ -43,7 +43,7 @@
 		"typescript": "^5.9.3"
 	},
 	"devDependencies": {
-		"@types/node": "^20.19.28",
+		"@types/node": "^20.19.30",
 		"@types/picomatch": "^2.3.4",
 		"@wpackages/test": "workspace:*"
 	}
