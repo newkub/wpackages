@@ -1,7 +1,7 @@
 {
   "name": "@wpackages/schema",
   "version": "0.0.1",
-  "description": "Schema definitions and validation",
+  "description": "High-performance schema validation library - Better than Zod and Effect Schema",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "exports": {
@@ -19,10 +19,7 @@
     "test": "bun test",
     "lint": "oxlint . || true"
   },
-  "dependencies": {
-    "@effect/schema": "^0.75.5",
-    "effect": "^3.19.14"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/bun": "^1.3.6",
     "oxlint": "^1.41.0"
