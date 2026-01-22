@@ -1,11 +1,13 @@
-import type { Resource } from "../models/resource";
-import type { Instrumentation, Sampler, SpanProcessor, Tracer, TracerProviderConfig } from "../types/tracing";
+import { Resource } from "../models/resource";
+import type { Instrumentation, Sampler, SpanProcessor, Tracer } from "../types/tracing";
 import { ParentBasedSampler, TraceIdRatioBasedSampler } from "./sampler.service";
 import { TracerImpl } from "./tracer.service";
 
 export interface TracerProviderConfig {
 	processor: SpanProcessor;
 	instrumentations?: Instrumentation[];
+	resource?: Resource;
+	sampler?: Sampler;
 }
 
 export class TracerProvider {

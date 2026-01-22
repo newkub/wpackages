@@ -85,6 +85,9 @@ export class FileSinkImpl {
 	}
 
 	private compressFile(filePath: string): void {
+		if (!existsSync(filePath)) {
+			return;
+		}
 		const compressedPath = `${filePath}.gz`;
 		const content = readFileSync(filePath);
 		const compressed = this.gzipCompress(content);

@@ -229,14 +229,14 @@ export class ExpressInstrumentation implements Instrumentation {
 
 	private _createMiddleware(middleware: Function) {
 		const self = this;
-		return function(this: any, req: Request, res: ExpressResponse, next: NextFunction) {
+		return function(this: any, req: ExpressRequest, res: ExpressResponse, next: NextFunction) {
 			if (!self._tracer) {
 				return middleware.call(this, req, res, next);
 			}
 
-			const getter: TextMapGetter<Request["headers"]> = {
+			const getter: TextMapGetter<any> = {
 				get: (carrier, key) => {
-					const value = carrier[key];
+					const value = carrier?.[key];
 					if (Array.isArray(value)) return value[0];
 					return value;
 				},

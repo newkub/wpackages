@@ -1,44 +1,61 @@
 import type { RouteParams } from "../types";
 
-export const parsePathParams = (path: string, pathname: string): RouteParams | null => {
-	const pathSegments = path.split("/").filter(Boolean);
-	const pathnameSegments = pathname.split("/").filter(Boolean);
-
-	if (pathSegments.length !== pathnameSegments.length) {
-		return null;
-	}
-
-	const params: RouteParams = {};
-
-	for (let i = 0; i < pathSegments.length; i++) {
-		const pathSegment = pathSegments[i];
-		const pathnameSegment = pathnameSegments[i];
-
-		if (!pathSegment || !pathnameSegment) {
-			return null;
+export const parsePathParams = (() => {
+	const cache = new Map<string, (pathname: string) => RouteParams | null>();
+	
+	return (path: string, pathname: string): RouteParams | null => {
+		// Check cache first
+		if (cache.has(path)) {
+			return cache.get(path)!(pathname);
 		}
-
-		if (pathSegment.startsWith(":")) {
-			params[pathSegment.slice(1)] = pathnameSegment;
-		} else if (pathSegment !== pathnameSegment) {
-			return null;
+		
+		const pathSegments = path.split("/").filter(Boolean);
+		const hasParams = pathSegments.some(seg => seg.startsWith(":"));
+		
+		if (!hasParams) {
+			// Fast path: no params, just check exact match
+			cache.set(path, (pn) => path === pn ? {} : null);
+			return path === pathname ? {} : null;
 		}
-	}
+		
+		// Create optimized matcher function
+		const matcher = (pn: string): RouteParams | null => {
+			const pnSegments = pn.split("/").filter(Boolean);
+			if (pathSegments.length !== pnSegments.length) return null;
+			
+			const params: RouteParams = {};
+			for (let i = 0; i < pathSegments.length; i++) {
+				const pathSeg = pathSegments[i];
+				const pnSeg = pnSegments[i];
+				
+				if (!pathSeg || !pnSeg) return null;
+				
+				if (pathSeg.startsWith(":")) {
+					params[pathSeg.slice(1)] = pnSeg;
+				} else if (pathSeg !== pnSeg) {
+					return null;
+				}
+			}
+			return params;
+		};
+		
+		cache.set(path, matcher);
+		return matcher(pathname);
+	};
+})();
 
-	return params;
-};
+// Pre-allocated headers for performance
+const JSON_HEADERS = { "Content-Type": "application/json" };
+const ERROR_HEADERS = { "Content-Type": "application/json" };
 
 export const createResponse = (
 	data: unknown,
 	status: number = 200,
-	headers: HeadersInit = {},
+	headers: HeadersInit = JSON_HEADERS,
 ): Response => {
-	const responseHeaders = new Headers(headers);
-	responseHeaders.set("Content-Type", "application/json");
-
 	return new Response(JSON.stringify(data), {
 		status,
-		headers: responseHeaders,
+		headers,
 	});
 };
 
@@ -47,12 +64,12 @@ export const createErrorResponse = (
 	status: number = 500,
 	message?: string,
 ): Response => {
-	return createResponse(
+	return new Response(
+		JSON.stringify({ error, message }),
 		{
-			error,
-			message,
+			status,
+			headers: ERROR_HEADERS,
 		},
-		status,
 	);
 };
 
@@ -92,3 +109,5 @@ export const parseQuery = (url: URL): Record<string, string> => {
 export const isValidHttpMethod = (method: string): method is "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD" | "OPTIONS" => {
 	return ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"].includes(method);
 };
+
+export * from "./validation.js";

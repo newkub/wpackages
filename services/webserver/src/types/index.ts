@@ -1,16 +1,18 @@
+import type { Schema } from "@wpackages/schema";
+
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD" | "OPTIONS";
 
 export type RouteParams = Record<string, string | number | boolean>;
 
-export type RouteHandler<R = unknown, E = unknown, A = unknown> = (
+export type RouteHandler<_R = unknown, _E = unknown, A = unknown> = (
 	request: Request,
 	params: RouteParams,
 ) => Promise<A> | A;
 
-export type RouteDefinition<R = unknown, E = unknown, A = unknown> = {
+export type RouteDefinition<_R = unknown, _E = unknown, A = unknown> = {
 	readonly method: HttpMethod;
 	readonly path: string;
-	readonly handler: RouteHandler<R, E, A>;
+	readonly handler: RouteHandler<_R, _E, A>;
 	readonly description?: string;
 };
 
@@ -32,9 +34,9 @@ export type ErrorResponse = {
 };
 
 export type RouteSchema = {
-	readonly query?: Record<string, unknown>;
-	readonly body?: Record<string, unknown>;
-	readonly response?: Record<string, unknown>;
+	readonly query?: Schema<unknown>;
+	readonly body?: Schema<unknown>;
+	readonly response?: Schema<unknown>;
 };
 
 export type RouteWithSchema<R = unknown, E = unknown, A = unknown> = RouteDefinition<R, E, A> & {

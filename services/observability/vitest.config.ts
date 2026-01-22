@@ -6,7 +6,7 @@ export default defineConfig({
 		environment: "node",
 		coverage: {
 			provider: "v8",
-			reporter: ["verbose"],
+			reporter: ["text", "json", "html"],
 		},
 		typecheck: {
 			checker: "lint",

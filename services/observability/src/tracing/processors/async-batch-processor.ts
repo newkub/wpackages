@@ -2,7 +2,7 @@ import type { SpanProcessor, Span } from "../types/tracing";
 
 export interface AsyncBatchProcessorConfig {
 	maxQueueSize: number;
-	maxExportBatchSize: 10;
+	maxExportBatchSize: number;
 	scheduledDelayMillis: number;
 	exportTimeoutMillis: number;
 }

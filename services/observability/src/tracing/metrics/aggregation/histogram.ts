@@ -28,13 +28,14 @@ export class Histogram {
 
 		let bucketIndex = this.config.boundaries.length;
 		for (let i = 0; i < this.config.boundaries.length; i++) {
-			if (value <= this.config.boundaries[i]) {
+			const boundary = this.config.boundaries[i];
+			if (boundary !== undefined && value <= boundary) {
 				bucketIndex = i;
 				break;
 			}
 		}
 
-		this.data.bucketCounts[bucketIndex]++;
+		this.data.bucketCounts[bucketIndex] = (this.data.bucketCounts[bucketIndex] ?? 0) + 1;
 	}
 
 	getData(): HistogramData {

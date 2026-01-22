@@ -2,7 +2,7 @@
  * Basic tests for schema validation
  */
 
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect } from "vitest";
 import {
   string,
   number,

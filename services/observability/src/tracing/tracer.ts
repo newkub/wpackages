@@ -20,7 +20,7 @@ export function resetFinishedSpans(): void {
 	exporter.reset();
 }
 
-export const finishedSpans = getFinishedSpans();
+export const finishedSpans: Span[] = getFinishedSpans();
 
 const processor = new SimpleSpanProcessor(exporter);
 const resource = new Resource({});

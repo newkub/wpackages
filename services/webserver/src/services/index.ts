@@ -1,13 +1,13 @@
 import { Effect, Layer } from "effect";
-import type { RouteParams, RouteHandler, RouteDefinition, Middleware } from "../types";
-import { createResponse, createErrorResponse } from "../utils";
+import type { RouteHandler, RouteDefinition, Middleware } from "../types";
+import { createResponse, createErrorResponse, parsePathParams } from "../utils";
 
 export class WebServerService extends Effect.Service<WebServerService>()("WebServerService", {
-	effect: Effect.gen(function*() {
+	effect: Effect.sync(() => {
 		return {
 			handleRequest: (
 				routes: ReadonlyArray<RouteDefinition>,
-				middlewares: readonly Middleware[] = [],
+				_middlewares: readonly Middleware[] = [],
 			) => (request: Request): Effect.Effect<Response, never> => {
 				return Effect.gen(function*() {
 					const url = new URL(request.url);
@@ -24,7 +24,7 @@ export class WebServerService extends Effect.Service<WebServerService>()("WebSer
 						if (params !== null) {
 							try {
 								const handler = route.handler as RouteHandler;
-								const result = yield* Effect.promise(() => handler(request, params));
+								const result = yield* Effect.promise(() => Promise.resolve(handler(request, params)));
 								return yield* Effect.succeed(createResponse(result));
 							} catch (error) {
 								return yield* Effect.succeed(
@@ -45,34 +45,5 @@ export class WebServerService extends Effect.Service<WebServerService>()("WebSer
 	}),
 }) {}
 
-const parsePathParams = (path: string, pathname: string): RouteParams | null => {
-	const pathSegments = path.split("/").filter(Boolean);
-	const pathnameSegments = pathname.split("/").filter(Boolean);
-
-	if (pathSegments.length !== pathnameSegments.length) {
-		return null;
-	}
-
-	const params: RouteParams = {};
-
-	for (let i = 0; i < pathSegments.length; i++) {
-		const pathSegment = pathSegments[i];
-		const pathnameSegment = pathnameSegments[i];
-
-		if (!pathSegment || !pathnameSegment) {
-			return null;
-		}
-
-		if (pathSegment.startsWith(":")) {
-			params[pathSegment.slice(1)] = pathnameSegment;
-		} else if (pathSegment !== pathnameSegment) {
-			return null;
-		}
-	}
-
-	return params;
-};
-
 export const WebServerServiceLive = Layer.effect(WebServerService, WebServerService);
 
-export * from "./elysia";

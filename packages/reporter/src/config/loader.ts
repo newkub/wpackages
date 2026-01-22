@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { ReporterConfig, ConfigLoadOptions, ConfigLoadResult } from "./types";
 import { DEFAULT_CONFIG } from "./defaults";
+import type { ConfigLoadOptions, ConfigLoadResult, ReporterConfig } from "./types";
 import { validateConfig } from "./validator";
 
 const CONFIG_FILES = [

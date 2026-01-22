@@ -62,16 +62,16 @@ import { report } from "@wpackages/reporter";
 import type { AnalysisResult } from "@wpackages/reporter";
 
 const result: AnalysisResult = {
-  unusedFiles: ["src/unused.ts"],
-  unusedDependencies: new Set(["lodash"]),
-  unusedExports: new Map([
-    ["src/utils.ts", ["helperFunction"]]
-  ])
+	unusedFiles: ["src/unused.ts"],
+	unusedDependencies: new Set(["lodash"]),
+	unusedExports: new Map([
+		["src/utils.ts", ["helperFunction"]],
+	]),
 };
 
 await report(result, {
-  cwd: process.cwd(),
-  format: "text"
+	cwd: process.cwd(),
+	format: "text",
 });
 ```
 
@@ -79,9 +79,9 @@ await report(result, {
 
 ```typescript
 await report(result, {
-  cwd: process.cwd(),
-  format: "json",
-  outputFile: "report.json"
+	cwd: process.cwd(),
+	format: "json",
+	outputFile: "report.json",
 });
 ```
 
@@ -89,9 +89,9 @@ await report(result, {
 
 ```typescript
 await report(result, {
-  cwd: process.cwd(),
-  format: "sarif",
-  outputFile: "report.sarif.json"
+	cwd: process.cwd(),
+	format: "sarif",
+	outputFile: "report.sarif.json",
 });
 ```
 
@@ -101,29 +101,29 @@ await report(result, {
 import type { WorkspaceAnalysisResult } from "@wpackages/reporter";
 
 const workspaceResult: WorkspaceAnalysisResult = {
-  mode: "workspace",
-  root: "/path/to/workspace",
-  packages: [
-    {
-      packageName: "package-a",
-      cwd: "/path/to/package-a",
-      unusedFiles: ["src/unused.ts"],
-      unusedDependencies: new Set(["lodash"]),
-      unusedExports: new Map()
-    },
-    {
-      packageName: "package-b",
-      cwd: "/path/to/package-b",
-      unusedFiles: [],
-      unusedDependencies: new Set(),
-      unusedExports: new Map([["src/index.ts", ["unusedExport"]]])
-    }
-  ]
+	mode: "workspace",
+	root: "/path/to/workspace",
+	packages: [
+		{
+			packageName: "package-a",
+			cwd: "/path/to/package-a",
+			unusedFiles: ["src/unused.ts"],
+			unusedDependencies: new Set(["lodash"]),
+			unusedExports: new Map(),
+		},
+		{
+			packageName: "package-b",
+			cwd: "/path/to/package-b",
+			unusedFiles: [],
+			unusedDependencies: new Set(),
+			unusedExports: new Map([["src/index.ts", ["unusedExport"]]]),
+		},
+	],
 };
 
 await report(workspaceResult, {
-  cwd: process.cwd(),
-  format: "text"
+	cwd: process.cwd(),
+	format: "text",
 });
 ```
 
@@ -135,29 +135,29 @@ Create a `.reporterrc` file in your project root:
 
 ```json
 {
-  "format": "json",
-  "outputFile": "report.json",
-  "severity": {
-    "minLevel": "warning",
-    "exitCode": {
-      "error": 1,
-      "warning": 1,
-      "info": 0,
-      "hint": 0
-    }
-  },
-  "filters": {
-    "exclude": {
-      "files": ["**/*.test.ts", "**/*.spec.ts"]
-    }
-  },
-  "output": {
-    "colors": true,
-    "icons": true,
-    "groupBy": "file",
-    "showSummary": true,
-    "showStats": true
-  }
+	"format": "json",
+	"outputFile": "report.json",
+	"severity": {
+		"minLevel": "warning",
+		"exitCode": {
+			"error": 1,
+			"warning": 1,
+			"info": 0,
+			"hint": 0
+		}
+	},
+	"filters": {
+		"exclude": {
+			"files": ["**/*.test.ts", "**/*.spec.ts"]
+		}
+	},
+	"output": {
+		"colors": true,
+		"icons": true,
+		"groupBy": "file",
+		"showSummary": true,
+		"showStats": true
+	}
 }
 ```
 
@@ -169,14 +169,14 @@ Create a `.reporterrc.ts` file for dynamic configuration:
 import type { ReporterConfig } from "@wpackages/reporter";
 
 const config: ReporterConfig = {
-  format: "text",
-  severity: {
-    minLevel: "error"
-  },
-  output: {
-    colors: true,
-    groupBy: "severity"
-  }
+	format: "text",
+	severity: {
+		minLevel: "error",
+	},
+	output: {
+		colors: true,
+		groupBy: "severity",
+	},
 };
 
 export default config;
@@ -188,7 +188,7 @@ export default config;
 import { loadConfig } from "@wpackages/reporter";
 
 const { config, configPath } = await loadConfig({
-  cwd: process.cwd()
+	cwd: process.cwd(),
 });
 
 console.log("Loaded config from:", configPath);
@@ -198,17 +198,17 @@ console.log("Config:", config);
 ### Config Validation
 
 ```typescript
-import { validateConfig, ConfigValidationError } from "@wpackages/reporter";
+import { ConfigValidationError, validateConfig } from "@wpackages/reporter";
 
 try {
-  validateConfig(config);
+	validateConfig(config);
 } catch (error) {
-  if (error instanceof ConfigValidationError) {
-    console.error("Config validation failed:");
-    for (const err of error.errors) {
-      console.error(`  ${err.path}: ${err.message}`);
-    }
-  }
+	if (error instanceof ConfigValidationError) {
+		console.error("Config validation failed:");
+		for (const err of error.errors) {
+			console.error(`  ${err.path}: ${err.message}`);
+		}
+	}
 }
 ```
 
@@ -218,17 +218,17 @@ try {
 
 ```typescript
 await report(result, {
-  cwd: process.cwd(),
-  format: "text",
-  severity: {
-    minLevel: "error",
-    exitCode: {
-      error: 1,
-      warning: 0,
-      info: 0,
-      hint: 0
-    }
-  }
+	cwd: process.cwd(),
+	format: "text",
+	severity: {
+		minLevel: "error",
+		exitCode: {
+			error: 1,
+			warning: 0,
+			info: 0,
+			hint: 0,
+		},
+	},
 });
 ```
 
@@ -236,16 +236,16 @@ await report(result, {
 
 ```typescript
 await report(result, {
-  cwd: process.cwd(),
-  format: "text",
-  filters: {
-    include: {
-      severity: ["error", "warning"]
-    },
-    exclude: {
-      files: ["**/*.test.ts", "**/*.spec.ts"]
-    }
-  }
+	cwd: process.cwd(),
+	format: "text",
+	filters: {
+		include: {
+			severity: ["error", "warning"],
+		},
+		exclude: {
+			files: ["**/*.test.ts", "**/*.spec.ts"],
+		},
+	},
 });
 ```
 
@@ -253,22 +253,26 @@ await report(result, {
 
 ```typescript
 await report(result, {
-  cwd: process.cwd(),
-  format: "text",
-  output: {
-    colors: true,
-    icons: true,
-    groupBy: "severity",
-    showSummary: true,
-    showStats: true
-  }
+	cwd: process.cwd(),
+	format: "text",
+	output: {
+		colors: true,
+		icons: true,
+		groupBy: "severity",
+		showSummary: true,
+		showStats: true,
+	},
 });
 ```
 
 ### Using Formatters Directly
 
 ```typescript
-import { toJsonReport, toSarifReport, formatTextReport } from "@wpackages/reporter";
+import {
+	formatTextReport,
+	toJsonReport,
+	toSarifReport,
+} from "@wpackages/reporter";
 
 // JSON formatter
 const jsonReport = toJsonReport(result, process.cwd());
@@ -289,14 +293,14 @@ console.log(`Found ${issueCount} issues`);
 
 ```typescript
 interface ReporterConfig {
-  format?: "text" | "json" | "sarif";
-  outputFile?: string;
-  cwd?: string;
-  severity?: SeverityConfig;
-  filters?: FilterConfig;
-  rules?: RuleConfig;
-  output?: OutputConfig;
-  extends?: string | string[];
+	format?: "text" | "json" | "sarif";
+	outputFile?: string;
+	cwd?: string;
+	severity?: SeverityConfig;
+	filters?: FilterConfig;
+	rules?: RuleConfig;
+	output?: OutputConfig;
+	extends?: string | string[];
 }
 ```
 
@@ -304,13 +308,13 @@ interface ReporterConfig {
 
 ```typescript
 interface SeverityConfig {
-  minLevel?: "error" | "warning" | "info" | "hint";
-  exitCode?: {
-    error?: number;
-    warning?: number;
-    info?: number;
-    hint?: number;
-  };
+	minLevel?: "error" | "warning" | "info" | "hint";
+	exitCode?: {
+		error?: number;
+		warning?: number;
+		info?: number;
+		hint?: number;
+	};
 }
 ```
 
@@ -318,16 +322,16 @@ interface SeverityConfig {
 
 ```typescript
 interface FilterConfig {
-  include?: {
-    files?: string[];
-    rules?: string[];
-    severity?: SeverityLevel[];
-  };
-  exclude?: {
-    files?: string[];
-    rules?: string[];
-    severity?: SeverityLevel[];
-  };
+	include?: {
+		files?: string[];
+		rules?: string[];
+		severity?: SeverityLevel[];
+	};
+	exclude?: {
+		files?: string[];
+		rules?: string[];
+		severity?: SeverityLevel[];
+	};
 }
 ```
 
@@ -335,11 +339,11 @@ interface FilterConfig {
 
 ```typescript
 interface OutputConfig {
-  colors?: boolean;
-  icons?: boolean;
-  groupBy?: "file" | "rule" | "severity" | "none";
-  showSummary?: boolean;
-  showStats?: boolean;
+	colors?: boolean;
+	icons?: boolean;
+	groupBy?: "file" | "rule" | "severity" | "none";
+	showSummary?: boolean;
+	showStats?: boolean;
 }
 ```
 

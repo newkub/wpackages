@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import { toJsonReport, toWorkspaceJsonReport } from "./formatters/json-formatter";
 import { toSarifReport } from "./formatters/sarif-formatter";
 import { formatTextReport } from "./formatters/text-formatter";
-import type { AnyAnalysisResult, ReportOptions, ReportFormat } from "./types/report";
+import type { AnyAnalysisResult, ReportFormat, ReportOptions } from "./types/report";
 
 function isWorkspaceResult(result: AnyAnalysisResult): result is import("./types/report").WorkspaceAnalysisResult {
 	return (result as import("./types/report").WorkspaceAnalysisResult).mode === "workspace";
