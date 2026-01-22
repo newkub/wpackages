@@ -22,9 +22,9 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.3.11",
-		"@vitest/coverage-v8": "^4.0.16",
-		"oxlint": "^1.38.0",
+		"@vitest/coverage-v8": "^4.0.17",
+		"oxlint": "^1.41.0",
 		"typescript": "^5.9.3",
-		"vitest": "^4.0.16"
+		"vitest": "^4.0.17"
 	}
 }
