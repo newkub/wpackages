@@ -1,25 +1,26 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import TraceWaterfall from "./components/TraceWaterfall.vue";
+import type { Span } from "./types/tracing";
 
-const traces = ref<any[]>([]);
+const traces = ref<Span[]>([]);
 const lastUpdatedAt = ref<Date | null>(null);
 
-const { data, error, refresh } = await useFetch("/api/v1/traces");
+const { data, error, refresh } = await useFetch<Span[]>("/api/v1/traces");
 
 onMounted(() => {
-	traces.value = data.value as any[] || [];
+	traces.value = data.value ?? [];
 	lastUpdatedAt.value = new Date();
 
 	setInterval(async () => {
 		await refresh();
-		traces.value = data.value as any[] || [];
+		traces.value = data.value ?? [];
 		lastUpdatedAt.value = new Date();
 	}, 2000);
 });
 
 const groupedTraces = computed(() => {
-	const groups = new Map<string, any[]>();
+	const groups = new Map<string, Span[]>();
 	for (const span of traces.value) {
 		if (!groups.has(span.traceId)) {
 			groups.set(span.traceId, []);

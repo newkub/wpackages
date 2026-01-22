@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const props = defineProps<{ span: any }>();
+import type { Span } from "../types/tracing";
+
+const props = defineProps<{ span: Span }>();
 
 const duration = (props.span.endTime ?? 0) - props.span.startTime;
 

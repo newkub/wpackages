@@ -1,5 +1,7 @@
+import type { Span } from "~/app/types/tracing";
+
 export default defineEventHandler(async (event) => {
-	const spans = await readBody(event);
+	const spans = await readBody<Span[]>(event);
 	const storage = event.context.storage;
 
 	if (Array.isArray(spans)) {

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import SpanBar from "./SpanBar.vue";
+import type { Span } from "../types/tracing";
 
-const props = defineProps<{ trace: any[] }>();
+const props = defineProps<{ trace: Span[] }>();
 
 const sortedSpans = computed(() => {
 	return [...props.trace].sort((a, b) => a.startTime - b.startTime);
@@ -15,12 +16,12 @@ const traceEndTime = computed(() => {
 
 const traceDuration = computed(() => traceEndTime.value - traceStartTime.value);
 
-const getSpanOffset = (span: any) => {
+const getSpanOffset = (span: Span) => {
 	if (traceDuration.value === 0) return 0;
 	return ((span.startTime - traceStartTime.value) / traceDuration.value) * 100;
 };
 
-const getSpanWidth = (span: any) => {
+const getSpanWidth = (span: Span) => {
 	if (traceDuration.value === 0) return 100;
 	const duration = (span.endTime ?? traceEndTime.value) - span.startTime;
 	return (duration / traceDuration.value) * 100;
