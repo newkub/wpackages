@@ -10,7 +10,7 @@
 	"main": "./dist/index.mjs",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.mts",
-	"packageManager": "bun@1.3.5",
+	"packageManager": "bun@1.3.6",
 	"scripts": {
 		"dev": "bun --watch src/index.ts",
 		"format": "dprint fmt",
@@ -34,13 +34,13 @@
 	"license": "MIT",
 	"dependencies": {
 		"@wpackages/cli-builder": "workspace:*",
-		"@wpackages/tui": "workspace:*",
+		"@wpackages/config-manager": "workspace:*",
 		"@wpackages/prompt": "workspace:*",
-		"@wpackages/config-manager": "workspace:*"
+		"@wpackages/tui": "workspace:*"
 	},
 	"devDependencies": {
-		"@types/bun": "^1.3.5",
-		"oxlint": "^1.38.0",
+		"@types/bun": "^1.3.6",
+		"oxlint": "^1.41.0",
 		"typescript": "^5.9.3"
 	},
 	"exports": {

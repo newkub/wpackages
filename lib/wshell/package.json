@@ -3,8 +3,6 @@
 	"version": "0.0.1",
 	"dependencies": {
 		"@effect/schema": "^0.75.5",
-		"@wpackages/command": "workspace:*",
-		"@wpackages/console": "workspace:*",
 		"@wpackages/plugins-system": "workspace:*",
 		"effect": "^3.19.14"
 	},
@@ -20,6 +18,6 @@
 	},
 	"type": "module",
 	"devDependencies": {
-		"oxlint": "^1.38.0"
+		"oxlint": "^1.41.0"
 	}
 }
