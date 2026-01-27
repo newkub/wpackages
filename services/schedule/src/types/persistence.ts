@@ -38,7 +38,9 @@ export interface ExecutionRepository {
 }
 
 export interface MetricsRepository {
-	readonly getJobMetrics: (jobId: string) => Effect.Effect<Option.Option<JobMetrics>>;
+	readonly getJobMetrics: (
+		jobId: string,
+	) => Effect.Effect<Option.Option<JobMetrics>>;
 	readonly getAllMetrics: () => Effect.Effect<
 		ReadonlyArray<{ jobId: string; metrics: JobMetrics }>
 	>;
