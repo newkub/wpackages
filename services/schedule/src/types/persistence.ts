@@ -14,8 +14,8 @@ export interface PersistenceConfig {
 
 export interface JobRepository {
 	readonly save: (job: Job) => Effect.Effect<void>;
-	readonly findById: (id: string) => Effect.Effect<Option<Job>>;
-	readonly findByName: (name: string) => Effect.Effect<Option<Job>>;
+	readonly findById: (id: string) => Effect.Effect<Option.Option<Job>>;
+	readonly findByName: (name: string) => Effect.Effect<Option.Option<Job>>;
 	readonly findAll: (filter?: JobFilter) => Effect.Effect<ReadonlyArray<Job>>;
 	readonly update: (id: string, update: Partial<Job>) => Effect.Effect<void>;
 	readonly delete: (id: string) => Effect.Effect<void>;
@@ -26,7 +26,7 @@ export interface JobRepository {
 
 export interface ExecutionRepository {
 	readonly save: (execution: JobExecution) => Effect.Effect<void>;
-	readonly findById: (id: string) => Effect.Effect<Option<JobExecution>>;
+	readonly findById: (id: string) => Effect.Effect<Option.Option<JobExecution>>;
 	readonly findByJobId: (
 		jobId: string,
 		limit?: number,
@@ -38,7 +38,7 @@ export interface ExecutionRepository {
 }
 
 export interface MetricsRepository {
-	readonly getJobMetrics: (jobId: string) => Effect.Effect<Option<JobMetrics>>;
+	readonly getJobMetrics: (jobId: string) => Effect.Effect<Option.Option<JobMetrics>>;
 	readonly getAllMetrics: () => Effect.Effect<
 		ReadonlyArray<{ jobId: string; metrics: JobMetrics }>
 	>;

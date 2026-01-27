@@ -1,6 +1,4 @@
-import { Option } from "effect";
 import type { Effect } from "effect";
-import type { Job } from "./job";
 
 export type DelayedJobStatus =
 	| "scheduled"
