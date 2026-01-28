@@ -22,12 +22,12 @@ export const Table = (props: TableComponentProps): ReturnType<typeof h> => {
 			borderStyle: showBorders ? "single" : undefined,
 			borderColor: headerColor,
 		},
-		...headers.map((header) =>
+		...headers.map((header: string) =>
 			h("text", { color: headerColor, bold: true }, ` ${header} `),
 		),
 	);
 
-	const dataRows = rows.map((row, rowIndex) => {
+	const dataRows = rows.map((row: readonly string[], rowIndex: number) => {
 		const isSelected = rowIndex === selectedIndex;
 		return h(
 			"box",
@@ -36,7 +36,7 @@ export const Table = (props: TableComponentProps): ReturnType<typeof h> => {
 				borderStyle: showBorders ? "single" : undefined,
 				borderColor: isSelected ? selectedColor : undefined,
 			},
-			...row.map((cell) =>
+			...row.map((cell: string) =>
 				h(
 					"text",
 					{ color: isSelected ? selectedColor : "white", bold: isSelected },

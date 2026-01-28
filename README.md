@@ -138,10 +138,12 @@ Framework kits are meta-packages that aggregate related tools for specific devel
 | Package | Description | Platform | Use Case | Status | Documentation | Testing | Bench | Size |
 |---------|-------------|----------|----------|--------|--------------|---------|-------|------|
 | `@wpackages/error` | Error handling utilities | Bun, Node.js, Browser | Error Handling | ✅ Stable | ✅ Full | ✅ Vitest | ❌ None | S |
+| `@wpackages/effect` | Lightweight functional effect system with Resource helpers | Bun, Node.js | Effects & Side-Effect Management | 🧪 Experimental | 📝 Partial | ✅ Vitest | ❌ None | S |
 | `@wpackages/schema` | Schema validation system | Bun, Node.js, Browser | Validation | ✅ Stable | ✅ Full | ✅ Vitest | ✅ Bench | M |
 | `@wpackages/signal` | Reactive signals for state management | Bun, Node.js, Browser | Reactivity | ✅ Stable | ✅ Full | ✅ Vitest | ✅ Bench | M |
 | `@wpackages/store` | State management store | Bun, Node.js, Browser | State Management | ✅ Stable | ✅ Full | ✅ Vitest | ❌ None | M |
 | `@wpackages/diff` | Diff utilities for comparing data structures | Bun, Node.js, Browser | Data Comparison | ✅ Stable | ✅ Full | ✅ Vitest | ✅ Bench | M |
+| `@wpackages/worker` | Web Worker management with task pooling and concurrent execution | Bun, Node.js | Worker Management | ✅ Stable | ✅ Full | ✅ Vitest | ❌ None | S |
 
 ### CLI Tools
 
@@ -162,7 +164,7 @@ Framework kits are meta-packages that aggregate related tools for specific devel
 
 | Package | Description | Platform | Use Case | Status | Documentation | Testing | Bench | Size |
 |---------|-------------|----------|----------|--------|--------------|---------|-------|------|
-| `@wpackages/program` | Main program application | Bun | Application | 🚧 In Development | 📝 Partial | ⏳ Planned | ❌ None | L |
+| `@wpackages/program` | Main program application | Bun | Application | 🚧 In Development | 📝 Partial | ✅ Vitest | ❌ None | L |
 | `@wpackages/dotfiles-manager` | Dotfiles management tool | Bun | System Tools | 🚧 In Development | 📝 Partial | ⏳ Planned | ❌ None | M |
 | `@wpackages/record-terminal` | Terminal recording utility | Bun | Terminal Tools | 🚧 In Development | 📝 Partial | ⏳ Planned | ❌ None | M |
 | `@wpackages/replace` | Text replacement tool | Bun | Text Processing | 🚧 In Development | 📝 Partial | ⏳ Planned | ❌ None | S |

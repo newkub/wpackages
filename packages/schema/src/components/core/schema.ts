@@ -2,134 +2,161 @@
  * Core Schema implementation with high-performance validation
  */
 
-import type { Schema, Result } from "../../types/core";
+import { SchemaValidationError } from "../../error/validation-error";
+import type { Result, Schema } from "../../types/core";
 
 export class BaseSchema<T> implements Schema<T> {
-  private _type: string;
-  private _parseFn: (value: unknown) => Result<T>;
-  private _optional: boolean = false;
-  private _nullable: boolean = false;
-  private _transformFn?: (value: T) => any;
-  private _refinements: Array<(value: T) => boolean | string> = [];
-  private _message?: string;
+	private _type: string;
+	private _parseFn: (value: unknown) => Result<T>;
+	private _optional: boolean = false;
+	private _nullable: boolean = false;
+	private _defaultFn?: () => T;
+	private _transformFn?: (value: T) => any;
+	private _refinements: Array<(value: T) => boolean | string> = [];
+	private _message?: string;
 
-  constructor(type: string, parseFn: (value: unknown) => Result<T>) {
-    this._type = type;
-    this._parseFn = parseFn;
-  }
+	constructor(type: string, parseFn: (value: unknown) => Result<T>) {
+		this._type = type;
+		this._parseFn = parseFn;
+	}
 
-  parse(value: unknown): Result<T> {
-    // Handle optional
-    if (this._optional && value === undefined) {
-      return { success: true, data: undefined as T };
-    }
+	parse(value: unknown): Result<T> {
+		if (value === undefined && this._defaultFn) {
+			value = this._defaultFn();
+		}
 
-    // Handle nullable
-    if (this._nullable && value === null) {
-      return { success: true, data: null as T };
-    }
+		// Handle optional
+		if (this._optional && value === undefined) {
+			return { success: true, data: undefined as T };
+		}
 
-    // Parse value
-    const result = this._parseFn(value);
+		// Handle nullable
+		if (this._nullable && value === null) {
+			return { success: true, data: null as T };
+		}
 
-    if (!result.success) {
-      return result;
-    }
+		// Parse value
+		const result = this._parseFn(value);
 
-    let data = result.data;
+		if (!result.success) {
+			return result;
+		}
 
-    // Apply refinements
-    for (const refinement of this._refinements) {
-      const check = refinement(data);
-      if (typeof check === "string") {
-        return {
-          success: false,
-          error: {
-            path: [],
-            message: check,
-            code: "custom",
-          },
-        };
-      }
-      if (!check) {
-        return {
-          success: false,
-          error: {
-            path: [],
-            message: this._message || `Refinement failed`,
-            code: "custom",
-          },
-        };
-      }
-    }
+		let data = result.data;
 
-    // Apply transform
-    if (this._transformFn) {
-      data = this._transformFn(data);
-    }
+		// Apply refinements
+		for (const refinement of this._refinements) {
+			const check = refinement(data);
+			if (typeof check === "string") {
+				return {
+					success: false,
+					error: {
+						path: [],
+						message: check,
+						code: "custom",
+					},
+				};
+			}
+			if (!check) {
+				return {
+					success: false,
+					error: {
+						path: [],
+						message: this._message || `Refinement failed`,
+						code: "custom",
+					},
+				};
+			}
+		}
 
-    return { success: true, data };
-  }
+		// Apply transform
+		if (this._transformFn) {
+			data = this._transformFn(data);
+		}
 
-  safeParse(value: unknown): Result<T> {
-    try {
-      return this.parse(value);
-    } catch (error) {
-      return {
-        success: false,
-        error: {
-          path: [],
-          message: error instanceof Error ? error.message : "Unknown error",
-          code: "internal_error",
-        },
-      };
-    }
-  }
+		return { success: true, data };
+	}
 
-  optional(): Schema<T | undefined> {
-    const schema = this.clone();
-    schema._optional = true;
-    return schema as Schema<T | undefined>;
-  }
+	safeParse(value: unknown): Result<T> {
+		try {
+			return this.parse(value);
+		} catch (error) {
+			return {
+				success: false,
+				error: {
+					path: [],
+					message: error instanceof Error ? error.message : "Unknown error",
+					code: "internal_error",
+				},
+			};
+		}
+	}
 
-  nullable(): Schema<T | null> {
-    const schema = this.clone();
-    schema._nullable = true;
-    return schema as Schema<T | null>;
-  }
+	parseOrThrow(value: unknown): T {
+		const result = this.parse(value);
+		if (result.success) {
+			return result.data;
+		}
 
-  transform<U>(fn: (value: T) => U): Schema<U> {
-    const schema = this.clone();
-    schema._transformFn = fn as (value: T) => any;
-    return schema as unknown as Schema<U>;
-  }
+		const issues = result.error.issues ?? [result.error];
+		throw new SchemaValidationError(issues);
+	}
 
-  refine(refinement: (value: T) => boolean | string): Schema<T> {
-    const schema = this.clone();
-    schema._refinements.push(refinement);
-    return schema;
-  }
+	assert(value: unknown): asserts value is T {
+		this.parseOrThrow(value);
+	}
 
-  withMessage(message: string): Schema<T> {
-    const schema = this.clone();
-    schema._message = message;
-    return schema;
-  }
+	default(value: T | (() => T)): Schema<T> {
+		const schema = this.clone();
+		schema._defaultFn = typeof value === "function" ? (value as () => T) : () => value;
+		return schema;
+	}
 
-  private clone(): this {
-    const clone = new BaseSchema(this._type, this._parseFn) as this;
-    clone._optional = this._optional;
-    clone._nullable = this._nullable;
-    clone._transformFn = this._transformFn as (value: T) => any;
-    clone._refinements = [...this._refinements];
-    clone._message = this._message as string;
-    return clone;
-  }
+	optional(): Schema<T | undefined> {
+		const schema = this.clone();
+		schema._optional = true;
+		return schema as Schema<T | undefined>;
+	}
+
+	nullable(): Schema<T | null> {
+		const schema = this.clone();
+		schema._nullable = true;
+		return schema as Schema<T | null>;
+	}
+
+	transform<U>(fn: (value: T) => U): Schema<U> {
+		const schema = this.clone();
+		schema._transformFn = fn as (value: T) => any;
+		return schema as unknown as Schema<U>;
+	}
+
+	refine(refinement: (value: T) => boolean | string): Schema<T> {
+		const schema = this.clone();
+		schema._refinements.push(refinement);
+		return schema;
+	}
+
+	withMessage(message: string): Schema<T> {
+		const schema = this.clone();
+		schema._message = message;
+		return schema;
+	}
+
+	private clone(): this {
+		const clone = new BaseSchema(this._type, this._parseFn) as this;
+		clone._optional = this._optional;
+		clone._nullable = this._nullable;
+		clone._defaultFn = this._defaultFn;
+		clone._transformFn = this._transformFn as (value: T) => any;
+		clone._refinements = [...this._refinements];
+		clone._message = this._message as string;
+		return clone;
+	}
 }
 
 export function createSchema<T>(
-  type: string,
-  parseFn: (value: unknown) => Result<T>
+	type: string,
+	parseFn: (value: unknown) => Result<T>,
 ): Schema<T> {
-  return new BaseSchema(type, parseFn);
+	return new BaseSchema(type, parseFn);
 }

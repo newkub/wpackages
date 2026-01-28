@@ -1,4 +1,4 @@
-import { type WeightedGraph } from "@wpackages/data-structure";
+import { type WeightedGraph } from "../data-structures";
 import { primsAlgorithm } from "./prims-algorithm";
 
 const graph: WeightedGraph<string> = new Map([

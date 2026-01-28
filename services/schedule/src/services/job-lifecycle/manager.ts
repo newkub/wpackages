@@ -1,10 +1,9 @@
-import { Effect, Option } from "effect";
+import { Effect, Either, Option } from "effect";
 import type { Job, JobPriority, RetryConfig } from "../../types/job";
 import { parseCronExpression } from "../../utils/cron-parser";
 import {
 	JobAlreadyExistsError,
 	JobNotFoundError,
-	SchedulerError,
 } from "../enhanced-scheduler.service";
 import {
 	ExecutionRepositoryTag,
@@ -13,11 +12,9 @@ import {
 } from "../persistence";
 
 const calculateNextRun = (cron: string, from: Date = new Date()): Date => {
-	const interval = parseCronExpression(cron);
-	if (Effect.isEffectFailure(interval)) {
-		return from;
-	}
-	const result = Effect.runSync(interval);
+	const interval = Effect.runSync(Effect.either(parseCronExpression(cron)));
+	if (Either.isLeft(interval)) return from;
+	const result = interval.right;
 	const next = new Date(from);
 	next.setSeconds(result.seconds);
 	next.setMinutes(result.minutes);
@@ -32,7 +29,7 @@ const calculateNextRun = (cron: string, from: Date = new Date()): Date => {
 export const createJob = (
 	name: string,
 	cron: string,
-	task: Effect.Effect<void>,
+	_task: Effect.Effect<void>,
 	options?: {
 		priority?: JobPriority;
 		retryConfig?: RetryConfig;
@@ -49,19 +46,26 @@ export const createJob = (
 			return yield* new JobAlreadyExistsError({ jobName: name });
 		}
 
+		const description = (options?.data as { description?: string } | undefined)
+			?.description;
+
 		const job: Job = {
 			id: crypto.randomUUID(),
 			name,
 			cron,
-			description: options?.data?.description as string | undefined,
+			...(description ? { description } : {}),
 			enabled: true,
 			timezone: "UTC",
 			priority: options?.priority ?? "normal",
 			status: "pending",
-			retryConfig: options?.retryConfig,
-			timeout: options?.timeout,
-			concurrency: options?.concurrency,
-			data: options?.data,
+			...(options?.retryConfig ? { retryConfig: options.retryConfig } : {}),
+			...(typeof options?.timeout === "number"
+				? { timeout: options.timeout }
+				: {}),
+			...(typeof options?.concurrency === "number"
+				? { concurrency: options.concurrency }
+				: {}),
+			...(options?.data ? { data: options.data } : {}),
 			createdAt: new Date(),
 			updatedAt: new Date(),
 			nextRunAt: calculateNextRun(cron),

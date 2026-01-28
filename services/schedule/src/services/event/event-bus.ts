@@ -1,9 +1,23 @@
-import { Context, Data, Effect, Layer, Queue } from "effect";
+import { Context, Data, Effect, Layer, Queue, Ref } from "effect";
 import type { EventHandler, EventType, JobEventData } from "../../types/event";
 
 export class EventBusError extends Data.TaggedError("EventBusError")<{
 	reason: string;
 }> {}
+
+export interface EventBus {
+	readonly emit: (event: JobEventData) => Effect.Effect<void>;
+	readonly subscribe: (
+		eventType: EventType,
+		handler: EventHandler,
+	) => Effect.Effect<void>;
+	readonly unsubscribe: (
+		eventType: EventType,
+		handler: EventHandler,
+	) => Effect.Effect<void>;
+	readonly take: () => Effect.Effect<JobEventData>;
+	readonly shutdown: () => Effect.Effect<void>;
+}
 
 const makeEventBus = Effect.gen(function* () {
 	const queue = yield* Queue.unbounded<JobEventData>();
@@ -48,7 +62,7 @@ const makeEventBus = Effect.gen(function* () {
 
 export class EventBusTag extends Context.Tag("@wpackages/EventBus")<
 	EventBusTag,
-	ReturnType<typeof makeEventBus extends Effect.Effect<infer A> ? A : never>
+	EventBus
 >() {}
 
 export const EventBusLive = Layer.effect(EventBusTag, makeEventBus);

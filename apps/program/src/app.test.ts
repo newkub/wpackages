@@ -8,11 +8,11 @@ import { Logger, Random } from "./services";
 describe("program", () => {
 	// 1. Mock Services
 	const mockLogger = {
-		info: vi.fn(),
-		error: vi.fn(),
-		warn: vi.fn(),
-		debug: vi.fn(),
-		log: vi.fn(),
+		info: vi.fn(() => Effect.void),
+		error: vi.fn(() => Effect.void),
+		warn: vi.fn(() => Effect.void),
+		debug: vi.fn(() => Effect.void),
+		log: vi.fn(() => Effect.void),
 		child: vi.fn(() => mockLogger), // Return itself for chaining
 	};
 

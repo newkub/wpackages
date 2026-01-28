@@ -7,10 +7,15 @@
 		"noUncheckedIndexedAccess": true,
 		"exactOptionalPropertyTypes": true,
 		"useUnknownInCatchVariables": true,
-		"skipLibCheck": false,
+		"skipLibCheck": true,
 		"outDir": "./dist",
 		"rootDir": "./src"
 	},
-	"include": ["src/**/*"],
-	"exclude": ["node_modules", "dist"]
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules",
+		"dist"
+	]
 }

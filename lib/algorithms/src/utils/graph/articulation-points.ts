@@ -1,6 +1,6 @@
-import type { Graph } from "./types";
+import type { AdjacencyListGraph } from "./types";
 
-export function findArticulationPoints(graph: Graph): string[] {
+export function findArticulationPoints(graph: AdjacencyListGraph): string[] {
 	const vertices = Object.keys(graph);
 	const articulationPoints = new Set<string>();
 	const discovery = new Map<string, number>();

@@ -1,6 +1,6 @@
+import { CHART_CHARS } from "../constant/widget.const";
 import type { ChartProps } from "../types/schema";
 import { h } from "../types/vnode";
-import { CHART_CHARS } from "../constant/widget.const";
 
 type ChartComponentProps = ChartProps;
 
@@ -28,7 +28,6 @@ export const Chart = (props: ChartComponentProps): ReturnType<typeof h> => {
 	const rows: string[] = [];
 
 	for (let y = height; y >= 0; y--) {
-		const _yValue = minDataValue + (y / height) * range;
 		const row: string[] = [];
 
 		if (showAxes && y === 0) {
@@ -38,12 +37,16 @@ export const Chart = (props: ChartComponentProps): ReturnType<typeof h> => {
 		}
 
 		for (let x = 0; x < width; x++) {
-			if (x >= data[0].length) {
+			if (!data[0] || x >= data[0].length) {
 				row.push(" ");
 				continue;
 			}
 
 			const dataValue = data[0][x];
+			if (dataValue === undefined) {
+				row.push(" ");
+				continue;
+			}
 			const normalizedY = ((dataValue - minDataValue) / range) * height;
 			const isPoint = Math.abs(normalizedY - y) < 0.5;
 
@@ -53,7 +56,7 @@ export const Chart = (props: ChartComponentProps): ReturnType<typeof h> => {
 				const barHeight = Math.floor(
 					((dataValue - minDataValue) / range) * height,
 				);
-				row.push(y <= barHeight ? CHART_CHARS.filled : CHART_CHARS.empty);
+				row.push(y <= barHeight ? "█" : "░");
 			} else {
 				row.push(" ");
 			}
@@ -65,7 +68,7 @@ export const Chart = (props: ChartComponentProps): ReturnType<typeof h> => {
 	if (labels.length > 0) {
 		const labelRow = labels
 			.slice(0, width)
-			.map((label) => label[0])
+			.map((label: string) => label[0])
 			.join(" ");
 		rows.push(" " + labelRow);
 	}

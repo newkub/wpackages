@@ -6,7 +6,7 @@ export const program = Effect.gen(function*() {
 	const random = yield* Random;
 	const logger = yield* Logger;
 	const n = yield* random.next();
-	yield* Effect.sync(() => logger.info("random-number-generated", { number: n }));
+	yield* logger.info("random-number-generated", { number: n });
 });
 
 const RandomLive = Layer.succeed(Random, {

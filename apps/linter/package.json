@@ -16,17 +16,17 @@
 		"verify": "bun format && bun lint && bun test && bun audit && run build"
 	},
 	"dependencies": {
-		"@ast-grep/napi": "^0.23.1",
+		"@ast-grep/napi": "^0.40.5",
 		"@wpackages/parser": "workspace:*",
-		"citty": "^0.1.6",
+		"citty": "^0.2.0",
 		"effect": "^3.19.15",
 		"picocolors": "^1.1.1"
 	},
 	"devDependencies": {
-		"@types/node": "^25.0.10",
-		"oxc-parser": "0.106.0",
+		"@types/node": "^25.1.0",
+		"oxc-parser": "0.111.0",
 		"oxlint": "^1.42.0",
-		"tsdown": "^0.18.4",
+		"tsdown": "^0.20.1",
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3",
 		"vitest": "^4.0.18"

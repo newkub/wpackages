@@ -2,7 +2,7 @@ export interface SimpleGraph {
 	[key: string]: string[];
 }
 
-export interface Graph {
+export interface AdjacencyListGraph {
 	[key: string]: string[];
 }
 

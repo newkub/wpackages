@@ -1,6 +1,6 @@
+import { DROPDOWN_ARROW } from "../constant/widget.const";
 import type { DropdownProps } from "../types/schema";
 import { h } from "../types/vnode";
-import { DROPDOWN_ARROW } from "../constant/widget.const";
 
 type DropdownComponentProps = DropdownProps;
 
@@ -37,7 +37,7 @@ export const Dropdown = (
 	];
 
 	if (isOpen) {
-		const itemsList = items.map((item, index) => {
+		const itemsList = items.map((item: string, index: number) => {
 			const isSelected = index === selectedIndex;
 			return h(
 				"box",

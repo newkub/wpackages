@@ -4,26 +4,19 @@ import type {
 	DocumentationOptions,
 	EventDocumentation,
 	MethodDocumentation,
-	ParameterDocumentation,
-	PropertyDocumentation,
 	TypeDocumentation,
 } from "../types/documentation.types";
 
 export const createDocumentationGenerator = (): DocumentationGenerator => {
 	const generate = async (plugin: unknown, options: DocumentationOptions): Promise<void> => {
 		const docs = generateAPIDocs(plugin);
-		let content = "";
 
-		switch (options.format) {
-			case "markdown":
-				content = generateMarkdown(docs);
-				break;
-			case "html":
-				content = generateHTML(docs);
-				break;
-			case "json":
-				content = generateJSON(docs);
-				break;
+		if (options.format === "markdown") {
+			generateMarkdown(docs);
+		} else if (options.format === "html") {
+			generateHTML(docs);
+		} else {
+			generateJSON(docs);
 		}
 
 		console.log(`Documentation generated for ${docs.name}`);
@@ -31,7 +24,11 @@ export const createDocumentationGenerator = (): DocumentationGenerator => {
 
 	const generateAPIDocs = (plugin: unknown): APIDocumentation => {
 		const pluginObj = plugin as Record<string, unknown>;
-		const metadata = pluginObj.metadata as { readonly name: string; readonly version: string; readonly description?: string };
+		const metadata = pluginObj.metadata as {
+			readonly name: string;
+			readonly version: string;
+			readonly description?: string;
+		};
 
 		return {
 			name: metadata?.name ?? "Unknown Plugin",

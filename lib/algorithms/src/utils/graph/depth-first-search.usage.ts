@@ -1,4 +1,4 @@
-import { type Graph } from "@wpackages/data-structure";
+import { type Graph } from "../data-structures";
 import { depthFirstSearch } from "./depth-first-search";
 
 const graph: Graph<string> = new Map([

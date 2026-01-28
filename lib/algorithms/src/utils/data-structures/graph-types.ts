@@ -1,14 +1,6 @@
-export interface WeightedGraph {
-	adjacencyList: Record<string, Array<{ node: string; weight: number }>>;
-	keys(): string[];
-	entries(): Array<[string, Array<{ node: string; weight: number }>]>;
-}
+export type WeightedGraph<T = string> = Map<T, Array<{ node: T; weight: number }>>;
 
-export interface Graph {
-	adjacencyList: Record<string, string[]>;
-	has(node: string): boolean;
-	get(node: string): string[] | undefined;
-}
+export type Graph<T = string> = Map<T, T[]>;
 
-export interface DirectedGraph extends Graph {}
-export interface UndirectedGraph extends Graph {}
+export type DirectedGraph<T = string> = Graph<T>;
+export type UndirectedGraph<T = string> = Graph<T>;

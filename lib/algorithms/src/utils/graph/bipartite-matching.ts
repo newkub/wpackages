@@ -1,6 +1,6 @@
-import type { Graph } from "./types";
+import type { AdjacencyListGraph } from "./types";
 
-export function bipartiteMatching(graph: Graph, leftSet: string[], rightSet: string[]): [string, string][] {
+export function bipartiteMatching(graph: AdjacencyListGraph, leftSet: string[], rightSet: string[]): [string, string][] {
 	const matchR = new Map<string, string | null>();
 	for (const u of rightSet) {
 		matchR.set(u, null);

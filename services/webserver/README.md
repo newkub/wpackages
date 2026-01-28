@@ -1,16 +1,14 @@
 # @wpackages/webserver
 
-High-performance web server using Elysia framework - better than Nitro.
+High-performance web server primitives built on `Bun.serve` with a lightweight router, middleware pipeline, and optional schema validation.
 
 ## Features
 
-- **Ultrafast Performance**: Built with Elysia framework which has static code analysis (Sucrose) for optimal performance
-- **Better than Nitro**: Outperforms Nitro in benchmarks according to TechEmpower
-- **Type-Safe**: Full TypeScript support with Elysia's type inference
-- **Effect-TS Integration**: Uses Effect-TS for robust error handling and composability
-- **Bun Native**: Optimized for Bun runtime
-- **Middleware Support**: Extensible middleware system
-- **Routing**: Powerful routing with parameter extraction
+- **Bun Native**: Uses `Bun.serve` for fast request handling
+- **Routing**: Path params support (e.g. `/users/:id`) with a fast matching path
+- **Middleware Support**: Composable middleware pipeline
+- **Schema Validation**: Optional request/response validation hooks
+- **Effect Integration**: Service layer helper via `./services` export
 
 ## Installation
 
@@ -21,13 +19,14 @@ bun install
 ## Usage
 
 ```typescript
-import { Elysia } from 'elysia'
+import { createWebServer } from "@wpackages/webserver/lib";
 
-const app = new Elysia()
-  .get('/', () => 'Hello World')
-  .listen(3000)
+const app = createWebServer({ port: 3000, host: "localhost" });
 
-console.log(`🦊 Elysia is running at http://localhost:${app.server?.port}`)
+app.get("/", () => ({ message: "Hello World" }));
+app.get("/health", () => ({ status: "ok" }));
+
+await app.start();
 ```
 
 ## Scripts

@@ -76,6 +76,21 @@ export interface JobTimeoutEvent extends JobEvent {
 	};
 }
 
+export interface SchedulerStartedEvent extends JobEvent {
+	readonly type: "scheduler:started";
+}
+
+export interface SchedulerStoppedEvent extends JobEvent {
+	readonly type: "scheduler:stopped";
+}
+
+export interface SchedulerErrorEvent extends JobEvent {
+	readonly type: "scheduler:error";
+	readonly data: {
+		readonly error: Error;
+	};
+}
+
 export type JobEventData =
 	| JobScheduledEvent
 	| JobStartedEvent
@@ -83,6 +98,9 @@ export type JobEventData =
 	| JobFailedEvent
 	| JobRetryingEvent
 	| JobCancelledEvent
-	| JobTimeoutEvent;
+	| JobTimeoutEvent
+	| SchedulerStartedEvent
+	| SchedulerStoppedEvent
+	| SchedulerErrorEvent;
 
 export type EventHandler = (event: JobEventData) => Effect.Effect<void>;

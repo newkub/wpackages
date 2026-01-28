@@ -1,6 +1,6 @@
+import { MODAL_BORDERS } from "../constant/widget.const";
 import type { ModalProps } from "../types/schema";
 import { h } from "../types/vnode";
-import { MODAL_BORDERS } from "../constant/widget.const";
 
 type ModalComponentProps = ModalProps;
 
@@ -20,10 +20,6 @@ export const Modal = (props: ModalComponentProps): ReturnType<typeof h> => {
 	}
 
 	const titleText = ` ${title} `;
-	const titleLength = titleText.length;
-	const _horizontalBorder = MODAL_BORDERS.horizontal.repeat(
-		Math.max(0, (typeof width === "number" ? width : 50) - titleLength - 4),
-	);
 
 	return h(
 		"box",
@@ -48,7 +44,9 @@ export const Modal = (props: ModalComponentProps): ReturnType<typeof h> => {
 		h(
 			"text",
 			{ color: borderColor },
-			`${MODAL_BORDERS.cornerBL}${MODAL_BORDERS.horizontal.repeat(Math.max(0, (typeof width === "number" ? width : 50) - 2))}${MODAL_BORDERS.cornerBR}`,
+			`${MODAL_BORDERS.cornerBL}${MODAL_BORDERS.horizontal.repeat(
+				Math.max(0, (typeof width === "number" ? width : 50) - 2),
+			)}${MODAL_BORDERS.cornerBR}`,
 		),
 	);
 };

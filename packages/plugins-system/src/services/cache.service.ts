@@ -1,15 +1,10 @@
-import type {
-	CacheEntry,
-	CacheManager,
-	CacheOptions,
-	CacheStats,
-} from "../types/cache.types";
+import type { CacheEntry, CacheManager, CacheOptions, CacheStats } from "../types/cache.types";
 
 export const createCacheManager = <T = unknown>(
 	options: CacheOptions = { strategy: "memory" },
 ): CacheManager<T> => {
 	const cache: Map<string, CacheEntry<T>> = new Map();
-	let stats: CacheStats = {
+	const stats: { hits: number; misses: number; size: number; evictionCount: number } = {
 		hits: 0,
 		misses: 0,
 		size: 0,
@@ -66,7 +61,7 @@ export const createCacheManager = <T = unknown>(
 		}
 	};
 
-	const delete = async (key: string): Promise<void> => {
+	const del = async (key: string): Promise<void> => {
 		if (cache.has(key)) {
 			cache.delete(key);
 			stats.size--;
@@ -134,7 +129,7 @@ export const createCacheManager = <T = unknown>(
 	return Object.freeze({
 		get,
 		set,
-		"delete": delete,
+		"delete": del,
 		clear,
 		has,
 		getStats,

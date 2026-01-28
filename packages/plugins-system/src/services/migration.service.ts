@@ -64,7 +64,7 @@ export const createMigrationManager = (): MigrationManager => {
 				};
 			}
 
-			const newData = await migration.up({});
+			await migration.up({});
 
 			const newHistory: MigrationHistory = {
 				pluginId,

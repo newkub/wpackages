@@ -1,6 +1,6 @@
+import { SPINNER_PATTERNS } from "../constant/widget.const";
 import type { SpinnerProps } from "../types/schema";
 import { h } from "../types/vnode";
-import { SPINNER_PATTERNS } from "../constant/widget.const";
 
 type SpinnerComponentProps = SpinnerProps;
 
@@ -9,7 +9,9 @@ let spinnerIndex = 0;
 export const Spinner = (props: SpinnerComponentProps): ReturnType<typeof h> => {
 	const { type = "dots", color = "cyan", label, ...rest } = props;
 
-	const pattern = SPINNER_PATTERNS[type] || SPINNER_PATTERNS.dots;
+	const pattern =
+		SPINNER_PATTERNS[type as keyof typeof SPINNER_PATTERNS] ||
+		SPINNER_PATTERNS.dots;
 	const char = pattern[spinnerIndex % pattern.length];
 	spinnerIndex++;
 

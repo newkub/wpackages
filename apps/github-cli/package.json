@@ -1,5 +1,5 @@
 {
-	"name": "@wpackages/github-cli",
+	"name": "@wpackages/github",
 	"version": "0.0.1",
 	"private": true,
 	"type": "module",
@@ -24,7 +24,7 @@
 	"dependencies": {
 		"@clack/prompts": "^0.11.0",
 		"@wpackages/prompt": "workspace:*",
-		"@wpackages/tui": "workspace:*",
+		"@wpackages/cli-components": "workspace:*",
 		"commander": "^14.0.2",
 		"dotenv": "^17.2.3",
 		"octokit": "^5.0.5",
@@ -32,7 +32,7 @@
 		"picocolors": "^1.1.1"
 	},
 	"devDependencies": {
-		"@types/node": "^25.0.10",
+		"@types/node": "^25.1.0",
 		"dprint": "^0.50.2",
 		"oxlint": "^1.42.0",
 		"tsdown": "^0.18.4",

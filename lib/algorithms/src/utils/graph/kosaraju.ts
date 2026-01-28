@@ -1,6 +1,6 @@
-import type { Graph } from "./types";
+import type { AdjacencyListGraph } from "./types";
 
-export function kosaraju(graph: Graph): string[][] {
+export function kosaraju(graph: AdjacencyListGraph): string[][] {
 	const vertices = Object.keys(graph);
 	const visited = new Set<string>();
 	const stack: string[] = [];
@@ -21,7 +21,7 @@ export function kosaraju(graph: Graph): string[][] {
 		}
 	}
 
-	const reversedGraph: Graph = {};
+	const reversedGraph: AdjacencyListGraph = {};
 	for (const vertex of vertices) {
 		reversedGraph[vertex] = [];
 	}

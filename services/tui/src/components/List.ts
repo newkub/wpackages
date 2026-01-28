@@ -13,7 +13,7 @@ export const List = (props: ListComponentProps): ReturnType<typeof h> => {
 		...rest
 	} = props;
 
-	const children = items.map((item, index) => {
+	const children = items.map((item: string, index: number) => {
 		const isSelected = index === selectedIndex;
 		const prefix = isSelected ? "► " : "  ";
 		return h(

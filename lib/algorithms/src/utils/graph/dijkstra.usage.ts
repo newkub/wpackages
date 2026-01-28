@@ -1,4 +1,4 @@
-import { type WeightedGraph } from "@wpackages/data-structure";
+import { type WeightedGraph } from "../data-structures";
 import { dijkstra } from "./dijkstra";
 
 const graph: WeightedGraph<string> = new Map([

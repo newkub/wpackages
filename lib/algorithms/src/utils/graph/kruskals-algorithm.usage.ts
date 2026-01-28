@@ -1,4 +1,4 @@
-import { type WeightedGraph } from "@wpackages/data-structure";
+import { type WeightedGraph } from "../data-structures";
 import { kruskalsAlgorithm } from "./kruskals-algorithm";
 
 const graph: WeightedGraph<string> = new Map([

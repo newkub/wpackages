@@ -1,6 +1,6 @@
-import type { Graph } from "./types";
+import type { AdjacencyListGraph } from "./types";
 
-export function findBridges(graph: Graph): [string, string][] {
+export function findBridges(graph: AdjacencyListGraph): [string, string][] {
 	const vertices = Object.keys(graph);
 	const bridges: [string, string][] = [];
 	const discovery = new Map<string, number>();

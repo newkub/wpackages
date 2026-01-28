@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Layer, Ref } from "effect";
+import { Context, Data, Effect, Layer, Option, Ref } from "effect";
 import type { Job, JobExecution, JobFilter, JobMetrics } from "../../types/job";
 import type {
 	ExecutionRepository,
@@ -30,7 +30,7 @@ const makeJobRepository = Effect.gen(function* () {
 			Effect.map((map) =>
 				Array.from(map.values()).find((j) => j.name === name),
 			),
-			Effect.map(Option.fromNullable),
+			Effect.map((job) => Option.fromNullable(job)),
 		);
 
 	const findAll = (filter?: JobFilter) =>
@@ -45,17 +45,20 @@ const makeJobRepository = Effect.gen(function* () {
 					if (filter.priority?.length) {
 						jobs = jobs.filter((j) => filter.priority?.includes(j.priority));
 					}
-					if (filter.name) {
-						jobs = jobs.filter((j) => j.name.includes(filter.name));
+					const name = filter.name;
+					if (name != null) {
+						jobs = jobs.filter((j) => j.name.includes(name));
 					}
 					if (filter.enabled !== undefined) {
 						jobs = jobs.filter((j) => j.enabled === filter.enabled);
 					}
-					if (filter.from) {
-						jobs = jobs.filter((j) => j.createdAt >= filter.from);
+					const from = filter.from;
+					if (from != null) {
+						jobs = jobs.filter((j) => j.createdAt >= from);
 					}
-					if (filter.to) {
-						jobs = jobs.filter((j) => j.createdAt <= filter.to);
+					const to = filter.to;
+					if (to != null) {
+						jobs = jobs.filter((j) => j.createdAt <= to);
 					}
 				}
 
@@ -64,18 +67,14 @@ const makeJobRepository = Effect.gen(function* () {
 		);
 
 	const update = (id: string, update: Partial<Job>) =>
-		Ref.get(jobs).pipe(
-			Effect.flatMap((map) => {
-				const job = map.get(id);
-				if (!job) {
-					return Effect.fail(
-						new RepositoryError({ reason: `Job not found: ${id}` }),
-					);
-				}
-				const updated = { ...job, ...update, updatedAt: new Date() };
-				return save(updated);
-			}),
-		);
+		Ref.update(jobs, (map) => {
+			const job = map.get(id);
+			if (!job) {
+				return map;
+			}
+			map.set(id, { ...job, ...update, updatedAt: new Date() });
+			return map;
+		});
 
 	const delete_ = (id: string) =>
 		Ref.update(jobs, (map) => {
@@ -216,7 +215,7 @@ const makeMetricsRepository = Effect.gen(function* () {
 
 	const updateMetrics = (jobId: string, execution: JobExecution) =>
 		Effect.gen(function* () {
-			const current = yield* getJobMetrics;
+			const current = yield* getJobMetrics(jobId);
 			const existing = Option.getOrElse(current, () => ({
 				totalRuns: 0,
 				successCount: 0,
@@ -246,7 +245,7 @@ const makeMetricsRepository = Effect.gen(function* () {
 				map.set(jobId, updated);
 				return map;
 			});
-		}).pipe(Effect.mapError(() => new Error("Failed to update metrics")) as any);
+		});
 
 	const resetMetrics = (jobId: string) =>
 		Ref.update(metrics, (map) => {

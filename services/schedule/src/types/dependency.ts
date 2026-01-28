@@ -1,4 +1,4 @@
-import type { Job } from "./job";
+import type { Job, JobDependency } from "./job";
 
 export type DependencyType = "success" | "completion" | "failure";
 

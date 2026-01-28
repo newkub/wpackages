@@ -37,7 +37,7 @@
 		"typescript": "^5.9.3"
 	},
 	"dependencies": {
-		"@types/react": "^19.2.9",
+		"@types/react": "^19.2.10",
 		"deepmerge-ts": "^7.1.5",
 		"effect": "^3.19.15",
 		"ink": "^6.6.0",

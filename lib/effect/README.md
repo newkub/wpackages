@@ -22,12 +22,38 @@ bun add @wpackages/effect
 import { Effect } from "@wpackages/effect";
 
 const program = Effect.gen(function*() {
-  const user = yield* Effect.tryPromise(() => fetchUser(1));
-  const posts = yield* Effect.tryPromise(() => fetchPosts(user.id));
-  return { user, posts };
+  const n = yield* Effect.sync(() => Math.random());
+  return n;
 });
 
 const result = await Effect.runPromise(program);
+```
+
+## Managing Side Effects (Resource)
+
+Side effects that require cleanup (files, sockets, timers, etc.) should be modeled with `Resource` helpers.
+
+```typescript
+import { Effect, acquireRelease, using } from "@wpackages/effect";
+
+type FileHandle = { close: () => Promise<void> };
+
+const openFile = (path: string): Effect<FileHandle> =>
+	Effect.sync(() => ({
+		close: async () => {
+			await Promise.resolve();
+		},
+	}));
+
+const program = using(
+	acquireRelease(
+		openFile("./tmp.txt"),
+		(handle) => Effect.sync(() => handle.close()),
+	),
+	() => Effect.sync(() => "done"),
+);
+
+await Effect.runPromise(program);
 ```
 
 ## Documentation

@@ -7,7 +7,7 @@ export interface BellmanFordResult {
 }
 
 export function bellmanFord(
-	graph: WeightedGraph,
+	graph: WeightedGraph<string>,
 	startNode: string,
 ): BellmanFordResult {
 	const distances: Record<string, number> = {};

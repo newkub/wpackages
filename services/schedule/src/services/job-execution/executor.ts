@@ -1,6 +1,7 @@
-import { Effect } from "effect";
+import { Effect, Either } from "effect";
 import type { JobEventData } from "../../types/event";
 import type { Job, JobExecution } from "../../types/job";
+import { parseCronExpression } from "../../utils/cron-parser";
 import { calculateBackoffDelay, withRetry } from "../../utils/retry";
 import { SchedulerError } from "../enhanced-scheduler.service";
 import { EventBusTag } from "../event";
@@ -10,10 +11,17 @@ import {
 	MetricsRepositoryTag,
 } from "../persistence";
 
+type ExecuteJobEnv =
+	| ExecutionRepositoryTag
+	| JobRepositoryTag
+	| MetricsRepositoryTag
+	| EventBusTag;
+type ExecuteJobEffect = Effect.Effect<void, never, ExecuteJobEnv>;
+
 export const executeJob = (
 	job: Job,
 	task: Effect.Effect<void>,
-): Effect.Effect<void> =>
+): ExecuteJobEffect =>
 	Effect.gen(function* () {
 		const executionRepo = yield* ExecutionRepositoryTag;
 		const jobRepo = yield* JobRepositoryTag;
@@ -23,7 +31,7 @@ export const executeJob = (
 		const executionId = crypto.randomUUID();
 		const startedAt = new Date();
 
-		const execution: JobExecution = {
+		let execution: JobExecution = {
 			id: executionId,
 			jobId: job.id,
 			startedAt,
@@ -57,10 +65,13 @@ export const executeJob = (
 		const completedAt = new Date();
 		const duration = completedAt.getTime() - startedAt.getTime();
 
-		if (Effect.isEitherSuccess(result)) {
-			execution.status = "completed";
-			execution.completedAt = completedAt;
-			execution.duration = duration;
+		if (Either.isRight(result)) {
+			execution = {
+				...execution,
+				status: "completed",
+				completedAt,
+				duration,
+			};
 
 			yield* executionRepo.save(execution);
 			yield* jobRepo.update(job.id, {
@@ -82,8 +93,11 @@ export const executeJob = (
 				job.retryConfig && execution.retryCount < job.retryConfig.maxRetries;
 
 			if (shouldRetryJob) {
-				execution.retryCount++;
-				execution.status = "retrying";
+				execution = {
+					...execution,
+					retryCount: execution.retryCount + 1,
+					status: "retrying",
+				};
 
 				const nextRetryDelay = calculateBackoffDelay(
 					job.retryConfig,
@@ -113,11 +127,13 @@ export const executeJob = (
 				yield* Effect.sleep(nextRetryDelay);
 				yield* executeJob(job, task);
 			} else {
-				execution.status = "failed";
-				execution.completedAt = completedAt;
-				execution.duration = duration;
-				execution.error =
-					error instanceof Error ? error.message : String(error);
+				execution = {
+					...execution,
+					status: "failed",
+					completedAt,
+					duration,
+					error: error instanceof Error ? error.message : String(error),
+				};
 
 				yield* executionRepo.save(execution);
 				yield* jobRepo.update(job.id, {
@@ -142,12 +158,9 @@ export const executeJob = (
 	});
 
 const calculateNextRun = (cron: string, from: Date = new Date()): Date => {
-	const { parseCronExpression } = require("../../utils/cron-parser");
-	const interval = parseCronExpression(cron);
-	if (Effect.isEffectFailure(interval)) {
-		return from;
-	}
-	const result = Effect.runSync(interval);
+	const interval = Effect.runSync(Effect.either(parseCronExpression(cron)));
+	if (Either.isLeft(interval)) return from;
+	const result = interval.right;
 	const next = new Date(from);
 	next.setSeconds(result.seconds);
 	next.setMinutes(result.minutes);

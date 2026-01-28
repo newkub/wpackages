@@ -331,12 +331,7 @@ export const DropdownPropsSchema: Schema.Schema<{
 	placeholder: Schema.optional(Schema.String),
 	isOpen: Schema.optional(Schema.Boolean),
 	selectedIndex: Schema.optional(Schema.Number),
-	onSelect: Schema.optional(
-		Schema.Function({
-			args: [Schema.Number, Schema.String],
-			returns: Schema.Void,
-		}),
-	),
+	onSelect: Schema.optional(Schema.Any),
 	color: Schema.optional(
 		Schema.Literal(...(Object.keys(COLORS) as Array<keyof typeof COLORS>)),
 	),

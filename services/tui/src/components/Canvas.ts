@@ -16,13 +16,13 @@ export const Canvas = (props: CanvasComponentProps): ReturnType<typeof h> => {
 		clear: () => {
 			for (let y = 0; y < height; y++) {
 				for (let x = 0; x < width; x++) {
-					grid[y][x] = " ";
+					grid[y]![x] = " ";
 				}
 			}
 		},
 		drawPixel: (x: number, y: number, char: string) => {
 			if (x >= 0 && x < width && y >= 0 && y < height) {
-				grid[y][x] = char;
+				grid[y]![x] = char;
 			}
 		},
 		drawLine: (
@@ -43,7 +43,7 @@ export const Canvas = (props: CanvasComponentProps): ReturnType<typeof h> => {
 
 			while (true) {
 				if (x >= 0 && x < width && y >= 0 && y < height) {
-					grid[y][x] = char;
+					grid[y]![x] = char;
 				}
 
 				if (x === x2 && y === y2) break;
@@ -61,18 +61,18 @@ export const Canvas = (props: CanvasComponentProps): ReturnType<typeof h> => {
 		},
 		drawRect: (x: number, y: number, w: number, h: number, char: string) => {
 			for (let i = 0; i < w; i++) {
-				grid[y][x + i] = char;
-				grid[y + h - 1][x + i] = char;
+				grid[y]![x + i] = char;
+				grid[y + h - 1]![x + i] = char;
 			}
 			for (let i = 0; i < h; i++) {
-				grid[y + i][x] = char;
-				grid[y + i][x + w - 1] = char;
+				grid[y + i]![x] = char;
+				grid[y + i]![x + w - 1] = char;
 			}
 		},
 		drawText: (x: number, y: number, text: string) => {
 			for (let i = 0; i < text.length; i++) {
 				if (x + i >= 0 && x + i < width && y >= 0 && y < height) {
-					grid[y][x + i] = text[i];
+					grid[y]![x + i] = text[i]!;
 				}
 			}
 		},

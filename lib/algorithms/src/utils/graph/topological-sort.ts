@@ -1,4 +1,4 @@
-import { type Graph } from "@wpackages/data-structure";
+import { type Graph } from "../data-structures";
 
 export function topologicalSort<T>(graph: Graph<T>): T[] | null {
 	const vertices: T[] = Array.from(graph.keys());

@@ -1,4 +1,4 @@
-import { type WeightedGraph } from "@wpackages/data-structure";
+import { type WeightedGraph } from "../data-structures";
 
 export interface FloydWarshallResult {
 	dist: Record<string, Record<string, number>>;

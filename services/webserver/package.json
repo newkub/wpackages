@@ -3,15 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"description": "High-performance web server using Bun.serve with Effect integration",
-	"keywords": [
-		"web",
-		"server",
-		"bun",
-		"http",
-		"api",
-		"rest",
-		"effect"
-	],
+	"keywords": ["web", "server", "bun", "http", "api", "rest", "effect"],
 	"type": "module",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -21,17 +13,15 @@
 			"default": "./dist/index.js"
 		},
 		"./lib": {
-			"types": "./dist/lib/index.d.ts",
-			"default": "./dist/lib/index.js"
+			"types": "./src/lib/index.ts",
+			"import": "./src/lib/index.ts"
 		},
 		"./services": {
-			"types": "./dist/services/index.d.ts",
-			"default": "./dist/services/index.js"
+			"types": "./src/services/index.ts",
+			"import": "./src/services/index.ts"
 		}
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist", "src"],
 	"scripts": {
 		"watch": "bun --watch verify",
 		"prepare": "lefthook install",
@@ -51,10 +41,10 @@
 	},
 	"devDependencies": {
 		"@types/bun": "1.3.6",
-		"@types/node": "^25.0.10",
+		"@types/node": "^25.1.0",
 		"autocannon": "^8.0.0",
 		"oxlint": "^1.42.0",
-		"oxlint-tsgolint": "^0.11.2",
+		"oxlint-tsgolint": "^0.11.3",
 		"typescript": "^5.9.3",
 		"vite": "^7.3.1",
 		"vitest": "^4.0.18"

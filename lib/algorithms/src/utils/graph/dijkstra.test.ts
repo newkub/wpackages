@@ -1,4 +1,4 @@
-import { type WeightedGraph } from "@wpackages/data-structure";
+import { type WeightedGraph } from "../data-structures";
 import { describe, expect, it } from "vitest";
 import { dijkstra } from "./dijkstra";
 

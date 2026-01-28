@@ -1,5 +1,5 @@
 import type { Effect } from "../types";
-import type { Resource, ScopedResource } from "../types/resource";
+import type { ScopedResource } from "../types/resource";
 
 export const acquireRelease = <A, E>(
 	acquire: Effect<A, E>,
@@ -24,9 +24,16 @@ export const using = <A, B, E>(
 	return async () => {
 		const scoped = await resource();
 		try {
-			return await f(scoped.resource)();
-		} finally {
+			const result = await f(scoped.resource)();
 			await scoped.release();
+			return result;
+		} catch (error) {
+			try {
+				await scoped.release();
+			} catch {
+				// ignore release failure on primary failure path
+			}
+			throw error;
 		}
 	};
 };
@@ -56,7 +63,7 @@ export class ResourcePool<A, E> {
 
 	async initialize(): Promise<void> {
 		for (let i = 0; i < Math.min(5, this.maxSize); i++) {
-			const resource = await this.factory();
+			const resource = await this.factory()();
 			this.available.push(resource);
 		}
 	}
@@ -69,7 +76,7 @@ export class ResourcePool<A, E> {
 		}
 
 		if (this.inUse.size < this.maxSize) {
-			const resource = await this.factory();
+			const resource = await this.factory()();
 			this.inUse.add(resource);
 			return resource;
 		}
@@ -85,7 +92,6 @@ export class ResourcePool<A, E> {
 	}
 
 	async dispose(): Promise<void> {
-		const allResources = [...this.available, ...this.inUse];
 		this.available = [];
 		this.inUse.clear();
 	}

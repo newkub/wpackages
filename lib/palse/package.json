@@ -1,5 +1,5 @@
 {
-	"name": "@wpackages/palse",
+	"name": "@wpackages/signal",
 	"version": "0.0.1",
 	"private": true,
 	"engines": {
@@ -23,10 +23,7 @@
 		".": "./dist/index.mjs",
 		"./package.json": "./package.json"
 	},
-	"files": [
-		"dist",
-		"README.md"
-	],
+	"files": ["dist", "README.md"],
 	"scripts": {
 		"lint": "oxlint --fix --type-aware",
 		"test": "bun test",
@@ -38,7 +35,7 @@
 		"effect": "^3.19.15"
 	},
 	"devDependencies": {
-		"@types/bun": "^1.3.6",
+		"@types/bun": "^1.3.7",
 		"typescript": "^5.9.3"
 	},
 	"module": "./dist/index.mjs"

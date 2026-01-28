@@ -16,6 +16,21 @@ describe("RendererLive with Layout", () => {
 					}),
 				clear: Effect.sync(() => void 0),
 				getSize: Effect.succeed({ rows: 10, columns: 50 }),
+				clearScreen: Effect.sync(() => void 0),
+				moveCursor: () => Effect.sync(() => void 0),
+				clearLine: Effect.sync(() => void 0),
+				showCursor: Effect.sync(() => void 0),
+				hideCursor: Effect.sync(() => void 0),
+				getTerminalSize: Effect.succeed({ rows: 10, columns: 50 }),
+				render: () => Effect.sync(() => void 0),
+				readKey: Effect.sync(() => ({
+					name: "",
+					ctrl: false,
+					meta: false,
+					shift: false,
+					char: "",
+				})),
+				cleanup: Effect.sync(() => void 0),
 			}),
 		);
 

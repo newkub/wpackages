@@ -77,9 +77,6 @@ describe("Retry Utils", () => {
 
 	it("should determine if should retry", () => {
 		assert.strictEqual(shouldRetry(fixedConfig), true);
-		assert.strictEqual(
-			shouldRetry({ ...fixedConfig, maxRetries: 0 }),
-			false,
-		);
+		assert.strictEqual(shouldRetry({ ...fixedConfig, maxRetries: 0 }), false);
 	});
 });

@@ -18,7 +18,7 @@ export function dijkstra(
 ): DijkstraResult {
 	const distances: Record<string, number> = {};
 	const previous: Record<string, string | null> = {};
-	let pq: PriorityQueue<string> = createPriorityQueue<string>();
+	const pq: PriorityQueue<string> = createPriorityQueue<string>();
 
 	for (const vertex of graph.keys()) {
 		distances[vertex] = Infinity;
@@ -26,13 +26,11 @@ export function dijkstra(
 	}
 
 	distances[startNode] = 0;
-	pq = pqEnqueue(pq, startNode, 0);
+	pqEnqueue(pq, startNode, 0);
 
 	while (!pqIsEmpty(pq)) {
-		let currentNode: string | null;
-		[currentNode, pq] = pqDequeue(pq);
-
-		if (currentNode === null) break;
+		const currentNode = pqDequeue(pq);
+		if (currentNode === undefined) break;
 
 		const currentDistance = distances[currentNode];
 		if (currentDistance === undefined || currentDistance === Infinity) continue;
@@ -46,7 +44,7 @@ export function dijkstra(
 			if (neighborDistance !== undefined && newDistance < neighborDistance) {
 				distances[neighbor.node] = newDistance;
 				previous[neighbor.node] = currentNode;
-				pq = pqEnqueue(pq, neighbor.node, newDistance);
+				pqEnqueue(pq, neighbor.node, newDistance);
 			}
 		}
 	}

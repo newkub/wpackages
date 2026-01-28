@@ -46,7 +46,7 @@
 		"@wpackages/config-manager": "workspace:*",
 		"@wpackages/prompt": "workspace:*",
 		"@wpackages/schema": "workspace:*",
-		"@wpackages/tui": "workspace:*",
+		"@wpackages/cli-components": "workspace:*",
 		"c12": "^3.3.3",
 		"effect": "^3.19.15",
 		"fastest-levenshtein": "^1.0.16",

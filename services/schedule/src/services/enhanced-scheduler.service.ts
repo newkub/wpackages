@@ -1,4 +1,13 @@
-import { Context, Data, Effect, Fiber, Layer, Ref } from "effect";
+import {
+	Context,
+	Data,
+	Effect,
+	Either,
+	Fiber,
+	Layer,
+	Option,
+	Ref,
+} from "effect";
 import type { JobEventData } from "../types/event";
 import type { Job, JobExecution, JobPriority, RetryConfig } from "../types/job";
 import { parseCronExpression } from "../utils/cron-parser";
@@ -25,12 +34,43 @@ export class JobAlreadyExistsError extends Data.TaggedError(
 	jobName: string;
 }> {}
 
+export interface EnhancedScheduler {
+	readonly scheduleJob: (
+		name: string,
+		cron: string,
+		task: Effect.Effect<void>,
+		options?: {
+			priority?: JobPriority;
+			retryConfig?: RetryConfig;
+			timeout?: number;
+			concurrency?: number;
+			data?: Record<string, unknown>;
+		},
+	) => Effect.Effect<Job, unknown, unknown>;
+	readonly cancelJob: (jobId: string) => Effect.Effect<void, unknown, unknown>;
+	readonly updateJob: (
+		jobId: string,
+		updates: Partial<Job>,
+	) => Effect.Effect<Job, unknown, unknown>;
+	readonly listJobs: () => Effect.Effect<readonly Job[], unknown, unknown>;
+	readonly getJob: (
+		jobId: string,
+	) => Effect.Effect<Option.Option<Job>, unknown, unknown>;
+	readonly getJobExecutions: (
+		jobId: string,
+		limit?: number,
+	) => Effect.Effect<readonly JobExecution[], unknown, unknown>;
+	readonly getJobMetrics: (
+		jobId: string,
+	) => Effect.Effect<Option.Option<unknown>, unknown, unknown>;
+	readonly start: () => Effect.Effect<void, unknown, unknown>;
+	readonly stop: () => Effect.Effect<void, unknown, unknown>;
+}
+
 const calculateNextRun = (cron: string, from: Date = new Date()): Date => {
-	const interval = parseCronExpression(cron);
-	if (Effect.isEffectFailure(interval)) {
-		return from;
-	}
-	const result = Effect.runSync(interval);
+	const interval = Effect.runSync(Effect.either(parseCronExpression(cron)));
+	if (Either.isLeft(interval)) return from;
+	const result = interval.right;
 	const next = new Date(from);
 	next.setSeconds(result.seconds);
 	next.setMinutes(result.minutes);
@@ -50,7 +90,7 @@ const makeEnhancedScheduler = Effect.gen(function* () {
 	const eventBus = yield* EventBusTag;
 
 	const runningJobs = yield* Ref.make(
-		new Map<string, Fiber.RuntimeFiber<never, void>>(),
+		new Map<string, Fiber.RuntimeFiber<unknown, unknown>>(),
 	);
 
 	const createJob = (
@@ -71,19 +111,27 @@ const makeEnhancedScheduler = Effect.gen(function* () {
 				return yield* new JobAlreadyExistsError({ jobName: name });
 			}
 
+			const description = (
+				options?.data as { description?: string } | undefined
+			)?.description;
+
 			const job: Job = {
 				id: crypto.randomUUID(),
 				name,
 				cron,
-				description: options?.data?.description as string | undefined,
+				...(description ? { description } : {}),
 				enabled: true,
 				timezone: "UTC",
 				priority: options?.priority ?? "normal",
 				status: "pending",
-				retryConfig: options?.retryConfig,
-				timeout: options?.timeout,
-				concurrency: options?.concurrency,
-				data: options?.data,
+				...(options?.retryConfig ? { retryConfig: options.retryConfig } : {}),
+				...(typeof options?.timeout === "number"
+					? { timeout: options.timeout }
+					: {}),
+				...(typeof options?.concurrency === "number"
+					? { concurrency: options.concurrency }
+					: {}),
+				...(options?.data ? { data: options.data } : {}),
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				nextRunAt: calculateNextRun(cron),
@@ -100,7 +148,7 @@ const makeEnhancedScheduler = Effect.gen(function* () {
 			const executionId = crypto.randomUUID();
 			const startedAt = new Date();
 
-			const execution: JobExecution = {
+			let execution: JobExecution = {
 				id: executionId,
 				jobId: job.id,
 				startedAt,
@@ -134,10 +182,13 @@ const makeEnhancedScheduler = Effect.gen(function* () {
 			const completedAt = new Date();
 			const duration = completedAt.getTime() - startedAt.getTime();
 
-			if (Effect.isEitherSuccess(result)) {
-				execution.status = "completed";
-				execution.completedAt = completedAt;
-				execution.duration = duration;
+			if (Either.isRight(result)) {
+				execution = {
+					...execution,
+					status: "completed",
+					completedAt,
+					duration,
+				};
 
 				yield* executionRepo.save(execution);
 				yield* jobRepo.update(job.id, {
@@ -159,8 +210,11 @@ const makeEnhancedScheduler = Effect.gen(function* () {
 					job.retryConfig && execution.retryCount < job.retryConfig.maxRetries;
 
 				if (shouldRetryJob) {
-					execution.retryCount++;
-					execution.status = "retrying";
+					execution = {
+						...execution,
+						retryCount: execution.retryCount + 1,
+						status: "retrying",
+					};
 
 					const nextRetryDelay = calculateBackoffDelay(
 						job.retryConfig,
@@ -190,11 +244,13 @@ const makeEnhancedScheduler = Effect.gen(function* () {
 					yield* Effect.sleep(nextRetryDelay);
 					yield* executeJob(job, task);
 				} else {
-					execution.status = "failed";
-					execution.completedAt = completedAt;
-					execution.duration = duration;
-					execution.error =
-						error instanceof Error ? error.message : String(error);
+					execution = {
+						...execution,
+						status: "failed",
+						completedAt,
+						duration,
+						error: error instanceof Error ? error.message : String(error),
+					};
 
 					yield* executionRepo.save(execution);
 					yield* jobRepo.update(job.id, {
@@ -362,12 +418,7 @@ const makeEnhancedScheduler = Effect.gen(function* () {
 
 export class EnhancedSchedulerTag extends Context.Tag(
 	"@wpackages/EnhancedScheduler",
-)<
-	EnhancedSchedulerTag,
-	ReturnType<
-		typeof makeEnhancedScheduler extends Effect.Effect<infer A> ? A : never
-	>
->() {}
+)<EnhancedSchedulerTag, EnhancedScheduler>() {}
 
 export const EnhancedSchedulerLive = Layer.effect(
 	EnhancedSchedulerTag,

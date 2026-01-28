@@ -1,4 +1,4 @@
-import { type Graph } from "@wpackages/data-structure";
+import { type Graph } from "../data-structures";
 import { describe, expect, it } from "vitest";
 import { topologicalSort } from "./topological-sort";
 

@@ -2,20 +2,20 @@
 
 ## Introduction
 
-`@wpackages/program` is a small example application that demonstrates how to build a type-safe, testable, and composable program using `Effect-TS` with dependency injection via `Context` and `Layer`. It showcases the integration of the `@wpackages/config-manager` and `@wpackages/observability` packages to handle configuration and logging.
+`@wpackages/program` is a small example application that demonstrates how to build a type-safe, testable, and composable program using `effect` with dependency injection via `Context` and `Layer`. It showcases the integration of `@wpackages/config-manager` (configuration) and `@wpackages/logger` (effectful structured logging).
 
 ## Features
 
 - ✨ **Effect Runtime (Real)**: Uses `effect` (`Effect`, `Layer`, `Context`) for typed effects and orchestration.
 - 💉 **Dependency Injection**: Leverages `Context` + `Layer` to provide services like logging and configuration.
 - 🔧 **Configuration Management**: Uses `@wpackages/config-manager` to load and access configuration variables.
-- 📜 **Structured Logging**: Integrates with `@wpackages/observability` for structured and context-aware logging.
+- 📜 **Structured Logging**: Integrates with `@wpackages/logger` for effectful, structured logging.
 - 🧪 **Testable by Design**: The separation of concerns makes the core logic easy to test in isolation.
 
 ## Goal
 
 - 🎯 **Demonstrate Best Practices**: Serve as a clear example of how to structure an application within the `wpackages` monorepo.
-- 🧩 **Showcase Package Integration**: Illustrate how different packages (`config-manager`, `observability`) can be composed together.
+- 🧩 **Showcase Package Integration**: Illustrate how different packages (`config-manager`, `logger`) can be composed together.
 - ✅ **Promote Testability**: Encourage writing code that is inherently testable by decoupling side effects.
 
 ## Design Principles
@@ -55,6 +55,12 @@ To run the test suite for this package:
 ```bash
 # Run from the monorepo root
 turbo test --filter=@wpackages/program
+```
+
+Or from the workspace directory:
+
+```bash
+bun run test
 ```
 
 ## License

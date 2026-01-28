@@ -1,0 +1,18 @@
+{
+  "name": "e2e-test",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "e2e": "./src/cli.ts"
+  },
+  "scripts": {
+    "test": "bun run ./src/cli.ts test",
+    "ui": "bun run ./src/cli.ts ui"
+  },
+  "devDependencies": {
+    "fast-glob": "^3.3.3",
+    "picocolors": "^1.1.1",
+    "puppeteer": "^24.36.1",
+    "typescript": "^5.9.3"
+  }
+}

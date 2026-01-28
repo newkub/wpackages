@@ -1,4 +1,4 @@
-import { type Graph } from "@wpackages/data-structure";
+import { type Graph } from "../data-structures";
 import { topologicalSort } from "./topological-sort";
 
 const graph: Graph<string> = new Map([

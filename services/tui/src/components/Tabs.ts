@@ -12,7 +12,7 @@ export const Tabs = (props: TabsComponentProps): ReturnType<typeof h> => {
 		...rest
 	} = props;
 
-	const tabElements = tabs.map((tab, index) => {
+	const tabElements = tabs.map((tab: string, index: number) => {
 		const isSelected = index === selectedIndex;
 		const prefix = index > 0 ? " │ " : "";
 		const suffix = index < tabs.length - 1 ? "" : " ";

@@ -1,4 +1,4 @@
-import { type WeightedGraph } from "@wpackages/data-structure";
+import { type WeightedGraph } from "../data-structures";
 import { bellmanFord } from "./bellman-ford";
 
 const graph: WeightedGraph<string> = new Map([

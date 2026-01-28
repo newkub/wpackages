@@ -1,6 +1,6 @@
-import type { Graph } from "./types";
+import type { AdjacencyListGraph } from "./types";
 
-export function breadthFirstSearch(graph: Graph, startNode: string, targetNode: string): string[] | null {
+export function breadthFirstSearch(graph: AdjacencyListGraph, startNode: string, targetNode: string): string[] | null {
 	const visited = new Set<string>();
 	const queue: string[] = [startNode];
 	const parent: Record<string, string | null> = { [startNode]: null };

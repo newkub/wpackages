@@ -3,11 +3,13 @@
  */
 
 export {
-  array,
-  enum_,
-  intersection,
-  object,
-  record,
-  tuple,
-  union,
+	array,
+	discriminatedUnion,
+	discriminatedUnionMap,
+	enum_,
+	intersection,
+	object,
+	record,
+	tuple,
+	union,
 } from "../components/schemas/composite";

@@ -1,19 +1,13 @@
+import { SPARKLINE_CHARS } from "../constant/widget.const";
 import type { SparklineProps } from "../types/schema";
 import { h } from "../types/vnode";
-import { SPARKLINE_CHARS } from "../constant/widget.const";
 
 type SparklineComponentProps = SparklineProps;
 
 export const Sparkline = (
 	props: SparklineComponentProps,
 ): ReturnType<typeof h> => {
-	const {
-		data,
-		color = "cyan",
-		showLine = true,
-		showDots = true,
-		...rest
-	} = props;
+	const { data, color = "cyan", showDots = true, ...rest } = props;
 
 	if (data.length === 0) {
 		return h("text", { color }, "No data");
@@ -25,7 +19,7 @@ export const Sparkline = (
 	const chars = Object.values(SPARKLINE_CHARS);
 
 	const sparkline = data
-		.map((value, index) => {
+		.map((value: number, index: number) => {
 			const normalized = ((value - min) / range) * (chars.length - 1);
 			const charIndex = Math.round(normalized);
 			const char = chars[charIndex] || chars[0];
@@ -33,8 +27,6 @@ export const Sparkline = (
 			return char + dot;
 		})
 		.join("");
-
-	const _line = showLine ? "─".repeat(data.length) : "";
 
 	return h(
 		"box",

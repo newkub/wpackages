@@ -10,54 +10,43 @@ export type * from "./types/core.js";
 export { BaseSchema, createSchema } from "./core/schema.js";
 
 // Primitive schemas
-export {
-  string,
-  number,
-  boolean,
-  date,
-  literal,
-  any,
-  unknown,
-  never,
-} from "./schemas/primitives.js";
+export { any, boolean, date, literal, never, number, string, unknown } from "./schemas/primitives.js";
 
 // Composite schemas
 export {
-  object,
-  array,
-  union,
-  intersection,
-  tuple,
-  record,
-  enum_,
+	array,
+	discriminatedUnion,
+	discriminatedUnionMap,
+	enum_,
+	intersection,
+	object,
+	record,
+	tuple,
+	union,
 } from "./schemas/composite.js";
 
 // Validation utilities
 export {
-  email,
-  url,
-  uuid,
-  minLength,
-  maxLength,
-  pattern,
-  min,
-  max,
-  positive,
-  negative,
-  integer,
-  nonEmpty,
-  minItems,
-  maxItems,
-  minDate,
-  maxDate,
+	email,
+	integer,
+	max,
+	maxDate,
+	maxItems,
+	maxLength,
+	min,
+	minDate,
+	minItems,
+	minLength,
+	negative,
+	nonEmpty,
+	pattern,
+	positive,
+	url,
+	uuid,
 } from "./utils/validation.js";
 
 // Error handling
-export {
-  SchemaValidationError,
-  formatError,
-  mergeErrors,
-} from "./error/validation-error.js";
+export { formatError, mergeErrors, SchemaValidationError } from "./error/validation-error.js";
 
 // Re-export Schema type for convenience
 export type { Schema } from "./types/core.js";

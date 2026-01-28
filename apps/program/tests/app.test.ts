@@ -1,28 +1,26 @@
-import { createLogger, type LogRecord } from "@wpackages/observability";
-import { describe, expect, jest, test } from "bun:test";
 import { Cause, Effect, Exit, Layer, Option } from "effect";
+import { describe, expect, it, vi } from "vitest";
 import { program } from "../src/app";
 import { RandomGenerationError } from "../src/error";
 import { Config, Logger, Random } from "../src/services";
 
 describe("Program", () => {
-	const mockSink = jest.fn();
-
 	const ConfigMock = Layer.succeed(Config, {
 		logLevel: "info",
 	});
 
-	const LoggerMock = Layer.succeed(
-		Logger,
-		createLogger({
-			minLevel: "info",
-			sink: (record: LogRecord) => {
-				mockSink(record);
-			},
-		}),
-	);
+	const mockLogger = {
+		info: vi.fn(() => Effect.void),
+		error: vi.fn(() => Effect.void),
+		warn: vi.fn(() => Effect.void),
+		debug: vi.fn(() => Effect.void),
+		log: vi.fn(() => Effect.void),
+		child: vi.fn(() => mockLogger),
+	};
 
-	test("should run without errors and log a predictable number", async () => {
+	const LoggerMock = Layer.succeed(Logger, mockLogger);
+
+	it("should run without errors and log a predictable number", async () => {
 		const RandomMock = Layer.succeed(Random, {
 			next: () => Effect.succeed(42),
 		});
@@ -35,16 +33,10 @@ describe("Program", () => {
 		if (!Exit.isSuccess(result)) {
 			throw new Error("Expected success Exit");
 		}
-		expect(mockSink).toHaveBeenCalledWith(
-			expect.objectContaining({
-				level: "info",
-				message: "random-number-generated",
-				meta: { number: 42 },
-			}),
-		);
+		expect(mockLogger.info).toHaveBeenCalledWith("random-number-generated", { number: 42 });
 	});
 
-	test("should fail with RandomGenerationError when random service fails", async () => {
+	it("should fail with RandomGenerationError when random service fails", async () => {
 		const error = new RandomGenerationError({ reason: "Test failure" });
 		const RandomMock = Layer.succeed(Random, {
 			next: () => Effect.fail(error),
