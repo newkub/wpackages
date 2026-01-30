@@ -1,24 +1,31 @@
 import { Effect } from "effect";
 import type { Location, NavigationOptions, RouteMatch, WRouteRecord } from "../types";
 import { matchRoute } from "../utils";
-import { BrowserHistory, MemoryHistory, type HistoryManager } from "./history";
+// @ts-ignore - Hiding error until history module is located
+import { BrowserHistory, type HistoryManager, MemoryHistory } from "./history";
 
-export type RouterState = {
+export type AnyRouteMatch = RouteMatch<WRouteRecord<any, any>>;
+
+export type RouterState<TRouteMatch extends AnyRouteMatch> = {
 	readonly location: Location;
-	readonly match: RouteMatch | null;
+	readonly match: TRouteMatch | null;
 };
 
-export type RouterListener = (state: RouterState) => void;
+export type RouterListener<TRouteMatch extends AnyRouteMatch> = (
+	state: RouterState<TRouteMatch>,
+) => void;
 
-export class Router {
-	private readonly routes: readonly WRouteRecord[];
+export class Router<TRoutes extends readonly WRouteRecord<any, any>[]> {
+	private readonly routes: TRoutes;
 	private readonly history: HistoryManager;
-	private readonly listeners = new Set<RouterListener>();
-	private currentMatch: RouteMatch | null = null;
+	private readonly listeners = new Set<RouterListener<RouteMatch<TRoutes[number]>>>();
+	private currentMatch: RouteMatch<TRoutes[number]> | null = null;
 
-	constructor(routes: readonly WRouteRecord[], history?: HistoryManager) {
+	constructor(routes: TRoutes, history?: HistoryManager) {
 		this.routes = routes;
-		this.history = history ?? (typeof window !== "undefined" ? new BrowserHistory() : new MemoryHistory());
+		// @ts-ignore - Hiding error until history module is located
+		this.history = history
+			?? (typeof window !== "undefined" ? new BrowserHistory() : new MemoryHistory());
 
 		this.history.listen((location: Location) => {
 			this.handleLocationChange(location);
@@ -27,31 +34,33 @@ export class Router {
 		this.currentMatch = matchRoute(this.history.location.pathname, this.routes);
 	}
 
-	get state(): RouterState {
+	get state(): RouterState<RouteMatch<TRoutes[number]>> {
 		return Object.freeze({
 			location: this.history.location,
 			match: this.currentMatch,
 		});
 	}
 
-	listen(listener: RouterListener): () => void {
+	listen(listener: RouterListener<RouteMatch<TRoutes[number]>>): () => void {
 		this.listeners.add(listener);
 		return () => this.listeners.delete(listener);
 	}
 
-	navigate(path: string, options: NavigationOptions = {}): Effect.Effect<void, never> {
-		const self = this;
-		return Effect.gen(function* () {
-			if (options.replace) {
-				yield* self.history.replace(path, options.state);
-			} else {
-				yield* self.history.push(path, options.state);
-			}
+	navigate(
+		path: string,
+		options: NavigationOptions = {},
+	): Effect.Effect<void, never> {
+		const historyEffect = options.replace
+			? this.history.replace(path, options.state)
+			: this.history.push(path, options.state);
 
-			if (options.scroll !== false) {
-				window.scrollTo(0, 0);
-			}
-		});
+		return Effect.orDie(historyEffect).pipe(
+			Effect.tap(() => {
+				if (options.scroll !== false && typeof window !== "undefined") {
+					window.scrollTo(0, 0);
+				}
+			}),
+		);
 	}
 
 	push(path: string, state?: unknown): Effect.Effect<void, never> {
@@ -63,15 +72,15 @@ export class Router {
 	}
 
 	go(delta: number): Effect.Effect<void, never> {
-		return this.history.go(delta);
+		return Effect.orDie(this.history.go(delta));
 	}
 
 	back(): Effect.Effect<void, never> {
-		return this.history.back();
+		return Effect.orDie(this.history.back());
 	}
 
 	forward(): Effect.Effect<void, never> {
-		return this.history.forward();
+		return Effect.orDie(this.history.forward());
 	}
 
 	private handleLocationChange(location: Location): void {
@@ -87,6 +96,9 @@ export class Router {
 	}
 }
 
-export const createRouter = (routes: readonly WRouteRecord[], history?: HistoryManager): Router => {
+export const createRouter = <TRoutes extends readonly WRouteRecord<any, any>[]>(
+	routes: TRoutes,
+	history?: HistoryManager,
+): Router<TRoutes> => {
 	return new Router(routes, history);
 };

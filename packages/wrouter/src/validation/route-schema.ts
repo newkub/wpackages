@@ -1,82 +1,83 @@
-import { string, number, object, union, literal, optional } from "@wpackages/schema";
+import { literal, number, object, record, type Schema, string, union } from "@wpackages/schema";
 import type { RouteParam } from "../types";
 
-export const routeParamSchema = object({
-	shape: {
-		name: string({ min: 1 }),
-		type: union([literal("string"), literal("number"), literal("boolean")]),
-		optional: literal(false),
-	},
-});
+const routeParamTypeSchema = union([
+	literal("string"),
+	literal("number"),
+	literal("boolean"),
+]);
 
-export const optionalRouteParamSchema = object({
-	shape: {
-		name: string({ min: 1 }),
-		type: union([literal("string"), literal("number"), literal("boolean")]),
-		optional: literal(true),
-	},
-});
-
-export const routeParamWithOptionalSchema = union([routeParamSchema, optionalRouteParamSchema]);
-
-export const paramsSchema = object({
-	shape: {
-		[string()]: union([string(), number(), literal(true), literal(false)]),
-	},
-});
-
-export const querySchema = object({
-	shape: {
-		[string()]: optional(string()),
-	},
-});
-
-export const routeMatchSchema = object({
-	shape: {
-		path: string(),
-		params: paramsSchema,
-		query: querySchema,
-		hash: optional(string()),
-	},
-});
-
-export const validateRouteParams = (params: Record<string, unknown>, expectedParams: readonly RouteParam[]) => {
-	const schema = object({
-		shape: Object.fromEntries(
-			expectedParams.map((param) => [
-				param.name,
-				param.optional ? optional(union([string(), number(), literal(true), literal(false)])) : union([string(), number(), literal(true), literal(false)]),
-			]),
-		),
+const createRouteParamSchema = (isOptional: boolean) =>
+	object({
+		name: string().refine((s) => (s.length > 0 ? true : "Name cannot be empty")),
+		type: routeParamTypeSchema,
+		optional: literal(isOptional),
 	});
 
-	const result = schema.parse(params);
-	return result.success ? { data: result.data, error: null } : { data: null, error: result.issues };
+export const routeParamSchema = createRouteParamSchema(false);
+export const optionalRouteParamSchema = createRouteParamSchema(true);
+
+export const routeParamWithOptionalSchema = union([
+	routeParamSchema as Schema<any>,
+	optionalRouteParamSchema as Schema<any>,
+]);
+
+const allowedParamValue = union([
+	string(),
+	number(),
+	literal(true),
+	literal(false),
+]);
+
+export const paramsSchema = record(allowedParamValue);
+export const querySchema = record(string().optional());
+
+export const routeMatchSchema = object({
+	path: string(),
+	params: paramsSchema,
+	query: querySchema,
+	hash: string().optional(),
+});
+
+const validateData = <T>(schema: Schema<T>, data: unknown) => {
+	const result = schema.safeParse(data);
+	return result.success
+		? { data: result.data, error: null }
+		: { data: null, error: result.error.issues };
+};
+
+export const validateRouteParams = (
+	params: Record<string, unknown>,
+	expectedParams: readonly RouteParam[],
+) => {
+	const shape = Object.fromEntries(
+		expectedParams.map((param) => [
+			param.name,
+			param.optional
+				? (allowedParamValue.optional() as Schema<any>)
+				: (allowedParamValue as Schema<any>),
+		]),
+	);
+	const schema = object(shape);
+	return validateData(schema, params);
 };
 
 export const validateRouteQuery = (query: Record<string, string | undefined>) => {
-	const schema = object({
-		shape: {
-			[string()]: optional(string()),
-		},
-	});
-
-	const result = schema.parse(query);
-	return result.success ? { data: result.data, error: null } : { data: null, error: result.issues };
+	return validateData(querySchema, query);
 };
 
-export const createRouteSchema = <T extends Record<string, unknown>>(shape: {
-	params?: Record<string, unknown>;
-	query?: Record<string, unknown>;
-	body?: T;
+export const createRouteSchema = <
+	TParams extends Record<string, Schema<any>>,
+	TQuery extends Record<string, Schema<any>>,
+	TBody extends Record<string, Schema<any>>,
+>(shape: {
+	params?: TParams;
+	query?: TQuery;
+	body?: TBody;
 }) => {
-	const paramsSchema = shape.params ? object({ shape: shape.params }) : undefined;
-	const querySchema = shape.query ? object({ shape: shape.query }) : undefined;
-	const bodySchema = shape.body ? object({ shape: shape.body }) : undefined;
-
 	return {
-		params: paramsSchema,
-		query: querySchema,
-		body: bodySchema,
+		params: shape.params ? object(shape.params) : undefined,
+		query: shape.query ? object(shape.query) : undefined,
+		body: shape.body ? object(shape.body) : undefined,
 	};
 };

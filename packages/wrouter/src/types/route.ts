@@ -6,24 +6,25 @@ export type RouteParamType = "string" | "number" | "boolean";
 
 export interface RouteParam {
 	readonly name: string;
-	readonly type: RouteParamType;
+	readonly type: "string" | "number" | "boolean";
 	readonly optional: boolean;
 }
 
-export interface RouteMatch {
-	readonly route: WRouteRecord;
+export interface RouteMatch<TRoute extends WRouteRecord<any, any> = WRouteRecord<any, any>> {
+	readonly route: TRoute;
 	readonly params: Readonly<Record<string, string | number | boolean>>;
 	readonly query: Readonly<Record<string, string>>;
 	readonly hash: string;
 }
 
-export interface WRouteRecord {
+export interface WRouteRecord<TParams = any, TMeta = any> {
 	readonly path: string;
 	readonly file: string;
 	readonly name: string;
 	readonly params: readonly RouteParam[];
 	readonly methods: readonly HttpMethod[];
-	readonly children?: readonly WRouteRecord[];
+	readonly children?: readonly WRouteRecord<TParams, TMeta>[];
+	readonly meta?: TMeta;
 }
 
 export interface GenerateRoutesOptions {
@@ -78,5 +79,7 @@ export interface RouteDataLoadResult<T> {
 }
 
 export interface RouteDataLoader<T> {
-	readonly load: (params: Readonly<Record<string, string | number | boolean>>) => Effect.Effect<RouteDataLoadResult<T>, Error>;
+	readonly load: (
+		params: Readonly<Record<string, string | number | boolean>>,
+	) => Effect.Effect<RouteDataLoadResult<T>, Error>;
 }
