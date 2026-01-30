@@ -3,7 +3,13 @@
 	"version": "0.0.1",
 	"private": true,
 	"description": "A blazing fast library for building interactive command-line apps, inspired by React and Ink.",
-	"keywords": ["cli", "ui", "bun", "react", "ink"],
+	"keywords": [
+		"cli",
+		"ui",
+		"bun",
+		"react",
+		"ink"
+	],
 	"author": "",
 	"license": "MIT",
 	"main": "./dist/index.mjs",
@@ -22,8 +28,8 @@
 		"verify": "bun format && bun lint && bun test && bun build"
 	},
 	"dependencies": {
-		"effect": "^3.19.15",
 		"@effect/schema": "^",
+		"effect": "^3.19.15",
 		"ink": "^6.6.0",
 		"picocolors": "^1.1.1",
 		"react": "^19.2.4",

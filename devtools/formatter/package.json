@@ -23,7 +23,6 @@
 		"@wpackages/cli-builder": "workspace:*",
 		"@wpackages/cli-components": "workspace:*",
 		"@wpackages/config-manager": "workspace:*",
-		"@wpackages/formatter": "workspace:*",
 		"@wpackages/logger": "workspace:*",
 		"@wpackages/plugins-system": "workspace:*",
 		"effect": "^3.19.15",
