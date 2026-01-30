@@ -132,6 +132,7 @@ Framework kits are meta-packages that aggregate related tools for specific devel
 | `@wpackages/cache` | Caching service with multiple backends | Bun, Node.js | Caching | - | ✅ Stable | ✅ Full | ✅ Vitest | ✅ Bench | M |
 | `@wpackages/config-manager` | Configuration management with validation and hot-reload | Bun, Node.js, Browser | Config Management | - | ✅ Stable | ✅ Full | ✅ Vitest | ❌ None | M |
 | `@wpackages/api-integrations` | API integration utilities | Bun, Node.js | API Integration | - | ✅ Stable | ✅ Full | ✅ Vitest | ❌ None | S |
+| `@wpackages/query` | TanStack Query-inspired data-fetching and state management | Bun, Node.js, Browser | Data Fetching | Vue | ✅ Stable | ✅ Full | ✅ Vitest | ❌ None | M |
 
 ### Libraries
 

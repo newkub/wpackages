@@ -1,28 +1,28 @@
 # Analytics Service
 
-Analytics service สำหรับ tracking events และส่งข้อมูล analytics ไปยัง endpoint ที่กำหนด ด้วย Effect-TS และ functional programming
+Analytics service for tracking events and sending analytics data to specified endpoints using Effect-TS and functional programming.
 
 ## Features
 
 ### Core Features
-- ✅ Event tracking ด้วย Effect-TS
-- ✅ Batch sending สำหรับประสิทธิภาพที่ดีขึ้น
-- ✅ Auto flush ตาม interval ที่กำหนด
+- ✅ Event tracking with Effect-TS
+- ✅ Batch sending for improved efficiency
+- ✅ Auto flush at specified intervals
 - ✅ Event validation
-- ✅ Error handling ที่ชัดเจน
+- ✅ Clear error handling
 
 ### Advanced Features
-- ✅ **Retry Logic with Exponential Backoff** - Retry อัตโนมัติเมื่อ network fail
-- ✅ **Request Timeout Handling** - ตั้งเวลา timeout สำหรับ requests
-- ✅ **Offline Queue** - เก็บ events ไว้เมื่อ offline แล้ว sync เมื่อกลับมา online
-- ✅ **Event Compression** - Compress payloads ด้วย gzip เพื่อลด bandwidth
-- ✅ **Event Sampling** - Sample events สำหรับ high-traffic scenarios
-- ✅ **Event Middleware System** - Transform/enrich/filter events ก่อนส่ง
+- ✅ **Retry Logic with Exponential Backoff** - Automatic retry on network failures
+- ✅ **Request Timeout Handling** - Configurable timeout for requests
+- ✅ **Offline Queue** - Store events when offline and sync when back online
+- ✅ **Event Compression** - Compress payloads with gzip to reduce bandwidth
+- ✅ **Event Sampling** - Sample events for high-traffic scenarios
+- ✅ **Event Middleware System** - Transform/enrich/filter events before sending
 - ✅ **Event Context Enrichment** - Auto-add device, page, performance info
-- ✅ **Event Filtering** - Block/allow events ตาม rules
-- ✅ **Network Awareness** - Detect network status และปรับ batch size
-- ✅ **Priority Queue** - High priority events จะถูกส่งก่อน
-- ✅ **Debug Mode** - Logging รายละเอียดสำหรับ development
+- ✅ **Event Filtering** - Block/allow events based on rules
+- ✅ **Network Awareness** - Detect network status and adjust batch size
+- ✅ **Priority Queue** - High priority events sent first
+- ✅ **Debug Mode** - Detailed logging for development
 
 ## Installation
 
