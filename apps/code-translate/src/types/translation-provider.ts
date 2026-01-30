@@ -1,17 +1,23 @@
-import { Effect } from "effect";
-import type { TranslationRequest, TranslationResult, TranslationErrorSchema } from "./translation";
+import { Context, Effect } from "effect";
+import type { TranslationErrorSchema, TranslationRequest, TranslationResult } from "./translation";
 
 export interface TranslationProvider {
 	readonly name: string;
 	readonly translate: (request: TranslationRequest) => Effect.Effect<TranslationResult, TranslationErrorSchema>;
 }
 
+export const TranslationProviderTag = Context.Tag<TranslationProvider>(
+	"@wpackages/code-translate/TranslationProvider",
+);
+
 export class MockTranslationProvider implements TranslationProvider {
 	readonly name = "Mock";
 
 	translate(request: TranslationRequest): Effect.Effect<TranslationResult, TranslationErrorSchema> {
-		return Effect.gen(function* (this: MockTranslationProvider) {
-			yield* Effect.logInfo(`Translating from ${request.sourceLanguage} to ${request.targetLanguage} using ${this.name}`);
+		return Effect.gen(function*(this: MockTranslationProvider) {
+			yield* Effect.logInfo(
+				`Translating from ${request.sourceLanguage} to ${request.targetLanguage} using ${this.name}`,
+			);
 
 			const translatedCode = yield* this.performTranslation(request);
 
@@ -25,7 +31,7 @@ export class MockTranslationProvider implements TranslationProvider {
 
 			yield* Effect.logInfo("Translation completed successfully");
 			return result;
-		}).pipe(Effect.provideService(this));
+		}.bind(this)).pipe(Effect.provideService(TranslationProviderTag, this));
 	}
 
 	private performTranslation(request: TranslationRequest): Effect.Effect<string, TranslationErrorSchema> {
